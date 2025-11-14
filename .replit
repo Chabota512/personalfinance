@@ -8,7 +8,7 @@ packages = ["sqlite-interactive"]
 
 [deployment]
 deploymentTarget = "autoscale"
-build = ["npm", "run", "build"]
+build = ["npm", "install", "--production=false", "&&", "npm", "run", "build"]
 run = ["npm", "run", "start"]
 
 [[ports]]

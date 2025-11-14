@@ -44,6 +44,8 @@ Get this from your Neon dashboard.
    - Build Command: `npm install && npm run build`
    - Start Command: `npm start`
    - Plan: `Free`
+   
+   **Important**: The build command MUST be `npm install && npm run build` to compile TypeScript to JavaScript.
 
 4. **Add Environment Variables**
    - Click "Environment" tab
