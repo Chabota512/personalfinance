@@ -26,12 +26,12 @@ export async function updateStreak(userId: string, budgetId?: string) {
       userId,
       currentStreak: 1,
       longestStreak: 1,
-      lastActivityDate: today,
+      lastBudgetCheckDate: today,
     });
     return 1;
   }
 
-  const lastDate = new Date(streak.lastActivityDate);
+  const lastDate = streak.lastBudgetCheckDate ? new Date(streak.lastBudgetCheckDate) : new Date(today);
   const todayDate = new Date(today);
   const diffDays = Math.floor((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
 
@@ -45,7 +45,7 @@ export async function updateStreak(userId: string, budgetId?: string) {
       .set({
         currentStreak: newStreak,
         longestStreak: Math.max(newStreak, streak.longestStreak),
-        lastActivityDate: today,
+        lastBudgetCheckDate: today,
       })
       .where(eq(userStreaks.id, streak.id));
     return newStreak;
@@ -54,7 +54,7 @@ export async function updateStreak(userId: string, budgetId?: string) {
     await db.update(userStreaks)
       .set({
         currentStreak: 1,
-        lastActivityDate: today,
+        lastBudgetCheckDate: today,
       })
       .where(eq(userStreaks.id, streak.id));
     return 1;
@@ -83,7 +83,7 @@ export async function calculateAchievements(userId: string): Promise<Achievement
     icon: '🎯',
     earned: transactionCount[0].count > 0,
     earnedAt: earnedTypes.has('first_transaction') 
-      ? earnedAchievements.find(a => a.achievementType === 'first_transaction')?.earnedAt 
+      ? earnedAchievements.find(a => a.achievementType === 'first_transaction')?.earnedAt || undefined
       : undefined,
   });
 
@@ -99,7 +99,7 @@ export async function calculateAchievements(userId: string): Promise<Achievement
     icon: '💰',
     earned: budgetCount[0].count > 0,
     earnedAt: earnedTypes.has('first_budget') 
-      ? earnedAchievements.find(a => a.achievementType === 'first_budget')?.earnedAt 
+      ? earnedAchievements.find(a => a.achievementType === 'first_budget')?.earnedAt || undefined
       : undefined,
   });
 
@@ -115,19 +115,20 @@ export async function calculateAchievements(userId: string): Promise<Achievement
     icon: '🏆',
     earned: goalCount[0].count > 0,
     earnedAt: earnedTypes.has('first_goal') 
-      ? earnedAchievements.find(a => a.achievementType === 'first_goal')?.earnedAt 
+      ? earnedAchievements.find(a => a.achievementType === 'first_goal')?.earnedAt || undefined
       : undefined,
   });
 
   // 7-Day Streak
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const sevenDaysAgoStr = sevenDaysAgo.toISOString().split('T')[0];
 
   const recentTransactions = await db.select()
     .from(transactions)
     .where(and(
       eq(transactions.userId, userId),
-      gte(transactions.date, sevenDaysAgo)
+      gte(transactions.date, sevenDaysAgoStr)
     ))
     .orderBy(desc(transactions.date));
 
@@ -142,7 +143,7 @@ export async function calculateAchievements(userId: string): Promise<Achievement
     progress: Math.min(streak, 7),
     target: 7,
     earnedAt: earnedTypes.has('7_day_streak') 
-      ? earnedAchievements.find(a => a.achievementType === '7_day_streak')?.earnedAt 
+      ? earnedAchievements.find(a => a.achievementType === '7_day_streak')?.earnedAt || undefined
       : undefined,
   });
 
@@ -156,7 +157,7 @@ export async function calculateAchievements(userId: string): Promise<Achievement
     progress: Math.min(transactionCount[0].count, 100),
     target: 100,
     earnedAt: earnedTypes.has('100_transactions') 
-      ? earnedAchievements.find(a => a.achievementType === '100_transactions')?.earnedAt 
+      ? earnedAchievements.find(a => a.achievementType === '100_transactions')?.earnedAt || undefined
       : undefined,
   });
 
@@ -175,7 +176,7 @@ export async function calculateAchievements(userId: string): Promise<Achievement
       progress: userStreakData.currentStreak,
       target: 7, // Example target
       earnedAt: earnedTypes.has('current_streak')
-        ? earnedAchievements.find(a => a.achievementType === 'current_streak')?.earnedAt
+        ? earnedAchievements.find(a => a.achievementType === 'current_streak')?.earnedAt || undefined
         : undefined,
     });
 
@@ -188,7 +189,7 @@ export async function calculateAchievements(userId: string): Promise<Achievement
       progress: userStreakData.longestStreak,
       target: 14, // Example target
       earnedAt: earnedTypes.has('longest_streak')
-        ? earnedAchievements.find(a => a.achievementType === 'longest_streak')?.earnedAt
+        ? earnedAchievements.find(a => a.achievementType === 'longest_streak')?.earnedAt || undefined
         : undefined,
     });
   }
@@ -201,7 +202,7 @@ function calculateStreak(transactions: any[]): number {
   if (transactions.length === 0) return 0;
 
   const dates = transactions.map(t => new Date(t.date).toDateString());
-  const uniqueDates = [...new Set(dates)].sort((a, b) => 
+  const uniqueDates = Array.from(new Set(dates)).sort((a, b) => 
     new Date(b).getTime() - new Date(a).getTime()
   );
 

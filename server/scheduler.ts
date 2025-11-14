@@ -64,11 +64,11 @@ export async function checkDebtPayments() {
     let notificationsSent = 0;
 
     for (const debt of activeDebts) {
-      if (!debt.nextPaymentDue) {
+      if (!debt.nextPaymentDate) {
         continue;
       }
 
-      const dueDate = new Date(debt.nextPaymentDue);
+      const dueDate = new Date(debt.nextPaymentDate);
       dueDate.setHours(0, 0, 0, 0);
 
       const isOverdue = dueDate < today;
@@ -81,7 +81,7 @@ export async function checkDebtPayments() {
           debt.userId,
           debt.id,
           debt.name,
-          debt.nextPaymentDue,
+          debt.nextPaymentDate,
           debt.paymentAmount,
           isOverdue,
           isDueSoon && !isDueToday && !isOverdue

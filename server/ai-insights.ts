@@ -207,8 +207,11 @@ export async function generateInsights(
     // Cache the result
     insightsCache.set(cacheKey, { data: insights, timestamp: Date.now() });
     
+    // Calculate overall score as average of all scores
+    const overallScore = (scores.savingsScore + scores.budgetScore + scores.debtScore + scores.emergencyScore) / 4;
+    
     // Store in persistent history for true learning
-    await storeInsightsHistory(userId, insights, scores.score);
+    await storeInsightsHistory(userId, insights, overallScore);
     
     const duration = Date.now() - startTime;
     const tokens = data.usage?.total_tokens || 0;

@@ -255,11 +255,12 @@ export async function generateAIRecommendations(userId: string) {
   // Get recent transactions (last 90 days)
   const ninetyDaysAgo = new Date();
   ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+  const ninetyDaysAgoStr = ninetyDaysAgo.toISOString().split('T')[0];
 
-  const transactions = await db.query.transactions.findMany({
+  const userTransactions = await db.query.transactions.findMany({
     where: and(
       eq(transactions.userId, userId),
-      gte(transactions.date, ninetyDaysAgo.toISOString().split('T')[0])
+      gte(transactions.date, ninetyDaysAgoStr)
     ),
     orderBy: desc(transactions.date),
   });
@@ -276,7 +277,7 @@ export async function generateAIRecommendations(userId: string) {
   }, {} as Record<string, number>);
   
   // Detect bad spending habits
-  const badHabits = detectBadHabits(transactions);
+  const badHabits = detectBadHabits(userTransactions);
   badHabits.forEach(habit => {
     recommendations.push({
       title: habit.title,
@@ -299,7 +300,7 @@ export async function generateAIRecommendations(userId: string) {
       recommendations.push({
         title: `Reduce ${category} spending`,
         description: `You've spent $${amount.toFixed(2)} on ${category} in the last 3 months. Consider reducing by 10-15%.`,
-        suggestedAmount: (amount * 0.15).toFixed(2),
+        suggestedAmount: parseFloat((amount * 0.15).toFixed(2)),
         confidence: '75',
         category: 'expense_reduction',
         isActive: 1,
@@ -312,7 +313,7 @@ export async function generateAIRecommendations(userId: string) {
     recommendations.push({
       title: 'Increase your savings rate',
       description: `Your current savings rate is ${patterns[1].savingsRate.toFixed(1)}%. Aim for at least 20% to build wealth faster.`,
-      suggestedAmount: (patterns[1].monthlyIncome * 0.2 - (patterns[1].monthlyIncome * patterns[1].savingsRate / 100)).toFixed(2),
+      suggestedAmount: parseFloat((patterns[1].monthlyIncome * 0.2 - (patterns[1].monthlyIncome * patterns[1].savingsRate / 100)).toFixed(2)),
       confidence: '85',
       category: 'savings_increase',
       isActive: 1,
@@ -324,7 +325,7 @@ export async function generateAIRecommendations(userId: string) {
     recommendations.push({
       title: 'Build emergency fund',
       description: 'Aim for 6 months of expenses in liquid savings for financial security.',
-      suggestedAmount: (patterns[1].monthlyExpenses * 6 - patterns[1].netWorth).toFixed(2),
+      suggestedAmount: parseFloat((patterns[1].monthlyExpenses * 6 - patterns[1].netWorth).toFixed(2)),
       confidence: '90',
       category: 'emergency_fund',
       isActive: 1,
@@ -336,7 +337,7 @@ export async function generateAIRecommendations(userId: string) {
     recommendations.push({
       title: 'Focus on debt reduction',
       description: `Your debt-to-income ratio is ${patterns[1].debtToIncomeRatio.toFixed(1)}%. Focus on paying down high-interest debt.`,
-      suggestedAmount: (patterns[1].monthlyIncome * 0.15).toFixed(2),
+      suggestedAmount: parseFloat((patterns[1].monthlyIncome * 0.15).toFixed(2)),
       confidence: '80',
       category: 'debt_reduction',
       isActive: 1,
@@ -344,9 +345,9 @@ export async function generateAIRecommendations(userId: string) {
   }
 
   // Detect patterns in transaction history
-  const timePatterns = detectTimePatterns(transactions);
-  const recurringExpenses = detectRecurringExpenses(transactions);
-  const predictiveInsights = generatePredictiveInsights(transactions, { timePatterns, recurringExpenses });
+  const timePatterns = detectTimePatterns(userTransactions);
+  const recurringExpenses = detectRecurringExpenses(userTransactions);
+  const predictiveInsights = generatePredictiveInsights(userTransactions, { timePatterns, recurringExpenses });
 
   // Add predictive insights first (high priority)
   predictiveInsights.forEach(insight => {
@@ -391,7 +392,7 @@ export async function generateAIRecommendations(userId: string) {
       recurringExpenses: recurringExpenses.slice(0, 3),
     };
 
-    const aiInsights = await generateFinancialInsights(userId, transactions, patterns);
+    const aiInsights = await generateFinancialInsights(userId, patterns as any);
 
     if (aiInsights.insights && aiInsights.insights.length > 0) {
       aiInsights.insights.forEach((insight: string, index: number) => {
@@ -413,8 +414,9 @@ export async function generateAIRecommendations(userId: string) {
   for (const rec of recommendations.slice(0, 5)) {
     try {
       await db.insert(savingsRecommendations).values({
-        userId,
         ...rec,
+        userId,
+        suggestedAmount: rec.suggestedAmount?.toString() || null,
       });
     } catch (error) {
       console.error('Error storing recommendation:', error);

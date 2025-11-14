@@ -1202,7 +1202,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             userId: req.userId,
             name: budget.category,
             accountType: 'expense',
-            accountCategory: 'general',
+            accountCategory: 'other_expense',
             balance: '0',
             description: `Auto-created for budget category: ${budget.category}`,
           });
@@ -2256,20 +2256,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         debtIds.map(id => storage.getDebtById(id))
       );
 
-      // Verify all debts belong to user
-      if (debts.some(d => !d || d.userId !== req.userId)) {
-        return res.status(404).json({ error: "One or more debts not found" });
+      // Filter out null/undefined and verify all debts belong to user
+      const validDebts = debts.filter((d): d is NonNullable<typeof d> => !!d && d.userId === req.userId);
+      
+      if (validDebts.length === 0) {
+        return res.status(404).json({ error: "No valid debts found" });
       }
 
       // Convert to comparison format
-      const loans = debts.map(d => ({
+      const loans = validDebts.map(d => ({
         id: d.id,
         principal: parseFloat(d.currentBalance),
         rate: d.interestRate ? parseFloat(d.interestRate) / 100 / 12 : 0,
         minPayment: d.paymentAmount ? parseFloat(d.paymentAmount) : 0,
       }));
 
-      const startDate = debts[0].startDate;
+      const startDate = validDebts[0].startDate;
       const surplusAmount = parseFloat(surplus) || 0;
 
       const comparison = debtCalc.calculateSnowballVsAvalanche(loans, surplusAmount, startDate);
@@ -3933,7 +3935,7 @@ Total Liabilities: ${Math.abs(accounts.filter(a => a.accountType === 'liability'
     try {
       await db.delete(savingsAutoSweep)
         .where(and(
-          eq(savingsAutoSweep.id, parseInt(req.params.id)),
+          eq(savingsAutoSweep.id, req.params.id),
           eq(savingsAutoSweep.userId, req.userId)
         ));
       res.json({ success: true });
@@ -3967,7 +3969,7 @@ Total Liabilities: ${Math.abs(accounts.filter(a => a.accountType === 'liability'
         const categoryBudgets = await db.query.budgets.findMany({
           where: and(
             eq(budgets.userId, req.userId),
-            eq(budgets.category, sweep.sourceCategory),
+            eq(budgets.category, sweep.sourceCategory as any),
             eq(budgets.isActive, 1)
           ),
         });
