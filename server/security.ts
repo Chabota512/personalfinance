@@ -15,6 +15,7 @@ import CryptoJS from 'crypto-js';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import type { Express } from 'express';
+import cors from 'cors';
 
 // Validate environment variables
 if (!process.env.ENCRYPTION_KEY && process.env.NODE_ENV === 'production') {
@@ -42,32 +43,30 @@ export function setupSecurity(app: Express) {
   }));
 
   // CORS configuration - allow mobile app and web origins
-  app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    const allowedOrigins = [
-      'http://localhost:5173',
-      'http://localhost:5000',
-      'capacitor://localhost',
-      'ionic://localhost',
-      'http://localhost',
-      'https://localhost'
-    ];
+  app.use(cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
 
-    // Allow any origin in development, or specific origins in production
-    if (process.env.NODE_ENV === 'development' || (origin && allowedOrigins.includes(origin))) {
-      res.header('Access-Control-Allow-Origin', origin || '*');
-      res.header('Access-Control-Allow-Credentials', 'true');
-    }
+      const allowedOrigins = [
+        'http://localhost:5000',
+        'http://localhost:5173',
+        'https://localhost:5000',
+        'https://localhost:5173',
+        'capacitor://localhost',
+        'https://localhost',
+        'ionic://localhost',
+        'http://localhost',
+      ];
 
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-
-    if (req.method === 'OPTIONS') {
-      return res.sendStatus(200);
-    }
-
-    next();
-  });
+      if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.replit.dev')) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true
+  }));
 
   // Rate limiting
   const limiter = rateLimit({

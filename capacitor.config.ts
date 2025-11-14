@@ -1,14 +1,14 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+
+import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.personalfinance.pro',
   appName: 'PersonalFinance Pro',
   webDir: 'dist/public',
+  bundledWebRuntime: false,
   server: {
-    androidScheme: 'https',
-    // Uncomment and set this to your Render.com URL for production builds
-    // url: 'https://your-app-name.onrender.com',
-    // cleartext: true
+    url: 'https://personalfinance-pro-backend.onrender.com',
+    cleartext: true
   },
   android: {
     allowMixedContent: true
@@ -16,7 +16,7 @@ const config: CapacitorConfig = {
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
-      backgroundColor: '#ffffff',
+      backgroundColor: "#1a1a1a",
       showSpinner: false
     }
   }
