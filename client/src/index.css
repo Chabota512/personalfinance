@@ -747,4 +747,97 @@
       font-size: 16px; /* Prevents zoom on iOS */
     }
   }
+
+  /**
+   * Mobile Viewport Utilities - True Native App Feel
+   * Ensures content fits within viewport without scrolling
+   */
+  
+  /* Mobile page container - fits between header and footer */
+  .mobile-page {
+    @apply flex flex-col;
+    min-height: calc(100vh - var(--app-header-height) - var(--app-bottom-nav-height));
+    max-height: calc(100vh - var(--app-header-height) - var(--app-bottom-nav-height));
+  }
+
+  @media (min-width: 768px) {
+    .mobile-page {
+      min-height: auto;
+      max-height: none;
+    }
+  }
+
+  /* Ultra-compact mobile spacing - native app density */
+  .mobile-compact {
+    @apply px-3 py-2;  /* 12px horizontal, 8px vertical */
+  }
+
+  .mobile-compact-x {
+    @apply px-3;  /* 12px horizontal only */
+  }
+
+  .mobile-compact-y {
+    @apply py-2;  /* 8px vertical only */
+  }
+
+  /* Mobile card - ultra compact for fitting more on screen */
+  .mobile-card-compact {
+    @apply p-2;  /* 8px padding */
+  }
+
+  .mobile-card-tight {
+    @apply p-3;  /* 12px padding */
+  }
+
+  /* Mobile gap utilities - super tight spacing */
+  .mobile-gap-xs {
+    @apply gap-1;  /* 4px */
+  }
+
+  .mobile-gap-sm {
+    @apply gap-2;  /* 8px */
+  }
+
+  .mobile-gap-md {
+    @apply gap-3;  /* 12px */
+  }
+
+  /* Mobile space utilities */
+  .mobile-space-xs {
+    @apply space-y-1;  /* 4px */
+  }
+
+  .mobile-space-sm {
+    @apply space-y-2;  /* 8px */
+  }
+
+  .mobile-space-md {
+    @apply space-y-3;  /* 12px */
+  }
+
+  /* Scrollable content area within viewport */
+  .mobile-scroll-area {
+    @apply overflow-y-auto overflow-x-hidden;
+    max-height: calc(100vh - var(--app-header-height) - var(--app-bottom-nav-height) - 2rem);
+  }
+
+  @media (min-width: 768px) {
+    .mobile-scroll-area {
+      max-height: none;
+    }
+  }
+
+  /* Hide on mobile utility */
+  @media (max-width: 768px) {
+    .hide-mobile {
+      @apply hidden;
+    }
+  }
+
+  /* Show only on mobile */
+  @media (min-width: 769px) {
+    .mobile-only {
+      @apply hidden;
+    }
+  }
 }
