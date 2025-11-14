@@ -1,0 +1,50 @@
+2025-11-14T20:05:43.325252045Z   Quiz questions already exist for Starting an Emergency Fund
+2025-11-14T20:05:43.393591861Z Lesson already exists: Understanding Credit
+2025-11-14T20:05:43.463212022Z   Quiz questions already exist for Understanding Credit
+2025-11-14T20:05:43.53419629Z Lesson already exists: Setting SMART Financial Goals
+2025-11-14T20:05:43.603600645Z   Quiz questions already exist for Setting SMART Financial Goals
+2025-11-14T20:05:43.672873826Z Lesson already exists: Tracking and Reviewing Progress
+2025-11-14T20:05:43.742271061Z   Quiz questions already exist for Tracking and Reviewing Progress
+2025-11-14T20:05:43.876288349Z Lesson already exists: Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-14T20:05:43.946115135Z   Quiz questions already exist for Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-14T20:05:43.946142016Z Lesson seed completed successfully!
+2025-11-14T20:05:44.369243738Z [SCHEDULER] Initializing scheduler...
+2025-11-14T20:05:44.369592048Z [SCHEDULER] Running daily checks at 2025-11-14T20:05:44.369Z
+2025-11-14T20:05:44.369732472Z [SCHEDULER] Checking goal contributions...
+2025-11-14T20:05:44.369813684Z [SCHEDULER] Scheduler initialized - running every hour
+2025-11-14T20:05:44.369960078Z [express] Production mode: serving from /opt/render/project/src/dist/public
+2025-11-14T20:05:44.37003613Z [express] Directory exists: true
+2025-11-14T20:05:44.473747497Z 8:05:44 PM [express] serving on port 10000
+2025-11-14T20:05:44.641163751Z [SCHEDULER] Sent 0 goal contribution reminders
+2025-11-14T20:05:44.641367397Z [SCHEDULER] Checking debt payments...
+2025-11-14T20:05:44.717041774Z [SCHEDULER] Sent 0 debt payment reminders
+2025-11-14T20:05:44.717068524Z [SCHEDULER] Daily checks completed
+2025-11-14T20:05:51.967052145Z ==> Your service is live 🎉
+2025-11-14T20:05:52.035245088Z ==> 
+2025-11-14T20:05:52.071563744Z ==> ///////////////////////////////////////////////////////////
+2025-11-14T20:05:52.11562175Z ==> 
+2025-11-14T20:05:52.155126506Z ==> Available at your primary URL https://personalfinance-pro-backend.onrender.com
+2025-11-14T20:05:52.194250872Z ==> 
+2025-11-14T20:05:52.234074788Z ==> ///////////////////////////////////////////////////////////
+2025-11-14T20:05:58.512551192Z Error: Not allowed by CORS
+2025-11-14T20:05:58.512584273Z     at origin (/opt/render/project/src/server/security.ts:65:18)
+2025-11-14T20:05:58.512590803Z     at /opt/render/project/src/node_modules/cors/lib/index.js:219:13
+2025-11-14T20:05:58.512595924Z     at optionsCallback (/opt/render/project/src/node_modules/cors/lib/index.js:199:9)
+2025-11-14T20:05:58.512600104Z     at corsMiddleware (/opt/render/project/src/node_modules/cors/lib/index.js:204:7)
+2025-11-14T20:05:58.512605004Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-11-14T20:05:58.512610884Z     at trim_prefix (/opt/render/project/src/node_modules/express/lib/router/index.js:328:13)
+2025-11-14T20:05:58.512615254Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:286:9
+2025-11-14T20:05:58.512619904Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-11-14T20:05:58.512624034Z     at next (/opt/render/project/src/node_modules/express/lib/router/index.js:280:10)
+2025-11-14T20:05:58.512644045Z     at internalNext (file:///opt/render/project/src/node_modules/helmet/index.mjs:527:6)
+2025-11-14T20:05:58.539215714Z Error: Not allowed by CORS
+2025-11-14T20:05:58.539238475Z     at origin (/opt/render/project/src/server/security.ts:65:18)
+2025-11-14T20:05:58.539242645Z     at /opt/render/project/src/node_modules/cors/lib/index.js:219:13
+2025-11-14T20:05:58.539245635Z     at optionsCallback (/opt/render/project/src/node_modules/cors/lib/index.js:199:9)
+2025-11-14T20:05:58.539250965Z     at corsMiddleware (/opt/render/project/src/node_modules/cors/lib/index.js:204:7)
+2025-11-14T20:05:58.539254105Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-11-14T20:05:58.539256305Z     at trim_prefix (/opt/render/project/src/node_modules/express/lib/router/index.js:328:13)
+2025-11-14T20:05:58.539258365Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:286:9
+2025-11-14T20:05:58.539260425Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-11-14T20:05:58.539262535Z     at next (/opt/render/project/src/node_modules/express/lib/router/index.js:280:10)
+2025-11-14T20:05:58.539264595Z     at internalNext (file:///opt/render/project/src/node_modules/helmet/index.mjs:527:6)
