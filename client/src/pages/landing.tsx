@@ -34,11 +34,6 @@ export default function LandingPage() {
                 Get Started Free
               </Button>
             </Link>
-            <Link href="/auth">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6">
-                Try Demo
-              </Button>
-            </Link>
           </div>
         </div>
 
