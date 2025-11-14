@@ -134,15 +134,30 @@ app.use((req, res, next) => {
     // This avoids loading vite.config.ts and Replit plugins
     const distPath = path.join(import.meta.dirname, "..", "dist", "public");
     
+    console.log("[express] Production mode: serving from", distPath);
+    console.log("[express] Directory exists:", fs.existsSync(distPath));
+    
     if (fs.existsSync(distPath)) {
-      app.use(express.static(distPath));
+      // Serve static files with proper configuration
+      app.use(express.static(distPath, {
+        maxAge: '1d',
+        etag: true,
+      }));
       
       // Fall through to index.html for client-side routing
       app.use("*", (_req, res) => {
-        res.sendFile(path.join(distPath, "index.html"));
+        const indexPath = path.join(distPath, "index.html");
+        if (fs.existsSync(indexPath)) {
+          res.sendFile(indexPath);
+        } else {
+          res.status(404).send("Application not found. Build may have failed.");
+        }
       });
     } else {
-      console.log("[express] Production mode: dist/public not found, skipping static file serving");
+      console.error("[express] ERROR: dist/public not found. Build output missing!");
+      app.use("*", (_req, res) => {
+        res.status(503).send("Application build output not found. Please check deployment logs.");
+      });
     }
   }
 
