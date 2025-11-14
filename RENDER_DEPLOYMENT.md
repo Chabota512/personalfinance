@@ -45,7 +45,7 @@ Get this from your Neon dashboard.
    - Start Command: `npm start`
    - Plan: `Free`
    
-   **Important**: The build command builds the frontend (React/Vite). The backend runs directly using tsx (no bundling needed).
+   **Important**: The build command only builds the frontend (React/Vite) to `dist/public/`. The backend runs directly from TypeScript using `tsx` (no compilation needed). Make sure `tsx` is in your `dependencies`, not `devDependencies`.
 
 4. **Add Environment Variables**
    - Click "Environment" tab
