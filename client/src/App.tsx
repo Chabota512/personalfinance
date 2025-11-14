@@ -180,7 +180,7 @@ function AppContent() {
         <div className="flex flex-col flex-1 overflow-hidden">
           <MobileHeader />
           <main className="flex-1 overflow-y-auto">
-            <div className="pt-12 pb-16 md:pt-16 md:pb-0">
+            <div className="pt-[var(--app-header-height)] pb-[var(--app-bottom-nav-height)] md:pt-[var(--app-header-height-md)] md:pb-0">
               <Router />
             </div>
           </main>

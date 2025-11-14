@@ -153,6 +153,11 @@
   --space-5: 1.5rem;   /* 24px - comfortable spacing */
   --space-6: 2rem;     /* 32px - loose spacing */
 
+  /* Layout offsets for fixed headers and navigation */
+  --app-header-height: 3rem;        /* 48px mobile header */
+  --app-header-height-md: 4rem;     /* 64px desktop header */
+  --app-bottom-nav-height: 3.5rem;  /* 56px bottom nav */
+
   /* Automatically computed borders */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
   --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
