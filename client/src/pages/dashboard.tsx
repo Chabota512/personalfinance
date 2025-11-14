@@ -133,9 +133,9 @@ export default function Dashboard() {
 
   if (isMobile) {
     return (
-      <div className="min-h-screen bg-background pb-20 md:pb-6">
-        {/* Fixed Header with Gradient */}
-        <div className="sticky top-0 z-10 bg-gradient-to-b from-primary/10 via-background/70 to-transparent backdrop-blur-md border-b border-border/50">
+      <div className="min-h-screen bg-background">
+        {/* Header with Gradient */}
+        <div className="bg-gradient-to-b from-primary/10 via-background/70 to-transparent border-b border-border/50">
           <div className="px-4 py-4 space-y-3">
             <div className="flex items-center justify-between">
               <div>

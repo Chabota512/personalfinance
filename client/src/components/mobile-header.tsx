@@ -76,7 +76,7 @@ export function MobileHeader() {
   const config = routeConfig[location];
 
   return (
-    <header className="sticky top-0 z-30 bg-card/80 backdrop-blur-xl border-b border-border safe-area-top">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border safe-area-top">
       {/* Mobile view - simple header */}
       <div className="flex md:hidden items-center justify-between h-12 px-4">
         <SidebarTrigger data-testid="button-sidebar-toggle" />
