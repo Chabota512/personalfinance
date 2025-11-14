@@ -35,7 +35,8 @@ export default function HomePage() {
   useEffect(() => {
     const checkMonthlySetup = async () => {
       try {
-        const result = await apiRequest('GET', '/api/quick-deals/needs-setup');
+        const response = await apiRequest('GET', '/api/quick-deals/needs-setup');
+        const result = await response.json();
         if (result?.needsSetup) {
           setShowMonthlySetup(true);
         }
