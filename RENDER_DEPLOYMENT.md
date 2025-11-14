@@ -45,7 +45,7 @@ Get this from your Neon dashboard.
    - Start Command: `npm start`
    - Plan: `Free`
    
-   **Important**: The build command MUST be `npm install && npm run build` to compile TypeScript to JavaScript.
+   **Important**: The build command builds the frontend (React/Vite). The backend runs directly using tsx (no bundling needed).
 
 4. **Add Environment Variables**
    - Click "Environment" tab
@@ -65,11 +65,20 @@ Visit: `https://your-app.onrender.com/api/health`
 
 Should return: `{"status":"ok"}`
 
+## How It Works
+
+The deployment uses:
+- **Frontend**: Built with Vite to static files in `dist/public/`
+- **Backend**: Runs directly with `tsx` (no bundling) from `server/index.ts`
+- **Production Mode**: Set via `NODE_ENV=production` environment variable
+
+This approach avoids bundling issues and keeps Replit-specific dev dependencies isolated.
+
 ## Troubleshooting
 
 ### Build Fails
 - Check build logs in Render dashboard
-- Ensure `package.json` has all dependencies
+- Ensure `package.json` has all dependencies (including `tsx` in dependencies)
 - Verify Node version compatibility
 
 ### App Won't Start
