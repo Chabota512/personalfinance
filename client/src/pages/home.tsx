@@ -91,7 +91,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20 md:pb-6">
+    <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-4 md:px-6 md:py-6 space-y-4">
 
         {/* Header */}
