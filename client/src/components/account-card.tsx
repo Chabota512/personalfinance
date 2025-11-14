@@ -10,6 +10,7 @@ import { AdjustBalanceDialog } from "./adjust-balance-dialog";
 interface AccountCardProps {
   account: Account;
   onClick?: () => void;
+  compact?: boolean;
 }
 
 const accountTypeIcons = {
@@ -26,12 +27,91 @@ const accountTypeBadgeColors = {
   expense: "bg-warning/10 text-warning border-warning/20",
 };
 
-export function AccountCard({ account, onClick }: AccountCardProps) {
+export function AccountCard({ account, onClick, compact = false }: AccountCardProps) {
   const Icon = accountTypeIcons[account.accountType as keyof typeof accountTypeIcons] || TrendingUp;
   const badgeColor = accountTypeBadgeColors[account.accountType as keyof typeof accountTypeBadgeColors];
   const balance = parseFloat(account.balance);
   const isNegative = balance < 0;
   const [adjustDialogOpen, setAdjustDialogOpen] = useState(false);
+
+  if (compact) {
+    return (
+      <>
+        <Card
+          className="hover-elevate cursor-pointer transition-all"
+          onClick={onClick}
+          data-testid={`account-card-${account.id}`}
+        >
+          <CardContent className="p-2">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <div className={`p-1 rounded ${account.accountType === 'asset' ? 'bg-success/10' : account.accountType === 'liability' ? 'bg-destructive/10' : account.accountType === 'income' ? 'bg-primary/10' : 'bg-warning/10'}`}>
+                  <Icon className={`h-4 w-4 ${getAccountTypeColor(account.accountType)}`} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-sm font-semibold truncate">{account.name}</h3>
+                  {account.accountNumber && (
+                    <p className="text-xs text-muted-foreground font-mono">#{account.accountNumber}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1">
+                {account.accountType === 'asset' && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setAdjustDialogOpen(true);
+                    }}
+                    data-testid={`button-adjust-balance-${account.id}`}
+                  >
+                    <Settings className="h-3 w-3" />
+                  </Button>
+                )}
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  data-testid={`button-account-menu-${account.id}`}
+                >
+                  <MoreVertical className="h-3 w-3" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex items-end justify-between">
+              <div>
+                <p className="text-xs text-muted-foreground">Balance</p>
+                <p className={`text-sm font-semibold font-mono ${isNegative ? 'text-destructive' : getAccountTypeColor(account.accountType)}`}>
+                  {formatCurrency(balance)}
+                </p>
+              </div>
+
+              <Badge variant="outline" className={`${badgeColor} text-xs`}>
+                {account.accountType.charAt(0).toUpperCase() + account.accountType.slice(1)}
+              </Badge>
+            </div>
+
+            {account.description && (
+              <p className="text-xs text-muted-foreground mt-2 line-clamp-1">
+                {account.description}
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
+        <AdjustBalanceDialog
+          account={account}
+          open={adjustDialogOpen}
+          onOpenChange={setAdjustDialogOpen}
+        />
+      </>
+    );
+  }
 
   return (
     <>
@@ -63,7 +143,6 @@ export function AccountCard({ account, onClick }: AccountCardProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8"
                   onClick={(e) => {
                     e.stopPropagation();
                     setAdjustDialogOpen(true);
@@ -73,7 +152,7 @@ export function AccountCard({ account, onClick }: AccountCardProps) {
                   <Settings className="h-4 w-4" />
                 </Button>
               )}
-              <Button variant="ghost" size="icon" className="h-8 w-8" data-testid={`button-account-menu-${account.id}`}>
+              <Button variant="ghost" size="icon" data-testid={`button-account-menu-${account.id}`}>
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </div>

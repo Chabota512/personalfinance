@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { formatCurrency } from "@/lib/financial-utils";
+import { MobilePageShell } from "@/components/mobile-page-shell";
 
 // Assuming EXPENSE_CATEGORIES and INCOME_CATEGORIES are defined elsewhere in your project
 // For demonstration purposes, let's define them here:
@@ -112,53 +113,58 @@ export default function TransactionsPage() {
 
   if (isMobile) {
     return (
-      <div className="min-h-screen bg-background pb-20 md:pb-6">
-        {/* Mobile Header */}
+      <MobilePageShell compact scrollable className="bg-background pb-20">
+        {/* Mobile Header - Ultra Compact */}
         <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
-          <div className="px-4 py-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-display-xl md:text-display-2xl font-bold">Transactions</h1>
-                <p className="text-body-sm text-muted-foreground">
-                  {transactions?.length || 0} transactions
+          <div className="px-3 py-1 mobile-space-sm">
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg font-bold truncate">Transactions</h1>
+                <p className="text-xs text-muted-foreground">
+                  {transactions?.length || 0} total
                 </p>
               </div>
               <Button onClick={() => {
-                setSelectedTransaction(null); // Clear selected transaction for new entry
+                setSelectedTransaction(null);
                 setOpen(true);
-              }} size="sm">
+              }} size="sm" className="shrink-0">
                 <Plus className="h-4 w-4 mr-1" />
                 Add
               </Button>
             </div>
-            <TimePeriodFilter value={timePeriod} onValueChange={setTimePeriod} />
+            <div className="pt-2">
+              <TimePeriodFilter value={timePeriod} onValueChange={setTimePeriod} compact />
+            </div>
           </div>
         </div>
 
-        {/* Mobile Transaction List */}
-        <div className="px-4 py-4 space-y-4">
+        {/* Mobile Transaction List - Scrollable Area */}
+        <div className="mobile-scroll-area px-3 py-2">
           {filteredTransactions && filteredTransactions.length > 0 ? (
-            filteredTransactions.map((transaction: any) => (
-              <div
-                key={transaction.id}
-                onClick={() => {
-                  setSelectedTransaction(transaction);
-                  setOpen(true);
-                }}
-                className="bg-card border border-border rounded-xl p-4 active:scale-[0.98] transition-transform"
-              >
-                <TransactionListItem transaction={transaction} />
-              </div>
-            ))
+            <div className="flex flex-col gap-2">
+              {filteredTransactions.map((transaction: any) => (
+                <div
+                  key={transaction.id}
+                  onClick={() => {
+                    setSelectedTransaction(transaction);
+                    setOpen(true);
+                  }}
+                  className="bg-card border border-border rounded-lg p-2 active:scale-[0.98] transition-transform"
+                  data-testid={`card-transaction-${transaction.id}`}
+                >
+                  <TransactionListItem transaction={transaction} />
+                </div>
+              ))}
+            </div>
           ) : (
-            <Card>
-              <CardContent className="text-center py-12">
-                <Receipt className="h-12 w-12 mx-auto mb-3 opacity-30 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground mb-4">No transactions yet</p>
+            <Card className="mobile-card-compact">
+              <CardContent className="text-center py-8">
+                <Receipt className="h-10 w-10 mx-auto mb-2 opacity-30 text-muted-foreground" />
+                <p className="text-xs text-muted-foreground mb-3">No transactions yet</p>
                 <Button onClick={() => {
-                  setSelectedTransaction(null); // Clear selected transaction for new entry
+                  setSelectedTransaction(null);
                   setOpen(true);
-                }} variant="outline">
+                }} variant="outline" size="sm">
                   <Plus className="h-4 w-4 mr-2" />
                   Add First Transaction
                 </Button>
@@ -171,7 +177,7 @@ export default function TransactionsPage() {
           open={open && !selectedTransaction} 
           onOpenChange={setOpen}
         />
-      </div>
+      </MobilePageShell>
     );
   }
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AccountCard } from "@/components/account-card";
 import { EmptyState } from "@/components/empty-state";
-import { Plus, Wallet } from "lucide-react";
+import { Plus, Wallet, ChevronDown, TrendingUp, TrendingDown, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import { useAccounts, useCreateAccount } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -24,7 +24,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { MobilePageShell } from "@/components/mobile-page-shell";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { formatCurrency, getAccountTypeColor } from "@/lib/financial-utils";
 import type { Account } from '@shared/schema';
 
 export default function AccountsPage() {
@@ -189,188 +193,229 @@ export default function AccountsPage() {
     },
   ];
 
+  const accountTypeIcons = {
+    asset: TrendingUp,
+    liability: TrendingDown,
+    income: ArrowDownCircle,
+    expense: ArrowUpCircle,
+  };
+
+  const accountTypeColors = {
+    asset: 'text-success',
+    liability: 'text-destructive',
+    income: 'text-primary',
+    expense: 'text-warning',
+  };
+
+
   if (isMobile) {
     return (
-      <div className="min-h-screen bg-background pb-20 md:pb-6">
-        {/* Mobile Header */}
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
-          <div className="px-4 py-4">
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <h1 className="text-display-xl md:text-display-2xl font-bold">Accounts</h1>
-                <p className="text-body-sm text-muted-foreground">{accounts?.length || 0} total</p>
-              </div>
-              <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger asChild>
-                  <Button size="sm">
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>Create New Account</DialogTitle>
-                    <DialogDescription>
-                      Add a new account to your chart of accounts
-                    </DialogDescription>
-                  </DialogHeader>
-                  <form className="space-y-4" onSubmit={handleSubmit}>
-                    <div className="space-y-2">
-                      <Label htmlFor="account-name">Account Name</Label>
-                      <Input 
-                        id="account-name" 
-                        placeholder="e.g., Checking Account" 
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="account-type">Account Type</Label>
-                      <Select value={formData.accountType} onValueChange={(val) => setFormData({ ...formData, accountType: val })}>
-                        <SelectTrigger id="account-type">
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="asset">Asset</SelectItem>
-                          <SelectItem value="liability">Liability</SelectItem>
-                          <SelectItem value="income">Income</SelectItem>
-                          <SelectItem value="expense">Expense</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="account-category">Category</Label>
-                      <Select value={formData.accountCategory} onValueChange={(val) => setFormData({ ...formData, accountCategory: val })}>
-                        <SelectTrigger id="account-category">
-                          <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="checking">Checking</SelectItem>
-                          <SelectItem value="savings">Savings</SelectItem>
-                          <SelectItem value="investment">Investment</SelectItem>
-                          <SelectItem value="credit_card">Credit Card</SelectItem>
-                          <SelectItem value="loan">Loan</SelectItem>
-                          <SelectItem value="cash">Cash</SelectItem>
-                          <SelectItem value="food">Food</SelectItem>
-                          <SelectItem value="transportation">Transportation</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="initial-balance">Initial Balance</Label>
-                      <Input 
-                        id="initial-balance" 
-                        type="number" 
-                        step="0.01" 
-                        placeholder="0.00"
-                        value={formData.balance}
-                        onChange={(e) => setFormData({ ...formData, balance: e.target.value })}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="description">Description (Optional)</Label>
-                      <Textarea 
-                        id="description" 
-                        placeholder="Account description"
-                        value={formData.description}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      />
-                    </div>
-
-                    <Button 
-                      type="submit" 
-                      className="w-full" 
-                      disabled={createAccount.isPending}
-                    >
-                      {createAccount.isPending ? "Creating..." : "Create Account"}
-                    </Button>
-                  </form>
-                </DialogContent>
-              </Dialog>
+      <MobilePageShell compact={true} scrollable={false} className="flex flex-col h-screen pb-20">
+        {/* Ultra-Compact Header */}
+        <div className="flex-shrink-0 px-3 py-1 border-b border-border bg-background/95 backdrop-blur-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-lg font-bold">Accounts</h1>
+              <p className="text-xs text-muted-foreground">{accounts?.length || 0} total</p>
             </div>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm">
+                  <Plus className="h-4 w-4 mr-1" />
+                  Add
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Create New Account</DialogTitle>
+                  <DialogDescription>
+                    Add a new account to your chart of accounts
+                  </DialogDescription>
+                </DialogHeader>
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                  <div className="space-y-2">
+                    <Label htmlFor="account-name">Account Name</Label>
+                    <Input 
+                      id="account-name" 
+                      placeholder="e.g., Checking Account" 
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="account-type">Account Type</Label>
+                    <Select value={formData.accountType} onValueChange={(val) => setFormData({ ...formData, accountType: val })}>
+                      <SelectTrigger id="account-type">
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="asset">Asset</SelectItem>
+                        <SelectItem value="liability">Liability</SelectItem>
+                        <SelectItem value="income">Income</SelectItem>
+                        <SelectItem value="expense">Expense</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="account-category">Category</Label>
+                    <Select value={formData.accountCategory} onValueChange={(val) => setFormData({ ...formData, accountCategory: val })}>
+                      <SelectTrigger id="account-category">
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="checking">Checking</SelectItem>
+                        <SelectItem value="savings">Savings</SelectItem>
+                        <SelectItem value="investment">Investment</SelectItem>
+                        <SelectItem value="credit_card">Credit Card</SelectItem>
+                        <SelectItem value="loan">Loan</SelectItem>
+                        <SelectItem value="cash">Cash</SelectItem>
+                        <SelectItem value="food">Food</SelectItem>
+                        <SelectItem value="transportation">Transportation</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="initial-balance">Initial Balance</Label>
+                    <Input 
+                      id="initial-balance" 
+                      type="number" 
+                      step="0.01" 
+                      placeholder="0.00"
+                      value={formData.balance}
+                      onChange={(e) => setFormData({ ...formData, balance: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Description (Optional)</Label>
+                    <Textarea 
+                      id="description" 
+                      placeholder="Account description"
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    />
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={createAccount.isPending}
+                  >
+                    {createAccount.isPending ? "Creating..." : "Create Account"}
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
-        {/* Mobile Accounts List */}
-        <div className="px-4 py-4 space-y-4">
+        {/* Scrollable Account List */}
+        <div className="px-3 py-2 space-y-2">
           {/* Assets Section */}
-          <div className="space-y-2">
-            <h2 className="text-body-sm font-semibold text-muted-foreground px-1">Assets</h2>
-            {accountsByType.asset.length > 0 ? (
-              <div className="space-y-2">
-                {accountsByType.asset.map((account: Account) => (
-                  <AccountCard key={account.id} account={account} />
-                ))}
+          <Collapsible defaultOpen>
+            <CollapsibleTrigger className="flex items-center justify-between w-full py-1 px-2 rounded hover-elevate" data-testid="collapsible-assets">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-success" />
+                <span className="text-sm font-semibold text-success">Assets</span>
+                <span className="text-xs text-muted-foreground">({accountsByType.asset.length})</span>
               </div>
-            ) : (
-              <Card>
-                <CardContent className="text-center py-8">
-                  <p className="text-sm text-muted-foreground">No assets yet</p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+              <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-1">
+              <div className="space-y-2">
+                {accountsByType.asset.length > 0 ? (
+                  accountsByType.asset.map((account: Account) => (
+                    <AccountCard key={account.id} account={account} compact />
+                  ))
+                ) : (
+                  <div className="py-4 text-center">
+                    <p className="text-xs text-muted-foreground">No assets yet</p>
+                  </div>
+                )}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           {/* Liabilities Section */}
-          <div className="space-y-2">
-            <h2 className="text-body-sm font-semibold text-muted-foreground px-1">Liabilities</h2>
-            {accountsByType.liability.length > 0 ? (
-              <div className="space-y-2">
-                {accountsByType.liability.map((account: Account) => (
-                  <AccountCard key={account.id} account={account} />
-                ))}
+          <Collapsible defaultOpen>
+            <CollapsibleTrigger className="flex items-center justify-between w-full py-1 px-2 rounded hover-elevate" data-testid="collapsible-liabilities">
+              <div className="flex items-center gap-2">
+                <TrendingDown className="h-4 w-4 text-destructive" />
+                <span className="text-sm font-semibold text-destructive">Liabilities</span>
+                <span className="text-xs text-muted-foreground">({accountsByType.liability.length})</span>
               </div>
-            ) : (
-              <Card>
-                <CardContent className="text-center py-8">
-                  <p className="text-sm text-muted-foreground">No liabilities</p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+              <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-1">
+              <div className="space-y-2">
+                {accountsByType.liability.length > 0 ? (
+                  accountsByType.liability.map((account: Account) => (
+                    <AccountCard key={account.id} account={account} compact />
+                  ))
+                ) : (
+                  <div className="py-4 text-center">
+                    <p className="text-xs text-muted-foreground">No liabilities</p>
+                  </div>
+                )}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           {/* Income Section */}
-          <div className="space-y-2">
-            <h2 className="text-body-sm font-semibold text-muted-foreground px-1">Income</h2>
-            {accountsByType.income.length > 0 ? (
-              <div className="space-y-2">
-                {accountsByType.income.map((account: Account) => (
-                  <AccountCard key={account.id} account={account} />
-                ))}
+          <Collapsible defaultOpen>
+            <CollapsibleTrigger className="flex items-center justify-between w-full py-1 px-2 rounded hover-elevate" data-testid="collapsible-income">
+              <div className="flex items-center gap-2">
+                <ArrowDownCircle className="h-4 w-4 text-primary" />
+                <span className="text-sm font-semibold text-primary">Income</span>
+                <span className="text-xs text-muted-foreground">({accountsByType.income.length})</span>
               </div>
-            ) : (
-              <Card>
-                <CardContent className="text-center py-8">
-                  <p className="text-sm text-muted-foreground">No income accounts yet</p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+              <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-1">
+              <div className="space-y-2">
+                {accountsByType.income.length > 0 ? (
+                  accountsByType.income.map((account: Account) => (
+                    <AccountCard key={account.id} account={account} compact />
+                  ))
+                ) : (
+                  <div className="py-4 text-center">
+                    <p className="text-xs text-muted-foreground">No income accounts</p>
+                  </div>
+                )}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           {/* Expenses Section */}
-          <div className="space-y-2">
-            <h2 className="text-body-sm font-semibold text-muted-foreground px-1">Expenses</h2>
-            {accountsByType.expense.length > 0 ? (
-              <div className="space-y-2">
-                {accountsByType.expense.map((account: Account) => (
-                  <AccountCard key={account.id} account={account} />
-                ))}
+          <Collapsible defaultOpen>
+            <CollapsibleTrigger className="flex items-center justify-between w-full py-1 px-2 rounded hover-elevate" data-testid="collapsible-expenses">
+              <div className="flex items-center gap-2">
+                <ArrowUpCircle className="h-4 w-4 text-warning" />
+                <span className="text-sm font-semibold text-warning">Expenses</span>
+                <span className="text-xs text-muted-foreground">({accountsByType.expense.length})</span>
               </div>
-            ) : (
-              <Card>
-                <CardContent className="text-center py-8">
-                  <p className="text-sm text-muted-foreground">No expense accounts yet</p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+              <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-1">
+              <div className="space-y-2">
+                {accountsByType.expense.length > 0 ? (
+                  accountsByType.expense.map((account: Account) => (
+                    <AccountCard key={account.id} account={account} compact />
+                  ))
+                ) : (
+                  <div className="py-4 text-center">
+                    <p className="text-xs text-muted-foreground">No expense accounts</p>
+                  </div>
+                )}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
-      </div>
+      </MobilePageShell>
     );
   }
 

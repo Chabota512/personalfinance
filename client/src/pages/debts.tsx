@@ -16,6 +16,8 @@ import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/financial-utils";
 import { DebtMethodSelector } from "@/components/debt-method-selector";
 import { AddDebtWizard } from "@/components/add-debt-wizard";
+import { MobilePageShell } from "@/components/mobile-page-shell";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface DebtFormData {
   name: string;
@@ -33,7 +35,7 @@ interface DebtFormData {
 
 export default function Debts() {
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [useNewWizard, setUseNewWizard] = useState(true); // Toggle for wizard vs old flow
+  const [useNewWizard, setUseNewWizard] = useState(true);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [selectedDebt, setSelectedDebt] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("active");
@@ -61,6 +63,7 @@ export default function Debts() {
   });
 
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const { data: allDebts, isLoading } = useDebts();
   const { data: activeDebts, isLoading: activeDebtsLoading } = useActiveDebts();
   const { data: accounts } = useAccounts();
@@ -192,6 +195,505 @@ export default function Debts() {
     );
   }
 
+  // Mobile compact layout
+  if (isMobile) {
+    return (
+      <MobilePageShell compact>
+        {/* Compact Header */}
+        <div className="flex items-center justify-between py-1 mb-2">
+          <h1 className="text-lg font-bold" data-testid="text-page-title">Debts</h1>
+          <Button size="sm" onClick={() => setIsAddOpen(true)} data-testid="button-add-debt">
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Dialogs */}
+        {useNewWizard ? (
+          <AddDebtWizard
+            open={isAddOpen}
+            onClose={() => setIsAddOpen(false)}
+            onComplete={async (data) => {
+              try {
+                let totalPeriods = parseInt(data.length);
+                if (data.lengthUnit === 'weeks') {
+                  totalPeriods = Math.ceil(totalPeriods / 4.33);
+                } else if (data.lengthUnit === 'years') {
+                  totalPeriods = totalPeriods * 12;
+                }
+
+                let annualRate = parseFloat(data.interestRate || "0");
+                if (data.rateFrequency === 'week') {
+                  annualRate = annualRate * 52;
+                } else if (data.rateFrequency === 'month') {
+                  annualRate = annualRate * 12;
+                }
+
+                await createMutation.mutateAsync({
+                  name: data.name,
+                  type: 'i_owe',
+                  creditorDebtor: data.creditorDebtor,
+                  principalAmount: data.principalAmount,
+                  currentBalance: data.principalAmount,
+                  interestRate: annualRate.toString(),
+                  repaymentMethod: data.repaymentMethod as any,
+                  totalPeriods,
+                  startDate: new Date().toISOString().split('T')[0],
+                  reasons: data.reasons || data.reasonsTranscription,
+                  reasonsTranscription: data.reasonsTranscription,
+                  aiRiskAnalysis: data.aiAnalysis ? JSON.stringify(data.aiAnalysis) : null,
+                  aiRecommendation: data.aiAnalysis?.recommendation || null,
+                  aiRiskScore: data.aiAnalysis?.riskScore || null,
+                  monthlyIncome: data.monthlyIncome,
+                  monthlyLivingCosts: data.monthlyLivingCosts
+                });
+
+                toast({
+                  title: "Debt added",
+                  description: `${data.name} has been added successfully.`,
+                });
+              } catch (error: any) {
+                toast({
+                  title: "Error",
+                  description: error.message || "Failed to add debt",
+                  variant: "destructive",
+                });
+              }
+            }}
+          />
+        ) : (
+          <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Add New Debt</DialogTitle>
+                <DialogDescription>Add a new debt or loan to track</DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2">
+                    <Label htmlFor="name">Debt Name *</Label>
+                    <Input
+                      id="name"
+                      data-testid="input-debt-name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="e.g., Student Loan, Car Loan"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="type">Type *</Label>
+                    <Select 
+                      value={formData.type} 
+                      onValueChange={(value: any) => setFormData({ ...formData, type: value })}
+                    >
+                      <SelectTrigger id="type" data-testid="select-debt-type">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="i_owe">I Owe (Liability)</SelectItem>
+                        <SelectItem value="owed_to_me">Owed to Me (Asset)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="creditorDebtor">
+                      {formData.type === 'i_owe' ? 'Creditor' : 'Debtor'} *
+                    </Label>
+                    <Input
+                      id="creditorDebtor"
+                      data-testid="input-creditor-debtor"
+                      value={formData.creditorDebtor}
+                      onChange={(e) => setFormData({ ...formData, creditorDebtor: e.target.value })}
+                      placeholder={formData.type === 'i_owe' ? 'e.g., ABC Bank' : 'e.g., John Smith'}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="principalAmount">Principal Amount *</Label>
+                    <Input
+                      id="principalAmount"
+                      data-testid="input-principal-amount"
+                      type="number"
+                      step="0.01"
+                      value={formData.principalAmount}
+                      onChange={(e) => setFormData({ ...formData, principalAmount: e.target.value })}
+                      placeholder="0.00"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="currentBalance">Current Balance</Label>
+                    <Input
+                      id="currentBalance"
+                      data-testid="input-current-balance"
+                      type="number"
+                      step="0.01"
+                      value={formData.currentBalance}
+                      onChange={(e) => setFormData({ ...formData, currentBalance: e.target.value })}
+                      placeholder="Leave empty to use principal amount"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="interestRate">Interest Rate (% APR)</Label>
+                    <Input
+                      id="interestRate"
+                      data-testid="input-interest-rate"
+                      type="number"
+                      step="0.01"
+                      value={formData.interestRate}
+                      onChange={(e) => setFormData({ ...formData, interestRate: e.target.value })}
+                      placeholder="0.00"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="repaymentMethod">Repayment Method *</Label>
+                    <Select 
+                      value={formData.repaymentMethod} 
+                      onValueChange={(value: any) => setFormData({ ...formData, repaymentMethod: value })}
+                    >
+                      <SelectTrigger id="repaymentMethod" data-testid="select-repayment-method">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="amortization">Regular Payments (Amortization)</SelectItem>
+                        <SelectItem value="lump_sum">Lump Sum Payment</SelectItem>
+                        <SelectItem value="custom">Custom Schedule</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {formData.repaymentMethod === 'amortization' && (
+                    <>
+                      <div>
+                        <Label htmlFor="paymentAmount">Payment Amount *</Label>
+                        <Input
+                          id="paymentAmount"
+                          data-testid="input-payment-amount"
+                          type="number"
+                          step="0.01"
+                          value={formData.paymentAmount}
+                          onChange={(e) => setFormData({ ...formData, paymentAmount: e.target.value })}
+                          placeholder="0.00"
+                          required={formData.repaymentMethod === 'amortization'}
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="paymentFrequency">Payment Frequency *</Label>
+                        <Select 
+                          value={formData.paymentFrequency} 
+                          onValueChange={(value: any) => setFormData({ ...formData, paymentFrequency: value })}
+                        >
+                          <SelectTrigger id="paymentFrequency" data-testid="select-payment-frequency">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="monthly">Monthly</SelectItem>
+                            <SelectItem value="biweekly">Bi-weekly</SelectItem>
+                            <SelectItem value="weekly">Weekly</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  )}
+
+                  <div>
+                    <Label htmlFor="startDate">Start Date *</Label>
+                    <Input
+                      id="startDate"
+                      data-testid="input-start-date"
+                      type="date"
+                      value={formData.startDate}
+                      onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="dueDate">Due Date</Label>
+                    <Input
+                      id="dueDate"
+                      data-testid="input-due-date"
+                      type="date"
+                      value={formData.dueDate}
+                      onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="outline" onClick={() => setIsAddOpen(false)} data-testid="button-cancel">
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={createMutation.isPending} data-testid="button-submit-debt">
+                    {createMutation.isPending ? "Adding..." : "Add Debt"}
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+        )}
+
+        {/* Payment Dialog */}
+        <Dialog open={isPaymentOpen} onOpenChange={setIsPaymentOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Record Payment</DialogTitle>
+              <DialogDescription>
+                Record a payment for {selectedDebt?.name}
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handlePayment} className="space-y-4">
+              <div>
+                <Label htmlFor="paymentAmount">Payment Amount *</Label>
+                <Input
+                  id="paymentAmount"
+                  data-testid="input-payment-amount-dialog"
+                  type="number"
+                  step="0.01"
+                  value={paymentData.amount}
+                  onChange={(e) => setPaymentData({ ...paymentData, amount: e.target.value })}
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="paymentDate">Payment Date *</Label>
+                <Input
+                  id="paymentDate"
+                  data-testid="input-payment-date"
+                  type="date"
+                  value={paymentData.paymentDate}
+                  onChange={(e) => setPaymentData({ ...paymentData, paymentDate: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="accountId">Pay From Account</Label>
+                <Select 
+                  value={paymentData.accountId} 
+                  onValueChange={(value) => setPaymentData({ ...paymentData, accountId: value })}
+                >
+                  <SelectTrigger id="accountId" data-testid="select-payment-account">
+                    <SelectValue placeholder="Select account (optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {assetAccounts.map((account: any) => (
+                      <SelectItem key={account.id} value={account.id}>
+                        {account.name} ({formatCurrency(parseFloat(account.balance))})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="paymentNotes">Notes</Label>
+                <Textarea
+                  id="paymentNotes"
+                  data-testid="input-payment-notes"
+                  value={paymentData.notes}
+                  onChange={(e) => setPaymentData({ ...paymentData, notes: e.target.value })}
+                  placeholder="Optional notes about this payment"
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="isExtraPayment"
+                  data-testid="checkbox-extra-payment"
+                  checked={paymentData.isExtraPayment}
+                  onChange={(e) => setPaymentData({ ...paymentData, isExtraPayment: e.target.checked })}
+                  className="h-4 w-4"
+                />
+                <Label htmlFor="isExtraPayment" className="cursor-pointer">
+                  This is an extra payment (beyond regular schedule)
+                </Label>
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => {
+                    setIsPaymentOpen(false);
+                    setSelectedDebt(null);
+                    resetPaymentForm();
+                  }}
+                  data-testid="button-cancel-payment"
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={paymentMutation.isPending} data-testid="button-submit-payment">
+                  {paymentMutation.isPending ? "Recording..." : "Record Payment"}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Main Content */}
+        {allDebts && allDebts.length === 0 ? (
+          <div className="p-4 text-center">
+            <CreditCard className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
+            <h3 className="text-sm font-semibold mb-1">No debts tracked</h3>
+            <p className="text-xs text-muted-foreground mb-3">
+              Start tracking your debts
+            </p>
+            <Button size="sm" onClick={() => setIsAddOpen(true)} data-testid="button-add-first-debt">
+              <Plus className="mr-1 h-4 w-4" />
+              Add Debt
+            </Button>
+          </div>
+        ) : (
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="active" className="text-xs" data-testid="tab-active-debts">
+                Active ({activeDebtsData.length})
+              </TabsTrigger>
+              <TabsTrigger value="inactive" className="text-xs" data-testid="tab-inactive-debts">
+                Paid Off ({inactiveDebtsData.length})
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="active" className="mt-2">
+              <div className="space-y-2">
+                {activeDebtsData.length === 0 ? (
+                    <div className="p-4 text-center text-xs text-muted-foreground">
+                      No active debts
+                    </div>
+                  ) : (
+                    activeDebtsData.map((debt: any) => {
+                      const progress = calculateProgress(debt);
+                      const principal = parseFloat(debt.principalAmount);
+                      const current = parseFloat(debt.currentBalance);
+                      
+                      return (
+                        <div key={debt.id} className="p-2 bg-card rounded-md border" data-testid={`card-debt-${debt.id}`}>
+                          {/* Debt Header */}
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1 mb-0.5">
+                                <h3 className="text-sm font-semibold truncate" data-testid={`text-debt-name-${debt.id}`}>
+                                  {debt.name}
+                                </h3>
+                                <Badge variant={debt.type === 'i_owe' ? 'destructive' : 'default'} className="text-[10px] px-1 py-0 h-4">
+                                  {debt.type === 'i_owe' ? 'Owe' : 'Owed'}
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-muted-foreground truncate">{debt.creditorDebtor}</p>
+                            </div>
+                            <div className="flex gap-1">
+                              <Link href={`/debts/${debt.id}`}>
+                                <Button size="sm" variant="default" data-testid={`button-view-details-${debt.id}`}>
+                                  <Eye className="h-3 w-3" />
+                                </Button>
+                              </Link>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleDelete(debt.id, debt.name)}
+                                data-testid={`button-delete-${debt.id}`}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </div>
+
+                          {/* Debt Info Grid */}
+                          <div className="grid grid-cols-3 gap-2 mb-2">
+                            <div>
+                              <p className="text-[10px] text-muted-foreground">Balance</p>
+                              <p className="text-xs font-semibold" data-testid={`text-balance-${debt.id}`}>
+                                {formatCurrency(current)}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-[10px] text-muted-foreground">Paid</p>
+                              <p className="text-xs font-semibold text-success" data-testid={`text-paid-${debt.id}`}>
+                                {formatCurrency(progress.paid)}
+                              </p>
+                            </div>
+                            {debt.interestRate && (
+                              <div>
+                                <p className="text-[10px] text-muted-foreground">Rate</p>
+                                <p className="text-xs font-semibold">{parseFloat(debt.interestRate).toFixed(1)}%</p>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Progress Bar */}
+                          <div className="space-y-1">
+                            <div className="flex justify-between text-[10px]">
+                              <span className="text-muted-foreground">Progress</span>
+                              <span className="font-medium">{progress.percentage.toFixed(0)}%</span>
+                            </div>
+                            <Progress value={progress.percentage} className="h-1" data-testid={`progress-${debt.id}`} />
+                          </div>
+
+                          {/* Action Button */}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="w-full mt-2 text-xs"
+                            onClick={() => {
+                              setSelectedDebt(debt);
+                              setIsPaymentOpen(true);
+                            }}
+                            data-testid={`button-record-payment-${debt.id}`}
+                          >
+                            <DollarSign className="h-3 w-3 mr-1" />
+                            Record Payment
+                          </Button>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+            </TabsContent>
+
+            <TabsContent value="inactive" className="mt-2">
+              <div className="space-y-2">
+                {inactiveDebtsData.length === 0 ? (
+                    <div className="p-4 text-center text-xs text-muted-foreground">
+                      No paid off debts
+                    </div>
+                  ) : (
+                    inactiveDebtsData.map((debt: any) => (
+                      <div key={debt.id} className="p-2 bg-card rounded-md border" data-testid={`card-inactive-debt-${debt.id}`}>
+                        <div className="flex items-start justify-between mb-1">
+                          <div className="flex-1">
+                            <h3 className="text-sm font-semibold">{debt.name}</h3>
+                            <p className="text-xs text-muted-foreground">{debt.creditorDebtor}</p>
+                          </div>
+                          <Badge variant="outline" className="bg-success/10 text-success text-[10px] px-1 py-0 h-4">
+                            Paid Off
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Amount: {formatCurrency(parseFloat(debt.principalAmount))}
+                        </p>
+                      </div>
+                    ))
+                  )}
+                </div>
+            </TabsContent>
+          </Tabs>
+        )}
+      </MobilePageShell>
+    );
+  }
+
+  // Desktop layout (unchanged)
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-6">
       <div className="max-w-7xl mx-auto px-4 py-4 md:px-6 md:py-6 space-y-4">
@@ -212,7 +714,6 @@ export default function Debts() {
             onClose={() => setIsAddOpen(false)}
             onComplete={async (data) => {
               try {
-                // Calculate periods from length and unit
                 let totalPeriods = parseInt(data.length);
                 if (data.lengthUnit === 'weeks') {
                   totalPeriods = Math.ceil(totalPeriods / 4.33);
@@ -220,7 +721,6 @@ export default function Debts() {
                   totalPeriods = totalPeriods * 12;
                 }
 
-                // Store as APR (annual percentage rate)
                 let annualRate = parseFloat(data.interestRate || "0");
                 if (data.rateFrequency === 'week') {
                   annualRate = annualRate * 52;

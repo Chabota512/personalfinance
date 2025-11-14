@@ -1,4 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 
 export type TimePeriod = "today" | "week" | "month" | "year" | "all";
 
@@ -6,26 +7,47 @@ interface TimePeriodFilterProps {
   value: TimePeriod;
   onValueChange: (period: TimePeriod) => void;
   className?: string;
+  compact?: boolean;
 }
 
-export function TimePeriodFilter({ value, onValueChange, className }: TimePeriodFilterProps) {
+export function TimePeriodFilter({ value, onValueChange, className, compact = false }: TimePeriodFilterProps) {
   return (
     <Tabs value={value} onValueChange={(v) => onValueChange(v as TimePeriod)} className={className}>
       <TabsList data-testid="time-period-filter">
-        <TabsTrigger value="today" data-testid="filter-today">
+        <TabsTrigger 
+          value="today" 
+          data-testid="filter-today"
+          className={cn(compact && "text-xs")}
+        >
           Today
         </TabsTrigger>
-        <TabsTrigger value="week" data-testid="filter-week">
-          This Week
+        <TabsTrigger 
+          value="week" 
+          data-testid="filter-week"
+          className={cn(compact && "text-xs")}
+        >
+          Week
         </TabsTrigger>
-        <TabsTrigger value="month" data-testid="filter-month">
-          This Month
+        <TabsTrigger 
+          value="month" 
+          data-testid="filter-month"
+          className={cn(compact && "text-xs")}
+        >
+          Month
         </TabsTrigger>
-        <TabsTrigger value="year" data-testid="filter-year">
-          This Year
+        <TabsTrigger 
+          value="year" 
+          data-testid="filter-year"
+          className={cn(compact && "text-xs")}
+        >
+          Year
         </TabsTrigger>
-        <TabsTrigger value="all" data-testid="filter-all">
-          All Time
+        <TabsTrigger 
+          value="all" 
+          data-testid="filter-all"
+          className={cn(compact && "text-xs")}
+        >
+          All
         </TabsTrigger>
       </TabsList>
     </Tabs>
