@@ -1,0 +1,123 @@
+
+{
+  "excellent": {
+    "overallSummary": "Your financial health is excellent! Strong savings and debt management are your foundation.",
+    "factorInsights": [
+      {
+        "name": "Savings Rate",
+        "explanation": "You're building wealth consistently.",
+        "suggestion": "Keep up this great habit and consider automating your savings."
+      },
+      {
+        "name": "Budget Planning",
+        "explanation": "Your budgets are helping you stay on track.",
+        "suggestion": "Review and adjust your budgets quarterly as life changes."
+      },
+      {
+        "name": "Debt Management",
+        "explanation": "Your debt level is under control.",
+        "suggestion": "Stay debt-free by living within your means."
+      },
+      {
+        "name": "Emergency Fund",
+        "explanation": "You have a solid financial cushion.",
+        "suggestion": "Maintain your emergency fund and invest any excess."
+      }
+    ],
+    "top3Recommendations": [
+      "Continue your current financial habits",
+      "Review and optimize your investments",
+      "Consider increasing charitable giving"
+    ]
+  },
+  "good": {
+    "overallSummary": "Solid financial foundation. Focus on building your emergency fund and increasing savings rate.",
+    "factorInsights": [
+      {
+        "name": "Savings Rate",
+        "explanation": "You're saving regularly, which is great.",
+        "suggestion": "Try to increase your savings rate to 20% or more."
+      },
+      {
+        "name": "Budget Planning",
+        "explanation": "Your budgets are working for you.",
+        "suggestion": "Track spending in all major categories for better control."
+      },
+      {
+        "name": "Debt Management",
+        "explanation": "Your debt is manageable.",
+        "suggestion": "Focus on paying down high-interest debt first."
+      },
+      {
+        "name": "Emergency Fund",
+        "explanation": "You're building your safety net.",
+        "suggestion": "Aim for 3-6 months of expenses in emergency savings."
+      }
+    ],
+    "top3Recommendations": [
+      "Increase your monthly savings by 5%",
+      "Build emergency fund to 3 months expenses",
+      "Review and optimize your budget categories"
+    ]
+  },
+  "fair": {
+    "overallSummary": "Room for improvement. Prioritize building emergency savings and creating a consistent budget.",
+    "factorInsights": [
+      {
+        "name": "Savings Rate",
+        "explanation": "Your savings could be stronger.",
+        "suggestion": "Start with saving just 10% of your income automatically."
+      },
+      {
+        "name": "Budget Planning",
+        "explanation": "You need more structure in your spending.",
+        "suggestion": "Create at least 3 budget categories to start tracking."
+      },
+      {
+        "name": "Debt Management",
+        "explanation": "Debt is affecting your financial health.",
+        "suggestion": "List all debts and create a payoff plan starting with smallest."
+      },
+      {
+        "name": "Emergency Fund",
+        "explanation": "Your emergency fund needs attention.",
+        "suggestion": "Save $500 for emergencies before focusing on other goals."
+      }
+    ],
+    "top3Recommendations": [
+      "Set up automatic savings of 10% monthly",
+      "Create a basic budget with 3-5 categories",
+      "Build $500 starter emergency fund"
+    ]
+  },
+  "needs_improvement": {
+    "overallSummary": "Time to build better habits. Start with small wins: track spending and save $100 this month.",
+    "factorInsights": [
+      {
+        "name": "Savings Rate",
+        "explanation": "You're not saving regularly yet.",
+        "suggestion": "Start small: save $50 this week, even if it's just $10 daily."
+      },
+      {
+        "name": "Budget Planning",
+        "explanation": "You need to start tracking your money.",
+        "suggestion": "Write down every expense for one week to see patterns."
+      },
+      {
+        "name": "Debt Management",
+        "explanation": "Debt is a major concern right now.",
+        "suggestion": "Stop adding new debt and call creditors to discuss options."
+      },
+      {
+        "name": "Emergency Fund",
+        "explanation": "You have no safety net for emergencies.",
+        "suggestion": "Save $25 this week in a separate account for emergencies only."
+      }
+    ],
+    "top3Recommendations": [
+      "Track every expense for 7 days",
+      "Save $100 in the next 30 days",
+      "List all debts and minimum payments"
+    ]
+  }
+}

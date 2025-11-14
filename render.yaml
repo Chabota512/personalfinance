@@ -1,0 +1,48 @@
+# Render Blueprint for PersonalFinance Pro
+# This file enables one-click deployment to Render.com
+# Visit: https://render.com/docs/blueprint-spec
+
+services:
+  # Web Service (Express + React PWA)
+  - type: web
+    name: personalfinance-pro
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: personalfinance-db
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000
+      # Uncomment and add your Gemini API key if using AI features
+      # - key: GEMINI_API_KEY
+      #   sync: false
+
+databases:
+  # PostgreSQL Database
+  - name: personalfinance-db
+    databaseName: personalfinance
+    user: personalfinance_user
+    plan: free
+    region: oregon
+
+# Optional: Background worker for scheduled tasks (future enhancement)
+# - type: worker
+#   name: personalfinance-worker
+#   runtime: node
+#   buildCommand: npm install
+#   startCommand: node worker.js
+#   envVars:
+#     - key: DATABASE_URL
+#       fromDatabase:
+#         name: personalfinance-db
+#         property: connectionString

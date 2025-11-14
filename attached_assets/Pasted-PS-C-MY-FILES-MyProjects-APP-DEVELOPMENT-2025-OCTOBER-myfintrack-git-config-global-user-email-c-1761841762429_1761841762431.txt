@@ -1,0 +1,30 @@
+PS C:\MY FILES\MyProjects\APP DEVELOPMENT\2025\OCTOBER\myfintrack> git config --global user.email "chabotamwenda512@gmail.com"
+PS C:\MY FILES\MyProjects\APP DEVELOPMENT\2025\OCTOBER\myfintrack> git init
+Reinitialized existing Git repository in C:/MY FILES/MyProjects/APP DEVELOPMENT/2025/OCTOBER/myfintrack/.git/
+PS C:\MY FILES\MyProjects\APP DEVELOPMENT\2025\OCTOBER\myfintrack> git add .
+PS C:\MY FILES\MyProjects\APP DEVELOPMENT\2025\OCTOBER\myfintrack> git commit -m "Initial commit - PersonalFinance Pro ready for deployment"
+On branch main
+nothing to commit, working tree clean
+PS C:\MY FILES\MyProjects\APP DEVELOPMENT\2025\OCTOBER\myfintrack> git status
+On branch main
+nothing to commit, working tree clean
+PS C:\MY FILES\MyProjects\APP DEVELOPMENT\2025\OCTOBER\myfintrack> git log --oneline -5
+5705af6 (HEAD -> main) Initial commit - PersonalFinance Pro
+PS C:\MY FILES\MyProjects\APP DEVELOPMENT\2025\OCTOBER\myfintrack> git remote add origin https://github.com/Chabota512/personalfinance-pro.git
+error: remote origin already exists.
+PS C:\MY FILES\MyProjects\APP DEVELOPMENT\2025\OCTOBER\myfintrack> git remote -v
+origin  https://github.com/YOUR_USERNAME/personalfinance-pro.git (fetch)
+origin  https://github.com/YOUR_USERNAME/personalfinance-pro.git (push)
+PS C:\MY FILES\MyProjects\APP DEVELOPMENT\2025\OCTOBER\myfintrack> git remote set-url origin https://github.com/Chabota512/personalfinance-pro.git
+PS C:\MY FILES\MyProjects\APP DEVELOPMENT\2025\OCTOBER\myfintrack> git push -u origin main
+Enumerating objects: 225, done.
+Counting objects: 100% (225/225), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (223/223), done.
+Writing objects: 100% (225/225), 2.14 MiB | 440.00 KiB/s, done.
+Total 225 (delta 12), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (12/12), done.
+To https://github.com/Chabota512/personalfinance-pro.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+PS C:\MY FILES\MyProjects\APP DEVELOPMENT\2025\OCTOBER\myfintrack>
