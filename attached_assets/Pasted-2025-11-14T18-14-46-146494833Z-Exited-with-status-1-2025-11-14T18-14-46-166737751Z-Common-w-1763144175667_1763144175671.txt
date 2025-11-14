@@ -1,0 +1,50 @@
+2025-11-14T18:14:46.146494833Z ==> Exited with status 1
+2025-11-14T18:14:46.166737751Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+2025-11-14T18:14:52.117214677Z 
+2025-11-14T18:14:52.117238298Z > rest-express@1.0.0 start
+2025-11-14T18:14:52.117243998Z > NODE_ENV=production tsx server/index.ts
+2025-11-14T18:14:52.117246748Z 
+2025-11-14T18:15:06.978357783Z Checking and seeding lessons...
+2025-11-14T18:15:06.978608869Z Starting lesson seed...
+2025-11-14T18:15:07.600660568Z Lesson already exists: Mastering Needs vs Wants
+2025-11-14T18:15:07.666416174Z   Quiz questions already exist for Mastering Needs vs Wants
+2025-11-14T18:15:07.732154699Z Lesson already exists: Building Your First Budget
+2025-11-14T18:15:07.796844881Z   Quiz questions already exist for Building Your First Budget
+2025-11-14T18:15:07.863505017Z Lesson already exists: Starting an Emergency Fund
+2025-11-14T18:15:07.930230814Z   Quiz questions already exist for Starting an Emergency Fund
+2025-11-14T18:15:07.996230096Z Lesson already exists: Understanding Credit
+2025-11-14T18:15:08.062268697Z   Quiz questions already exist for Understanding Credit
+2025-11-14T18:15:08.128548585Z Lesson already exists: Setting SMART Financial Goals
+2025-11-14T18:15:08.194234579Z   Quiz questions already exist for Setting SMART Financial Goals
+2025-11-14T18:15:08.258366218Z Lesson already exists: Tracking and Reviewing Progress
+2025-11-14T18:15:08.32438598Z   Quiz questions already exist for Tracking and Reviewing Progress
+2025-11-14T18:15:08.410194305Z Lesson already exists: Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-14T18:15:08.456247179Z   Quiz questions already exist for Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-14T18:15:08.513552255Z Lesson seed completed successfully!
+2025-11-14T18:15:08.76155042Z [SCHEDULER] Initializing scheduler...
+2025-11-14T18:15:08.8101364Z [SCHEDULER] Running daily checks at 2025-11-14T18:15:08.761Z
+2025-11-14T18:15:08.810152321Z [SCHEDULER] Checking goal contributions...
+2025-11-14T18:15:08.810157101Z [SCHEDULER] Scheduler initialized - running every hour
+2025-11-14T18:15:08.924360164Z [SCHEDULER] Sent 0 goal contribution reminders
+2025-11-14T18:15:09.010078697Z [SCHEDULER] Checking debt payments...
+2025-11-14T18:15:09.010094548Z [SCHEDULER] Sent 0 debt payment reminders
+2025-11-14T18:15:09.010099478Z [SCHEDULER] Daily checks completed
+2025-11-14T18:15:09.157003214Z 
+2025-11-14T18:15:09.157024425Z node:internal/process/promises:394
+2025-11-14T18:15:09.157030445Z     triggerUncaughtException(err, true /* fromPromise */);
+2025-11-14T18:15:09.157034855Z     ^
+2025-11-14T18:15:09.157040175Z Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@replit/vite-plugin-runtime-error-modal' imported from /opt/render/project/src/vite.config.ts
+2025-11-14T18:15:09.157046766Z     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:256:9)
+2025-11-14T18:15:09.157051775Z     at packageResolve (node:internal/modules/esm/resolve:768:81)
+2025-11-14T18:15:09.157056206Z     at moduleResolve (node:internal/modules/esm/resolve:854:18)
+2025-11-14T18:15:09.157060496Z     at defaultResolve (node:internal/modules/esm/resolve:984:11)
+2025-11-14T18:15:09.157064846Z     at nextResolve (node:internal/modules/esm/hooks:748:28)
+2025-11-14T18:15:09.157069736Z     at resolveBase (file:///opt/render/project/src/node_modules/tsx/dist/esm/index.mjs?1763144093856:2:3744)
+2025-11-14T18:15:09.157073936Z     at resolveDirectory (file:///opt/render/project/src/node_modules/tsx/dist/esm/index.mjs?1763144093856:2:4243)
+2025-11-14T18:15:09.157076776Z     at resolveTsPaths (file:///opt/render/project/src/node_modules/tsx/dist/esm/index.mjs?1763144093856:2:4984)
+2025-11-14T18:15:09.157079636Z     at async resolve (file:///opt/render/project/src/node_modules/tsx/dist/esm/index.mjs?1763144093856:2:5355)
+2025-11-14T18:15:09.157092607Z     at async nextResolve (node:internal/modules/esm/hooks:748:22) {
+2025-11-14T18:15:09.157094976Z   code: 'ERR_MODULE_NOT_FOUND'
+2025-11-14T18:15:09.157096667Z }
+2025-11-14T18:15:09.157098287Z 
+2025-11-14T18:15:09.157100047Z Node.js v22.16.0
