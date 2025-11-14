@@ -57,9 +57,10 @@ export function setupSecurity(app: Express) {
         'https://localhost',
         'ionic://localhost',
         'http://localhost',
+        'https://personalfinance-pro-backend.onrender.com',
       ];
 
-      if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.replit.dev')) {
+      if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.replit.dev') || origin.endsWith('.onrender.com')) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
