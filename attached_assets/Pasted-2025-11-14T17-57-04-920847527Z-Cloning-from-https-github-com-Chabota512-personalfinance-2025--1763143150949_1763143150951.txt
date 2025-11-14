@@ -1,0 +1,50 @@
+2025-11-14T17:57:04.920847527Z ==> Cloning from https://github.com/Chabota512/personalfinance
+2025-11-14T17:57:05.65881378Z ==> Checking out commit 3b735aeee25a48095d6fa0c8bbd326f083c60b10 in branch main
+2025-11-14T17:57:11.78542843Z ==> Using Node.js version 22.16.0 (default)
+2025-11-14T17:57:11.817660161Z ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+2025-11-14T17:57:14.442019417Z ==> Running build command 'npm install && npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist'...
+2025-11-14T17:57:30.367785464Z 
+2025-11-14T17:57:30.367826945Z added 838 packages, and audited 839 packages in 16s
+2025-11-14T17:57:30.367848796Z 
+2025-11-14T17:57:30.367856996Z 179 packages are looking for funding
+2025-11-14T17:57:30.367864736Z   run `npm fund` for details
+2025-11-14T17:57:30.369724783Z 
+2025-11-14T17:57:30.369735793Z 1 low severity vulnerability
+2025-11-14T17:57:30.369739593Z 
+2025-11-14T17:57:30.369743273Z To address all issues, run:
+2025-11-14T17:57:30.369746824Z   npm audit fix
+2025-11-14T17:57:30.369750364Z 
+2025-11-14T17:57:30.369754514Z Run `npm audit` for details.
+2025-11-14T17:57:30.942378212Z 
+2025-11-14T17:57:30.942414213Z   dist/index.js  374.7kb
+2025-11-14T17:57:30.942418773Z 
+2025-11-14T17:57:30.942423434Z ⚡ Done in 39ms
+2025-11-14T17:57:53.651530515Z ==> Uploading build...
+2025-11-14T17:58:03.201937872Z ==> Uploaded in 5.0s. Compression took 4.5s
+2025-11-14T17:58:03.247014137Z ==> Build successful 🎉
+2025-11-14T17:58:14.44218543Z ==> Deploying...
+2025-11-14T17:58:42.686989176Z ==> Running 'npm start'
+2025-11-14T17:58:43.793267598Z 
+2025-11-14T17:58:43.793312851Z > rest-express@1.0.0 start
+2025-11-14T17:58:43.793320171Z > NODE_ENV=production node dist/index.js
+2025-11-14T17:58:43.793322821Z 
+2025-11-14T17:58:44.491481024Z node:internal/modules/package_json_reader:256
+2025-11-14T17:58:44.491509176Z   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+2025-11-14T17:58:44.491512516Z         ^
+2025-11-14T17:58:44.491515186Z 
+2025-11-14T17:58:44.491517766Z Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@replit/vite-plugin-runtime-error-modal' imported from /opt/render/project/src/dist/index.js
+2025-11-14T17:58:44.491522197Z     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:256:9)
+2025-11-14T17:58:44.491525027Z     at packageResolve (node:internal/modules/esm/resolve:768:81)
+2025-11-14T17:58:44.491527017Z     at moduleResolve (node:internal/modules/esm/resolve:854:18)
+2025-11-14T17:58:44.491529107Z     at defaultResolve (node:internal/modules/esm/resolve:984:11)
+2025-11-14T17:58:44.491531517Z     at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:780:12)
+2025-11-14T17:58:44.491533707Z     at #cachedDefaultResolve (node:internal/modules/esm/loader:704:25)
+2025-11-14T17:58:44.491535747Z     at ModuleLoader.resolve (node:internal/modules/esm/loader:687:38)
+2025-11-14T17:58:44.491537818Z     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:305:38)
+2025-11-14T17:58:44.491539798Z     at ModuleJob._link (node:internal/modules/esm/module_job:137:49) {
+2025-11-14T17:58:44.491542638Z   code: 'ERR_MODULE_NOT_FOUND'
+2025-11-14T17:58:44.491544658Z }
+2025-11-14T17:58:44.491546488Z 
+2025-11-14T17:58:44.491548468Z Node.js v22.16.0
+2025-11-14T17:58:51.011342518Z ==> Exited with status 1
+2025-11-14T17:58:51.026883347Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
