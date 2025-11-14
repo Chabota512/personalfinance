@@ -1,0 +1,48 @@
+I need to convert my PersonalFinance Pro full-stack web app into an Android APK using Capacitor. The backend will be deployed on Render.com, and the mobile app will connect to that deployed backend.
+
+Current State:
+
+Full-stack app with React frontend and Express backend
+Backend uses Neon Postgres database (already cloud-based with DATABASE_URL)
+Frontend currently makes API calls to relative paths (works in dev because Vite proxies to backend)
+There are 4 LSP diagnostics that need fixing (1 in server/index.ts, 3 in server/storage.ts)
+Capacitor packages are already installed (@capacitor/android, @capacitor/cli, @capacitor/core)
+Goal:
+Prepare the entire app for:
+
+Backend deployment to Render.com
+Building an Android APK with Capacitor that connects to the deployed backend
+What I need you to do:
+
+Phase 1: Fix Code Issues
+
+Check and fix all 4 LSP diagnostics in server/index.ts and server/storage.ts
+Phase 2: Backend Deployment Prep
+2. Create a .env.example file documenting all required environment variables for Render.com
+
+Update frontend API configuration to use VITE_API_URL environment variable instead of relative paths
+Create a lib/api-config.ts or update the existing queryClient to dynamically use the API URL based on environment
+Ensure backend CORS settings allow requests from mobile app (configure proper origins)
+Create deployment documentation or render.yaml file with necessary settings for Render.com
+Phase 3: Capacitor Configuration
+7. Initialize Capacitor with npx cap init (app name: "PersonalFinance Pro", package ID: "com.personalfinance.pro")
+
+Create/update capacitor.config.ts with proper configuration
+Configure Android permissions needed (internet, network state, etc.)
+Add Android platform with npx cap add android if not already added
+Update build scripts if needed for production Capacitor builds
+Phase 4: Environment Setup
+12. Create a .env.production template showing how to set VITE_API_URL for production builds
+
+Document the complete deployment and build process in a DEPLOYMENT.md file
+Important Notes:
+
+The app uses session-based auth with express-session
+Backend already handles DATABASE_URL, SESSION_SECRET environment variables
+Don't break the existing development workflow (keep npm run dev working)
+Make sure the production build points to the Render.com URL (we'll set this later)
+Please create a task list and complete all these steps. After you're done, provide me with:
+
+The Render.com environment variables I need to set
+Instructions for deploying to Render.com
+Instructions for building the APK with Android Studio
