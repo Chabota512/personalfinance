@@ -1,0 +1,150 @@
+2025-11-14T20:04:34.906144177Z > vite build
+2025-11-14T20:04:34.906149508Z 
+2025-11-14T20:04:35.119909402Z vite v6.4.1 building for production...
+2025-11-14T20:04:35.583432141Z transforming...
+2025-11-14T20:04:36.732168568Z 
+2025-11-14T20:04:36.732194159Z A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+2025-11-14T20:04:41.27778075Z ✓ 2973 modules transformed.
+2025-11-14T20:04:41.704013856Z rendering chunks...
+2025-11-14T20:04:42.154600284Z computing gzip size...
+2025-11-14T20:04:42.172035352Z ../dist/public/index.html                                      1.08 kB │ gzip:   0.57 kB
+2025-11-14T20:04:42.172064593Z ../dist/public/assets/index-kpiOL6K4.css                     139.00 kB │ gzip:  21.23 kB
+2025-11-14T20:04:42.172213585Z ../dist/public/assets/index-CXVJy-F1.js                        0.23 kB │ gzip:   0.17 kB
+2025-11-14T20:04:42.172322728Z ../dist/public/assets/check-DWd5BTxb.js                        0.29 kB │ gzip:   0.24 kB
+2025-11-14T20:04:42.17246316Z ../dist/public/assets/circle-TBfhwknc.js                       0.29 kB │ gzip:   0.24 kB
+2025-11-14T20:04:42.172480821Z ../dist/public/assets/loader-circle-OQNmIQE7.js                0.31 kB │ gzip:   0.26 kB
+2025-11-14T20:04:42.172510741Z ../dist/public/assets/plus-COW9frhv.js                         0.32 kB │ gzip:   0.25 kB
+2025-11-14T20:04:42.172514751Z ../dist/public/assets/arrow-right-7QLmdTSF.js                  0.33 kB │ gzip:   0.26 kB
+2025-11-14T20:04:42.172519862Z ../dist/public/assets/arrow-left-CqEybsq1.js                   0.33 kB │ gzip:   0.26 kB
+2025-11-14T20:04:42.172524551Z ../dist/public/assets/circle-check-BreSIqsf.js                 0.34 kB │ gzip:   0.27 kB
+2025-11-14T20:04:42.172530882Z ../dist/public/assets/trending-up-BvAt_Ibb.js                  0.37 kB │ gzip:   0.28 kB
+2025-11-14T20:04:42.172566402Z ../dist/public/assets/trending-down-C_HfxL2A.js                0.38 kB │ gzip:   0.28 kB
+2025-11-14T20:04:42.172569032Z ../dist/public/assets/dollar-sign-HcausY6o.js                  0.39 kB │ gzip:   0.30 kB
+2025-11-14T20:04:42.172570932Z ../dist/public/assets/eye-D3D5r7SB.js                          0.42 kB │ gzip:   0.30 kB
+2025-11-14T20:04:42.172586763Z ../dist/public/assets/map-pin-Cmdp7UpB.js                      0.42 kB │ gzip:   0.32 kB
+2025-11-14T20:04:42.172589203Z ../dist/public/assets/calendar-qMxMlJ6v.js                     0.43 kB │ gzip:   0.30 kB
+2025-11-14T20:04:42.172592983Z ../dist/public/assets/download-CZEh1Oil.js                     0.43 kB │ gzip:   0.32 kB
+2025-11-14T20:04:42.172594753Z ../dist/public/assets/zap-CMXoyyxB.js                          0.43 kB │ gzip:   0.31 kB
+2025-11-14T20:04:42.172623124Z ../dist/public/assets/shopping-cart-6srLcsBj.js                0.46 kB │ gzip:   0.33 kB
+2025-11-14T20:04:42.172641034Z ../dist/public/assets/skeleton-C50DNXcY.js                     0.48 kB │ gzip:   0.35 kB
+2025-11-14T20:04:42.172643544Z ../dist/public/assets/square-pen-DKp3KUNc.js                   0.49 kB │ gzip:   0.34 kB
+2025-11-14T20:04:42.172679945Z ../dist/public/assets/piggy-bank-Do4D9b0f.js                   0.49 kB │ gzip:   0.36 kB
+2025-11-14T20:04:42.172682415Z ../dist/public/assets/textarea-BZUoxDdn.js                     0.50 kB │ gzip:   0.33 kB
+2025-11-14T20:04:42.172684185Z ../dist/public/assets/financial-utils-hJQiLRSP.js              0.52 kB │ gzip:   0.34 kB
+2025-11-14T20:04:42.172688005Z ../dist/public/assets/label-Y61uxXi9.js                        0.56 kB │ gzip:   0.38 kB
+2025-11-14T20:04:42.172689785Z ../dist/public/assets/not-found-A1ps1zdB.js                    0.59 kB │ gzip:   0.34 kB
+2025-11-14T20:04:42.172716915Z ../dist/public/assets/empty-state-xZVHEKYJ.js                  0.68 kB │ gzip:   0.40 kB
+2025-11-14T20:04:42.172719705Z ../dist/public/assets/circle-arrow-up-CBWW-P3C.js              0.72 kB │ gzip:   0.34 kB
+2025-11-14T20:04:42.172723435Z ../dist/public/assets/alert-CseVkeFf.js                        0.91 kB │ gzip:   0.47 kB
+2025-11-14T20:04:42.172726975Z ../dist/public/assets/push-notification-handler-C5ifEz3n.js    1.01 kB │ gzip:   0.65 kB
+2025-11-14T20:04:42.172745456Z ../dist/public/assets/square-BKfbbBGa.js                       1.04 kB │ gzip:   0.43 kB
+2025-11-14T20:04:42.172747956Z ../dist/public/assets/time-period-filter-Dn5EmWbV.js           1.04 kB │ gzip:   0.45 kB
+2025-11-14T20:04:42.172778547Z ../dist/public/assets/page-header-CstLy4hb.js                  1.28 kB │ gzip:   0.68 kB
+2025-11-14T20:04:42.172781027Z ../dist/public/assets/burn-rate-bar-in38PGCH.js                1.37 kB │ gzip:   0.69 kB
+2025-11-14T20:04:42.172782836Z ../dist/public/assets/install-prompt-banner-CosMs_8b.js        1.57 kB │ gzip:   0.78 kB
+2025-11-14T20:04:42.172786617Z ../dist/public/assets/progress-yfMxsqEh.js                     1.94 kB │ gzip:   0.97 kB
+2025-11-14T20:04:42.172788407Z ../dist/public/assets/dialog-D9V24sRL.js                       2.14 kB │ gzip:   0.85 kB
+2025-11-14T20:04:42.172807357Z ../dist/public/assets/switch-Cbv_073K.js                       2.37 kB │ gzip:   1.20 kB
+2025-11-14T20:04:42.172809327Z ../dist/public/assets/checkbox-BgyUqfa1.js                     2.82 kB │ gzip:   1.40 kB
+2025-11-14T20:04:42.172826448Z ../dist/public/assets/tabs-DRI4LMnH.js                         3.21 kB │ gzip:   1.35 kB
+2025-11-14T20:04:42.172828317Z ../dist/public/assets/utensils-CN5KmKvL.js                     3.26 kB │ gzip:   1.05 kB
+2025-11-14T20:04:42.172853218Z ../dist/public/assets/index-BlRN6DRV.js                        3.34 kB │ gzip:   1.52 kB
+2025-11-14T20:04:42.172860588Z ../dist/public/assets/privacy-policy-BCdKYtbl.js               3.91 kB │ gzip:   1.47 kB
+2025-11-14T20:04:42.172862398Z ../dist/public/assets/radio-group-DGKISrp1.js                  3.93 kB │ gzip:   1.78 kB
+2025-11-14T20:04:42.172896809Z ../dist/public/assets/terms-of-service-2RdGgv_G.js             4.32 kB │ gzip:   1.65 kB
+2025-11-14T20:04:42.172899249Z ../dist/public/assets/alert-dialog-BYJQk8Zw.js                 4.73 kB │ gzip:   1.73 kB
+2025-11-14T20:04:42.172900919Z ../dist/public/assets/landing-BeamIEtY.js                      4.73 kB │ gzip:   1.31 kB
+2025-11-14T20:04:42.172902669Z ../dist/public/assets/debt-dashboard-SmTasCrh.js               5.07 kB │ gzip:   1.43 kB
+2025-11-14T20:04:42.172910179Z ../dist/public/assets/transaction-dialog-DAxDFrIf.js           5.23 kB │ gzip:   1.69 kB
+2025-11-14T20:04:42.172913889Z ../dist/public/assets/learn-BIr3ktTd.js                        6.78 kB │ gzip:   2.22 kB
+2025-11-14T20:04:42.17294645Z ../dist/public/assets/transactions-GwAZ5hCS.js                 6.84 kB │ gzip:   2.37 kB
+2025-11-14T20:04:42.17295125Z ../dist/public/assets/auth-BKU5JWg_.js                         6.86 kB │ gzip:   2.05 kB
+2025-11-14T20:04:42.17296327Z ../dist/public/assets/budget-C_i1clmD.js                       7.13 kB │ gzip:   2.37 kB
+2025-11-14T20:04:42.17296816Z ../dist/public/assets/cash-flow-CFPsOqnz.js                    8.22 kB │ gzip:   2.33 kB
+2025-11-14T20:04:42.17297088Z ../dist/public/assets/api-DqTAVC55.js                          8.23 kB │ gzip:   1.31 kB
+2025-11-14T20:04:42.1729777Z ../dist/public/assets/balance-sheet-43mHBPqt.js                8.72 kB │ gzip:   1.81 kB
+2025-11-14T20:04:42.1729807Z ../dist/public/assets/onboarding-CZBrshns.js                  10.70 kB │ gzip:   3.57 kB
+2025-11-14T20:04:42.173026461Z ../dist/public/assets/LineChart-DQ6SgNAb.js                   11.13 kB │ gzip:   4.29 kB
+2025-11-14T20:04:42.173030041Z ../dist/public/assets/profile-74kGYYSc.js                     11.75 kB │ gzip:   3.81 kB
+2025-11-14T20:04:42.173032892Z ../dist/public/assets/items-CNpzvsqQ.js                       15.56 kB │ gzip:   4.14 kB
+2025-11-14T20:04:42.173035472Z ../dist/public/assets/accounts-CaOYEgXU.js                    16.16 kB │ gzip:   3.76 kB
+2025-11-14T20:04:42.173038101Z ../dist/public/assets/budget-execution-BdBHqI5P.js            16.51 kB │ gzip:   4.52 kB
+2025-11-14T20:04:42.173040652Z ../dist/public/assets/settings-CoKpdsme.js                    18.61 kB │ gzip:   4.61 kB
+2025-11-14T20:04:42.173047242Z ../dist/public/assets/select-DFurPgRQ.js                      21.58 kB │ gzip:   7.51 kB
+2025-11-14T20:04:42.173049102Z ../dist/public/assets/transaction-list-item-Kt9k2txD.js       26.55 kB │ gzip:   7.86 kB
+2025-11-14T20:04:42.173052932Z ../dist/public/assets/debt-detail-Cwh1IlMh.js                 27.49 kB │ gzip:   8.31 kB
+2025-11-14T20:04:42.173054732Z ../dist/public/assets/goals-CNxqNmLu.js                       27.94 kB │ gzip:   7.60 kB
+2025-11-14T20:04:42.173088393Z ../dist/public/assets/home-CTI4XPi-.js                        36.69 kB │ gzip:  10.49 kB
+2025-11-14T20:04:42.173090662Z ../dist/public/assets/budget-wizard-DvQDbnGy.js               37.39 kB │ gzip:   8.49 kB
+2025-11-14T20:04:42.173092453Z ../dist/public/assets/debts-CxvDl3jM.js                       42.33 kB │ gzip:  10.82 kB
+2025-11-14T20:04:42.173111313Z ../dist/public/assets/dashboard-x-pMowWB.js                   64.12 kB │ gzip:  14.60 kB
+2025-11-14T20:04:42.173114563Z ../dist/public/assets/lesson-viewer-DUh5DCrw.js              165.80 kB │ gzip:  50.40 kB
+2025-11-14T20:04:42.173120413Z ../dist/public/assets/index-C_KCkO90.js                      370.56 kB │ gzip: 117.27 kB
+2025-11-14T20:04:42.173134114Z ../dist/public/assets/generateCategoricalChart-PwEaUq-S.js   383.03 kB │ gzip: 105.61 kB
+2025-11-14T20:04:42.17345207Z ✓ built in 7.03s
+2025-11-14T20:04:43.032493349Z ==> Uploading build...
+2025-11-14T20:04:53.226628761Z ==> Uploaded in 6.5s. Compression took 3.7s
+2025-11-14T20:04:53.259847335Z ==> Build successful 🎉
+2025-11-14T20:04:59.775787192Z ==> Deploying...
+2025-11-14T20:05:24.272263343Z ==> Running 'npm start'
+2025-11-14T20:05:25.367776789Z 
+2025-11-14T20:05:25.36780427Z > rest-express@1.0.0 start
+2025-11-14T20:05:25.36780876Z > NODE_ENV=production tsx server/index.ts
+2025-11-14T20:05:25.36781045Z 
+2025-11-14T20:05:41.965799585Z Checking and seeding lessons...
+2025-11-14T20:05:41.96599772Z Starting lesson seed...
+2025-11-14T20:05:42.955810206Z Lesson already exists: Mastering Needs vs Wants
+2025-11-14T20:05:43.042483945Z   Quiz questions already exist for Mastering Needs vs Wants
+2025-11-14T20:05:43.112002243Z Lesson already exists: Building Your First Budget
+2025-11-14T20:05:43.181423738Z   Quiz questions already exist for Building Your First Budget
+2025-11-14T20:05:43.251017808Z Lesson already exists: Starting an Emergency Fund
+2025-11-14T20:05:43.325252045Z   Quiz questions already exist for Starting an Emergency Fund
+2025-11-14T20:05:43.393591861Z Lesson already exists: Understanding Credit
+2025-11-14T20:05:43.463212022Z   Quiz questions already exist for Understanding Credit
+2025-11-14T20:05:43.53419629Z Lesson already exists: Setting SMART Financial Goals
+2025-11-14T20:05:43.603600645Z   Quiz questions already exist for Setting SMART Financial Goals
+2025-11-14T20:05:43.672873826Z Lesson already exists: Tracking and Reviewing Progress
+2025-11-14T20:05:43.742271061Z   Quiz questions already exist for Tracking and Reviewing Progress
+2025-11-14T20:05:43.876288349Z Lesson already exists: Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-14T20:05:43.946115135Z   Quiz questions already exist for Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-14T20:05:43.946142016Z Lesson seed completed successfully!
+2025-11-14T20:05:44.369243738Z [SCHEDULER] Initializing scheduler...
+2025-11-14T20:05:44.369592048Z [SCHEDULER] Running daily checks at 2025-11-14T20:05:44.369Z
+2025-11-14T20:05:44.369732472Z [SCHEDULER] Checking goal contributions...
+2025-11-14T20:05:44.369813684Z [SCHEDULER] Scheduler initialized - running every hour
+2025-11-14T20:05:44.369960078Z [express] Production mode: serving from /opt/render/project/src/dist/public
+2025-11-14T20:05:44.37003613Z [express] Directory exists: true
+2025-11-14T20:05:44.473747497Z 8:05:44 PM [express] serving on port 10000
+2025-11-14T20:05:44.641163751Z [SCHEDULER] Sent 0 goal contribution reminders
+2025-11-14T20:05:44.641367397Z [SCHEDULER] Checking debt payments...
+2025-11-14T20:05:44.717041774Z [SCHEDULER] Sent 0 debt payment reminders
+2025-11-14T20:05:44.717068524Z [SCHEDULER] Daily checks completed
+2025-11-14T20:05:51.967052145Z ==> Your service is live 🎉
+2025-11-14T20:05:52.035245088Z ==> 
+2025-11-14T20:05:52.071563744Z ==> ///////////////////////////////////////////////////////////
+2025-11-14T20:05:52.11562175Z ==> 
+2025-11-14T20:05:52.155126506Z ==> Available at your primary URL https://personalfinance-pro-backend.onrender.com
+2025-11-14T20:05:52.194250872Z ==> 
+2025-11-14T20:05:52.234074788Z ==> ///////////////////////////////////////////////////////////
+2025-11-14T20:05:58.512551192Z Error: Not allowed by CORS
+2025-11-14T20:05:58.512584273Z     at origin (/opt/render/project/src/server/security.ts:65:18)
+2025-11-14T20:05:58.512590803Z     at /opt/render/project/src/node_modules/cors/lib/index.js:219:13
+2025-11-14T20:05:58.512595924Z     at optionsCallback (/opt/render/project/src/node_modules/cors/lib/index.js:199:9)
+2025-11-14T20:05:58.512600104Z     at corsMiddleware (/opt/render/project/src/node_modules/cors/lib/index.js:204:7)
+2025-11-14T20:05:58.512605004Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-11-14T20:05:58.512610884Z     at trim_prefix (/opt/render/project/src/node_modules/express/lib/router/index.js:328:13)
+2025-11-14T20:05:58.512615254Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:286:9
+2025-11-14T20:05:58.512619904Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-11-14T20:05:58.512624034Z     at next (/opt/render/project/src/node_modules/express/lib/router/index.js:280:10)
+2025-11-14T20:05:58.512644045Z     at internalNext (file:///opt/render/project/src/node_modules/helmet/index.mjs:527:6)
+2025-11-14T20:05:58.539215714Z Error: Not allowed by CORS
+2025-11-14T20:05:58.539238475Z     at origin (/opt/render/project/src/server/security.ts:65:18)
+2025-11-14T20:05:58.539242645Z     at /opt/render/project/src/node_modules/cors/lib/index.js:219:13
+2025-11-14T20:05:58.539245635Z     at optionsCallback (/opt/render/project/src/node_modules/cors/lib/index.js:199:9)
+2025-11-14T20:05:58.539250965Z     at corsMiddleware (/opt/render/project/src/node_modules/cors/lib/index.js:204:7)
+2025-11-14T20:05:58.539254105Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-11-14T20:05:58.539256305Z     at trim_prefix (/opt/render/project/src/node_modules/express/lib/router/index.js:328:13)
+2025-11-14T20:05:58.539258365Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:286:9
+2025-11-14T20:05:58.539260425Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-11-14T20:05:58.539262535Z     at next (/opt/render/project/src/node_modules/express/lib/router/index.js:280:10)
+2025-11-14T20:05:58.539264595Z     at internalNext (file:///opt/render/project/src/node_modules/helmet/index.mjs:527:6)
