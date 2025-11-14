@@ -14,7 +14,6 @@ import {
 } from "@shared/schema";
 import { eq, and, gte, lte, desc, sql, or, ilike } from "drizzle-orm";
 import { calculateNextScheduledDate } from "@shared/goal-utils";
-import crypto from 'crypto'; // Assuming crypto is available in the environment
 
 // User operations
 export async function createUser(data: InsertUser) {

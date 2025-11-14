@@ -1,4 +1,3 @@
-
 // Security Configuration
 // 
 // Required Environment Variables:
@@ -39,20 +38,36 @@ export function setupSecurity(app: Express) {
 
   // Security headers
   app.use(helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", "data:", "https:"],
-      },
-    },
-    hsts: {
-      maxAge: 31536000,
-      includeSubDomains: true,
-      preload: true,
-    },
+    contentSecurityPolicy: false, // Disable for development, enable in production with proper config
   }));
+
+  // CORS configuration - allow mobile app and web origins
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://localhost:5000',
+      'capacitor://localhost',
+      'ionic://localhost',
+      'http://localhost',
+      'https://localhost'
+    ];
+
+    // Allow any origin in development, or specific origins in production
+    if (process.env.NODE_ENV === 'development' || (origin && allowedOrigins.includes(origin))) {
+      res.header('Access-Control-Allow-Origin', origin || '*');
+      res.header('Access-Control-Allow-Credentials', 'true');
+    }
+
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(200);
+    }
+
+    next();
+  });
 
   // Rate limiting
   const limiter = rateLimit({

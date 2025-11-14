@@ -1,26 +1,52 @@
-import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+import { getApiEndpoint } from "./api-config";
 
-async function throwIfResNotOk(res: Response) {
-  if (!res.ok) {
-    const text = (await res.text()) || res.statusText;
-    throw new Error(`${res.status}: ${text}`);
+async function handleResponse(response: Response) {
+  if (response.status === 401) {
+    window.location.href = "/auth";
+    throw new Error("Unauthorized");
   }
+
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+
+  return response;
+}
+
+export async function fetchApi(
+  url: string,
+  options?: RequestInit,
+): Promise<Response> {
+  const fullUrl = getApiEndpoint(url);
+  const response = await fetch(fullUrl, {
+    ...options,
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+
+  return handleResponse(response);
 }
 
 export async function apiRequest(
   method: string,
   url: string,
-  data?: unknown | undefined,
+  data?: any,
 ): Promise<Response> {
-  const res = await fetch(url, {
+  const fullUrl = getApiEndpoint(url);
+  const response = await fetch(fullUrl, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
 
-  await throwIfResNotOk(res);
-  return res;
+  return handleResponse(response);
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
@@ -41,15 +67,6 @@ export const getQueryFn: <T>(options: {
     return await res.json();
   };
 
-export async function fetchApi(url: string, options?: RequestInit): Promise<any> {
-  const res = await fetch(url, {
-    credentials: "include",
-    ...options,
-  });
-  await throwIfResNotOk(res);
-  return await res.json();
-}
-
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -65,3 +82,10 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+async function throwIfResNotOk(res: Response) {
+  if (!res.ok) {
+    const text = (await res.text()) || res.statusText;
+    throw new Error(`${res.status}: ${text}`);
+  }
+}

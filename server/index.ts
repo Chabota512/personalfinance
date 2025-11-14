@@ -8,6 +8,7 @@ import path from "path";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { setupSecurity } from "./security";
+import type { Server } from "http";
 
 const SQLiteStore = connectSqlite3(session);
 const PostgresStore = connectPgSimple(session);
