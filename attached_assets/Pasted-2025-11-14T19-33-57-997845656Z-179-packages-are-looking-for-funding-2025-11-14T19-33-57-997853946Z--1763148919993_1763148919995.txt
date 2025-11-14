@@ -1,0 +1,54 @@
+2025-11-14T19:33:57.997845656Z 179 packages are looking for funding
+2025-11-14T19:33:57.997853946Z   run `npm fund` for details
+2025-11-14T19:33:57.999584209Z 
+2025-11-14T19:33:57.999596119Z 1 low severity vulnerability
+2025-11-14T19:33:57.999598169Z 
+2025-11-14T19:33:57.999599969Z To address all issues, run:
+2025-11-14T19:33:57.99960193Z   npm audit fix
+2025-11-14T19:33:57.99960383Z 
+2025-11-14T19:33:57.99960577Z Run `npm audit` for details.
+2025-11-14T19:33:58.981998986Z ==> Uploading build...
+2025-11-14T19:34:08.266544126Z ==> Uploaded in 5.3s. Compression took 4.0s
+2025-11-14T19:34:08.301693827Z ==> Build successful 🎉
+2025-11-14T19:34:13.324784887Z ==> Deploying...
+2025-11-14T19:34:32.140902106Z ==> Running 'npm start'
+2025-11-14T19:34:33.141553394Z 
+2025-11-14T19:34:33.141589064Z > rest-express@1.0.0 start
+2025-11-14T19:34:33.141595464Z > NODE_ENV=production tsx server/index.ts
+2025-11-14T19:34:33.141598584Z 
+2025-11-14T19:34:49.637134843Z Checking and seeding lessons...
+2025-11-14T19:34:49.637325967Z Starting lesson seed...
+2025-11-14T19:34:50.115021373Z Lesson already exists: Mastering Needs vs Wants
+2025-11-14T19:34:50.180632454Z   Quiz questions already exist for Mastering Needs vs Wants
+2025-11-14T19:34:50.24649209Z Lesson already exists: Building Your First Budget
+2025-11-14T19:34:50.312990209Z   Quiz questions already exist for Building Your First Budget
+2025-11-14T19:34:50.379045028Z Lesson already exists: Starting an Emergency Fund
+2025-11-14T19:34:50.444545197Z   Quiz questions already exist for Starting an Emergency Fund
+2025-11-14T19:34:50.513151806Z Lesson already exists: Understanding Credit
+2025-11-14T19:34:50.581550242Z   Quiz questions already exist for Understanding Credit
+2025-11-14T19:34:50.650800904Z Lesson already exists: Setting SMART Financial Goals
+2025-11-14T19:34:50.718394793Z   Quiz questions already exist for Setting SMART Financial Goals
+2025-11-14T19:34:50.787032933Z Lesson already exists: Tracking and Reviewing Progress
+2025-11-14T19:34:50.856909488Z   Quiz questions already exist for Tracking and Reviewing Progress
+2025-11-14T19:34:50.924480937Z Lesson already exists: Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-14T19:34:51.008788213Z   Quiz questions already exist for Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-14T19:34:51.008809503Z Lesson seed completed successfully!
+2025-11-14T19:34:51.455141688Z [SCHEDULER] Initializing scheduler...
+2025-11-14T19:34:51.455422503Z [SCHEDULER] Running daily checks at 2025-11-14T19:34:51.455Z
+2025-11-14T19:34:51.455569516Z [SCHEDULER] Checking goal contributions...
+2025-11-14T19:34:51.455652367Z [SCHEDULER] Scheduler initialized - running every hour
+2025-11-14T19:34:51.455835101Z [express] Production mode: serving from /opt/render/project/src/dist/public
+2025-11-14T19:34:51.455919873Z [express] Directory exists: false
+2025-11-14T19:34:51.455988844Z [express] ERROR: dist/public not found. Build output missing!
+2025-11-14T19:34:51.636633961Z 7:34:51 PM [express] serving on port 10000
+2025-11-14T19:34:51.70061664Z [SCHEDULER] Sent 0 goal contribution reminders
+2025-11-14T19:34:51.700814644Z [SCHEDULER] Checking debt payments...
+2025-11-14T19:34:51.77078434Z [SCHEDULER] Sent 0 debt payment reminders
+2025-11-14T19:34:51.7708023Z [SCHEDULER] Daily checks completed
+2025-11-14T19:34:54.91720331Z ==> Your service is live 🎉
+2025-11-14T19:34:54.973250994Z ==> 
+2025-11-14T19:34:55.01016133Z ==> ///////////////////////////////////////////////////////////
+2025-11-14T19:34:55.841302668Z ==> 
+2025-11-14T19:34:56.621740291Z ==> Available at your primary URL https://personalfinance-pro-backend.onrender.com
+2025-11-14T19:34:56.677662145Z ==> 
+2025-11-14T19:34:56.727425631Z ==> ///////////////////////////////////////////////////////////
