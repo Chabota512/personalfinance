@@ -1,0 +1,35 @@
+~/workspace$ 
+Dell@DESKTOP-IFQJNE2 MINGW64 /d/MyProjects/APP DEVELOPMENT/2025/November/Personalfinance
+$ git clone https://github.com/Chabota512/personalfinance.git
+cd personalfinance
+Cloning into 'personalfinance'...
+remote: Enumerating objects: 385, done.
+remote: Counting objects: 100% (385/385), done.
+remote: Compressing objects: 100% (270/270), done.
+remote: Total 385 (delta 121), reused 375 (delta 111), pack-reused 0 (from 0)
+Receiving objects: 100% (385/385), 2.76 MiB | 65.00 KiB/s, done.
+Resolving deltas: 100% (121/121), done.
+Updating files: 100% (241/241), done.
+
+Dell@DESKTOP-IFQJNE2 MINGW64 /d/MyProjects/APP DEVELOPMENT/2025/November/Personalfinance/personalfinance (main)
+$ npm install
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated @npmcli/move-file@1.1.2: This functionality has been moved to @npmcli/fs
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+npm warn deprecated npmlog@6.0.2: This package is no longer supported.
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated are-we-there-yet@3.0.1: This package is no longer supported.
+npm warn deprecated gauge@4.0.4: This package is no longer supported.
+
+added 962 packages, and audited 963 packages in 5m
+
+191 packages are looking for funding
+  run `npm fund` for details
+
+5 vulnerabilities (1 low, 4 moderate)
+
+$n)l@DESKTOP-IFQJNE2 MINGW64 /d/MyProjects/APP DEVELOPMENT/2025/November/Personalfinance/personalfinance (ma
