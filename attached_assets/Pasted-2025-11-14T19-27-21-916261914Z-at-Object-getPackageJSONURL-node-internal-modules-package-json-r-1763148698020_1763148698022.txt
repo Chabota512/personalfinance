@@ -1,0 +1,73 @@
+2025-11-14T19:27:21.916261914Z     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:256:9)
+2025-11-14T19:27:21.916265604Z     at packageResolve (node:internal/modules/esm/resolve:768:81)
+2025-11-14T19:27:21.916268294Z     at moduleResolve (node:internal/modules/esm/resolve:854:18)
+2025-11-14T19:27:21.916271054Z     at defaultResolve (node:internal/modules/esm/resolve:984:11)
+2025-11-14T19:27:21.916273614Z     at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:780:12)
+2025-11-14T19:27:21.916276674Z     at #cachedDefaultResolve (node:internal/modules/esm/loader:704:25)
+2025-11-14T19:27:21.916279424Z     at ModuleLoader.resolve (node:internal/modules/esm/loader:687:38)
+2025-11-14T19:27:21.916282074Z     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:305:38)
+2025-11-14T19:27:21.916284514Z     at ModuleJob._link (node:internal/modules/esm/module_job:137:49)
+2025-11-14T19:27:23.698295512Z 
+2025-11-14T19:27:23.698528987Z up to date, audited 843 packages in 2s
+2025-11-14T19:27:23.698536347Z 
+2025-11-14T19:27:23.698554317Z 179 packages are looking for funding
+2025-11-14T19:27:23.698559578Z   run `npm fund` for details
+2025-11-14T19:27:23.70007998Z 
+2025-11-14T19:27:23.702853929Z 1 low severity vulnerability
+2025-11-14T19:27:23.702860549Z 
+2025-11-14T19:27:23.702863229Z To address all issues, run:
+2025-11-14T19:27:23.70286566Z   npm audit fix
+2025-11-14T19:27:23.702867769Z 
+2025-11-14T19:27:23.70286992Z Run `npm audit` for details.
+2025-11-14T19:27:28.242636936Z ==> Uploading build...
+2025-11-14T19:27:41.498914687Z ==> Uploaded in 5.3s. Compression took 8.0s
+2025-11-14T19:27:41.538467241Z ==> Build successful 🎉
+2025-11-14T19:27:45.011977819Z ==> Deploying...
+2025-11-14T19:28:04.362538748Z ==> Running 'npm start'
+2025-11-14T19:28:05.558759077Z 
+2025-11-14T19:28:05.558784457Z > rest-express@1.0.0 start
+2025-11-14T19:28:05.558791698Z > NODE_ENV=production node dist/index.js
+2025-11-14T19:28:05.558794367Z 
+2025-11-14T19:28:05.758920184Z node:internal/modules/cjs/loader:1404
+2025-11-14T19:28:05.758944584Z   throw err;
+2025-11-14T19:28:05.758948064Z   ^
+2025-11-14T19:28:05.758962685Z 
+2025-11-14T19:28:05.758967245Z Error: Cannot find module '/opt/render/project/src/dist/index.js'
+2025-11-14T19:28:05.758970825Z     at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+2025-11-14T19:28:05.758974125Z     at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+2025-11-14T19:28:05.758977545Z     at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+2025-11-14T19:28:05.758981085Z     at Function._load (node:internal/modules/cjs/loader:1211:37)
+2025-11-14T19:28:05.758984405Z     at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+2025-11-14T19:28:05.758987565Z     at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+2025-11-14T19:28:05.758991695Z     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+2025-11-14T19:28:05.758996825Z     at node:internal/main/run_main_module:36:49 {
+2025-11-14T19:28:05.759000625Z   code: 'MODULE_NOT_FOUND',
+2025-11-14T19:28:05.759004686Z   requireStack: []
+2025-11-14T19:28:05.759007916Z }
+2025-11-14T19:28:05.759010806Z 
+2025-11-14T19:28:05.759014346Z Node.js v22.16.0
+2025-11-14T19:28:11.702816266Z ==> Exited with status 1
+2025-11-14T19:28:11.718543175Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+2025-11-14T19:28:16.153514531Z ==> Running 'npm start'
+2025-11-14T19:28:17.34702083Z 
+2025-11-14T19:28:17.347045771Z > rest-express@1.0.0 start
+2025-11-14T19:28:17.347052701Z > NODE_ENV=production node dist/index.js
+2025-11-14T19:28:17.347055401Z 
+2025-11-14T19:28:17.558840774Z node:internal/modules/cjs/loader:1404
+2025-11-14T19:28:17.558854124Z   throw err;
+2025-11-14T19:28:17.558856714Z   ^
+2025-11-14T19:28:17.558858524Z 
+2025-11-14T19:28:17.558860744Z Error: Cannot find module '/opt/render/project/src/dist/index.js'
+2025-11-14T19:28:17.558863034Z     at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+2025-11-14T19:28:17.558865084Z     at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+2025-11-14T19:28:17.558866754Z     at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+2025-11-14T19:28:17.558869174Z     at Function._load (node:internal/modules/cjs/loader:1211:37)
+2025-11-14T19:28:17.558870884Z     at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+2025-11-14T19:28:17.558893435Z     at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+2025-11-14T19:28:17.558900975Z     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+2025-11-14T19:28:17.558906115Z     at node:internal/main/run_main_module:36:49 {
+2025-11-14T19:28:17.558909385Z   code: 'MODULE_NOT_FOUND',
+2025-11-14T19:28:17.558912595Z   requireStack: []
+2025-11-14T19:28:17.558915085Z }
+2025-11-14T19:28:17.558917425Z 
+2025-11-14T19:28:17.558919895Z Node.js v22.16.0
