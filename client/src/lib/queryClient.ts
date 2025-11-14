@@ -1,4 +1,4 @@
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, type QueryFunction } from "@tanstack/react-query";
 import { getApiEndpoint } from "./api-config";
 
 async function handleResponse(response: Response) {

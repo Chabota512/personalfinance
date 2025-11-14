@@ -25,6 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { useIsMobile } from "@/hooks/use-mobile";
+import type { Account } from '@shared/schema';
 
 export default function AccountsPage() {
   const isMobile = useIsMobile();
@@ -74,10 +75,10 @@ export default function AccountsPage() {
   }
 
   const accountsByType = {
-    asset: accounts?.filter((a: any) => a.accountType === 'asset') || [],
-    liability: accounts?.filter((a: any) => a.accountType === 'liability') || [],
-    income: accounts?.filter((a: any) => a.accountType === 'income') || [],
-    expense: accounts?.filter((a: any) => a.accountType === 'expense') || [],
+    asset: accounts?.filter((a: Account) => a.accountType === 'asset') || [],
+    liability: accounts?.filter((a: Account) => a.accountType === 'liability') || [],
+    income: accounts?.filter((a: Account) => a.accountType === 'income') || [],
+    expense: accounts?.filter((a: Account) => a.accountType === 'expense') || [],
   };
 
   // Original mock data for reference
@@ -302,7 +303,7 @@ export default function AccountsPage() {
             <h2 className="text-body-sm font-semibold text-muted-foreground px-1">Assets</h2>
             {accountsByType.asset.length > 0 ? (
               <div className="space-y-2">
-                {accountsByType.asset.map((account: any) => (
+                {accountsByType.asset.map((account: Account) => (
                   <AccountCard key={account.id} account={account} />
                 ))}
               </div>
@@ -320,7 +321,7 @@ export default function AccountsPage() {
             <h2 className="text-body-sm font-semibold text-muted-foreground px-1">Liabilities</h2>
             {accountsByType.liability.length > 0 ? (
               <div className="space-y-2">
-                {accountsByType.liability.map((account: any) => (
+                {accountsByType.liability.map((account: Account) => (
                   <AccountCard key={account.id} account={account} />
                 ))}
               </div>
@@ -338,7 +339,7 @@ export default function AccountsPage() {
             <h2 className="text-body-sm font-semibold text-muted-foreground px-1">Income</h2>
             {accountsByType.income.length > 0 ? (
               <div className="space-y-2">
-                {accountsByType.income.map((account: any) => (
+                {accountsByType.income.map((account: Account) => (
                   <AccountCard key={account.id} account={account} />
                 ))}
               </div>
@@ -356,7 +357,7 @@ export default function AccountsPage() {
             <h2 className="text-body-sm font-semibold text-muted-foreground px-1">Expenses</h2>
             {accountsByType.expense.length > 0 ? (
               <div className="space-y-2">
-                {accountsByType.expense.map((account: any) => (
+                {accountsByType.expense.map((account: Account) => (
                   <AccountCard key={account.id} account={account} />
                 ))}
               </div>
@@ -486,7 +487,7 @@ export default function AccountsPage() {
       <div className="space-y-4">
         <h2 className="text-display-md md:text-display-lg font-semibold text-success">Assets</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {accountsByType.asset.map((account) => (
+          {accountsByType.asset.map((account: Account) => (
             <AccountCard key={account.id} account={account} />
           ))}
         </div>
@@ -496,7 +497,7 @@ export default function AccountsPage() {
       <div className="space-y-4">
         <h2 className="text-display-md md:text-display-lg font-semibold text-destructive">Liabilities</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {accountsByType.liability.map((account) => (
+          {accountsByType.liability.map((account: Account) => (
             <AccountCard key={account.id} account={account} />
           ))}
         </div>
@@ -506,7 +507,7 @@ export default function AccountsPage() {
       <div className="space-y-4">
         <h2 className="text-display-md md:text-display-lg font-semibold text-primary">Income</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {accountsByType.income.map((account) => (
+          {accountsByType.income.map((account: Account) => (
             <AccountCard key={account.id} account={account} />
           ))}
         </div>
@@ -516,7 +517,7 @@ export default function AccountsPage() {
       <div className="space-y-4">
         <h2 className="text-display-md md:text-display-lg font-semibold text-warning">Expenses</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {accountsByType.expense.map((account) => (
+          {accountsByType.expense.map((account: Account) => (
             <AccountCard key={account.id} account={account} />
           ))}
         </div>

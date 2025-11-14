@@ -5,6 +5,26 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import { fetchApi, apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from '@tanstack/react-query';
+import { apiRequest as externalApiRequest } from '@/lib/api'; // Renamed to avoid conflict
+
+type DebtMethodProjection = {
+  method: string;
+  totalInterest: number;
+  totalTime: number;
+  monthlyPayment: number;
+  highestPayment: number;
+  projection: {
+    payoffDate: string;
+  };
+  methodTitle: string;
+  hidden: boolean;
+  [key: string]: any;
+};
+
+type DebtMethodsResponse = {
+  methods: DebtMethodProjection[];
+};
 
 interface DebtMethodSelectorProps {
   onComplete: () => void;
@@ -22,9 +42,9 @@ export function DebtMethodSelector({ onComplete, onCancel }: DebtMethodSelectorP
   const handleFormSubmit = async (data: UniversalDebtFormData) => {
     setIsLoading(true);
     setFormData(data);
-    
+
     try {
-      const response: { methods: DebtMethodProjection[] } = await fetchApi('/api/debts/compare-all-methods', {
+      const response: DebtMethodsResponse = await fetchApi('/api/debts/compare-all-methods', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -41,7 +61,7 @@ export function DebtMethodSelector({ onComplete, onCancel }: DebtMethodSelectorP
 
       // Filter out hidden methods
       const visibleMethods = response.methods.filter((m: DebtMethodProjection) => !m.hidden);
-      
+
       // Handle edge case: no viable methods
       if (visibleMethods.length === 0) {
         toast({
@@ -52,7 +72,7 @@ export function DebtMethodSelector({ onComplete, onCancel }: DebtMethodSelectorP
         setIsLoading(false);
         return;
       }
-      
+
       setMethods(visibleMethods);
       setStep('compare');
     } catch (error: any) {
@@ -74,10 +94,10 @@ export function DebtMethodSelector({ onComplete, onCancel }: DebtMethodSelectorP
     if (!selectedMethod || !formData) return;
 
     setIsLoading(true);
-    
+
     try {
       const selectedMethodData = methods.find(m => m.method === selectedMethod);
-      
+
       // Create debt with selected method
       await apiRequest('POST', '/api/debts', {
         name: formData.lenderName,

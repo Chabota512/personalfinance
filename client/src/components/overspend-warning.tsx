@@ -4,6 +4,16 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, Lightbulb, X } from "lucide-react";
 import { formatCurrency } from "@/lib/financial-utils";
 import { apiRequest } from "@/lib/queryClient";
+import { useQuery } from '@tanstack/react-query';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+
+type BudgetSpending = {
+  spent: number;
+  budget: {
+    allocatedAmount: string;
+  };
+  [key: string]: any;
+};
 
 interface OverspendWarningProps {
   budgetId: string;
@@ -30,6 +40,11 @@ export function OverspendWarning({
 
   const overspent = currentSpent - budgetLimit;
   const percentOver = ((currentSpent / budgetLimit) * 100) - 100;
+
+  const { data: budgetSpending } = useQuery<BudgetSpending>({
+    queryKey: [`/api/budgets/${budgetId}/spending`],
+    enabled: !!budgetId,
+  });
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -74,7 +89,7 @@ export function OverspendWarning({
           <X className="h-4 w-4" />
         </Button>
       )}
-      
+
       <AlertTriangle className="h-4 w-4" />
       <AlertTitle>
         {severity === "critical" && "🚨 Critical Overspending"}

@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -9,8 +8,27 @@ import { formatCurrency } from "@/lib/financial-utils";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 
+// Define the type for the debt health response
+type DebtHealthResponse = {
+  grade: string;
+  score: number;
+  totalDebt: number;
+  totalMonthlyPayments: number;
+  debtToIncomeRatio: number;
+  paymentConsistency: number;
+  message?: string;
+  factors: Array<{
+    name: string;
+    score: number;
+    explanation: string;
+    suggestion: string;
+  }>;
+  aiRecommendations?: string[];
+};
+
 export default function DebtDashboard() {
-  const { data: healthScore, isLoading: healthLoading } = useQuery({
+  // Type the debt health query
+  const { data: healthScore, isLoading: healthLoading } = useQuery<DebtHealthResponse>({
     queryKey: ['/api/debts/health-score'],
   });
 
@@ -29,6 +47,7 @@ export default function DebtDashboard() {
     );
   }
 
+  // Ensure healthScore is not undefined before accessing its properties
   if (!healthScore || healthScore.message) {
     return (
       <div className="space-y-6">
@@ -49,7 +68,7 @@ export default function DebtDashboard() {
     );
   }
 
-  const gradeColors = {
+  const gradeColors: { [key: string]: string } = {
     'Excellent': 'text-green-600',
     'Good': 'text-blue-600',
     'Fair': 'text-yellow-600',
@@ -75,7 +94,7 @@ export default function DebtDashboard() {
         <CardContent>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <div className={`text-6xl font-bold ${gradeColors[healthScore.grade as keyof typeof gradeColors]}`}>
+              <div className={`text-6xl font-bold ${gradeColors[healthScore.grade]}`}>
                 {healthScore.score}
               </div>
               <Badge variant="outline" className="mt-2">
@@ -137,7 +156,7 @@ export default function DebtDashboard() {
           <CardTitle>Health Breakdown</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {healthScore.factors.map((factor: any, index: number) => (
+          {healthScore.factors.map((factor, index) => (
             <div key={index} className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="font-medium">{factor.name}</span>
@@ -159,7 +178,7 @@ export default function DebtDashboard() {
             <CardDescription>Personalized suggestions to improve your debt health</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {healthScore.aiRecommendations.map((rec: string, index: number) => (
+            {healthScore.aiRecommendations.map((rec, index) => (
               <Alert key={index}>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>{rec}</AlertDescription>

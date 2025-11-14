@@ -31,6 +31,7 @@ interface Budget {
   endDate: string;
   isActive: number;
   spent?: string;
+  title?: string; // Added title to interface based on usage in CardHeader
 }
 
 export default function BudgetPage() {
@@ -44,7 +45,7 @@ export default function BudgetPage() {
     queryKey: ["/api/budgets"],
   });
 
-  const { data: activeBudgets = [] } = useQuery<any[]>({
+  const { data: activeBudgets = [] } = useQuery<Budget[]>({ // Changed type to Budget[]
     queryKey: ["/api/budgets/active"],
   });
 
@@ -91,7 +92,7 @@ export default function BudgetPage() {
         credentials: "include",
       });
       const data = await res.json();
-      
+
       if (!data.canEdit) {
         setSelectedBudget(budget);
         setEditWarningOpen(true);
@@ -133,6 +134,7 @@ export default function BudgetPage() {
     if (!spent) return 0;
     const spentNum = parseFloat(spent);
     const allocatedNum = parseFloat(allocated);
+    if (isNaN(spentNum) || isNaN(allocatedNum) || allocatedNum === 0) return 0;
     return (spentNum / allocatedNum) * 100;
   };
 
@@ -171,7 +173,7 @@ export default function BudgetPage() {
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between gap-2">
                         <CardTitle className="text-base">
-                          {budget.title}
+                          {budget.title || 'Budget'} {/* Changed from activeBudget.title to budget.title */}
                         </CardTitle>
                         <div className="flex items-center gap-2">
                           <Badge variant={budget.isActive ? "default" : "secondary"}>
@@ -255,7 +257,7 @@ export default function BudgetPage() {
                       <div className="flex items-center justify-between flex-wrap gap-2">
                         <div className="space-y-1">
                           <CardTitle>
-                            {budget.title}
+                            {budget.title || 'Budget'} {/* Changed from activeBudget.title to budget.title */}
                           </CardTitle>
                           <CardDescription className="flex items-center gap-2">
                             <Calendar className="h-3 w-3" />

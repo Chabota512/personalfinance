@@ -25,7 +25,22 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+
+type CategorySuggestion = {
+  category: string;
+  confidence: number;
+};
+
+type WarningResponse = {
+  showInsufficientFundsWarning: boolean;
+  showBudgetOverspendWarning: boolean;
+};
+
+type TransactionResponse = {
+  id: string;
+  [key: string]: any;
+};
 
 interface QuickDealFormProps {
   onSuccess?: () => void;
@@ -97,7 +112,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
   const [accounts, setAccounts] = useState<any[]>([]);
   const [monthlyAccount, setMonthlyAccount] = useState<any>(null);
   const [selectedAccountId, setSelectedAccountId] = useState<string>(""); // For temporary override
-  
+
   // Budget linking state
   const [budgetLinkOpen, setBudgetLinkOpen] = useState(false);
   const [matchingBudgetItems, setMatchingBudgetItems] = useState<any[]>([]);
@@ -114,6 +129,42 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
     enabled: !!user, // Only fetch when user is authenticated
   });
 
+  // Fetch category suggestion from AI
+  const { data: categorySuggestion } = useQuery<CategorySuggestion | null>({
+    queryKey: ['/api/ai/categorize', description],
+    queryFn: async () => {
+      if (!description || description.length < 3) return null;
+      return await apiRequest<CategorySuggestion>('/api/ai/categorize', {
+        method: 'POST',
+        body: JSON.stringify({ description, transactionType: transactionType }),
+      });
+    },
+    enabled: description.length >= 3,
+  });
+
+  // Fetch warnings based on amount, category, and type
+  const { data: warnings } = useQuery<WarningResponse | null>({
+    queryKey: ['/api/quick-deals/check-warnings', amount, category, transactionType],
+    queryFn: async () => {
+      if (!amount || parseFloat(amount) <= 0) return null;
+      return await apiRequest<WarningResponse>('/api/quick-deals/check-warnings', {
+        method: 'POST',
+        body: JSON.stringify({ amount, category, type: transactionType }),
+      });
+    },
+    enabled: !!amount && parseFloat(amount) > 0 && !!category,
+  });
+
+  // Mutation for creating a quick deal
+  const createQuickDeal = useMutation({
+    mutationFn: async (data: any) => {
+      return await apiRequest<TransactionResponse>('/api/quick-deals', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+  });
+
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -124,27 +175,14 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
-    const fetchSuggestion = async () => {
-      if (description.trim().length >= 3 && !category) {
-        try {
-          const suggestion = await apiRequest('POST', '/api/ai/suggest-category', {
-            description,
-            transactionType
-          });
-          setSuggestedCategory(suggestion.category);
-          setCategoryConfidence(suggestion.confidence);
-          setCategory(suggestion.category);
-        } catch (error) {
-          // Fallback to local detection
-          const detectedCategory = autoDetectCategory(description, transactionType);
-          setCategory(detectedCategory);
-        }
+    if (categorySuggestion) {
+      setSuggestedCategory(categorySuggestion.category);
+      setCategoryConfidence(categorySuggestion.confidence);
+      if (!category) { // Only auto-set if category is not manually selected
+        setCategory(categorySuggestion.category);
       }
-    };
-
-    const timeoutId = setTimeout(fetchSuggestion, 300); // Debounce
-    return () => clearTimeout(timeoutId);
-  }, [description, transactionType]);
+    }
+  }, [categorySuggestion, category]);
 
   // Fetch accounts and monthly account when dialog opens
   useEffect(() => {
@@ -159,7 +197,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
             a.accountType === 'asset' && a.isActive === 1
           );
           setAccounts(assetAccounts);
-          
+
           if (transactionType === 'income') {
             // Auto-select checking account if available for income
             const checking = assetAccounts.find((a: any) => 
@@ -325,7 +363,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
     }
 
     const amountNum = parseFloat(amount);
-    
+
     // Validate amount is a valid number
     if (isNaN(amountNum) || amountNum <= 0) {
       toast({
@@ -335,7 +373,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
       });
       return false;
     }
-    
+
     const finalCategory = category || autoDetectCategory(description, transactionType);
 
     // Check insufficient funds if enabled in preferences
@@ -343,7 +381,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
       const sourceAccount = accounts.find(a => a.id === selectedAccountId);
       if (sourceAccount) {
         const availableBalance = parseFloat(sourceAccount.balance);
-        
+
         // Validate balance is a valid number
         if (isNaN(availableBalance)) {
           console.warn('Invalid account balance, skipping insufficient funds check');
@@ -369,19 +407,19 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
             const categoryItem = budget.categoryItems?.find((item: any) => 
               item.category === finalCategory
             );
-            
+
             if (categoryItem) {
               const budgetLimit = parseFloat(categoryItem.allocated);
               const currentSpent = parseFloat(categoryItem.spent || '0');
-              
+
               // Validate budget numbers are valid
               if (isNaN(budgetLimit) || isNaN(currentSpent)) {
                 console.warn('Invalid budget data, skipping overspend check for this category');
                 continue;
               }
-              
+
               const newTotal = currentSpent + amountNum;
-              
+
               if (newTotal > budgetLimit) {
                 setAlertData({
                   type: 'budgetOverspend',
@@ -477,7 +515,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
       };
 
       // Create Quick Deal transaction
-      const transaction = await apiRequest('POST', '/api/quick-deals', quickDealData);
+      const transaction = await createQuickDeal.mutateAsync(quickDealData);
 
       // For expenses, check if this matches any budget items
       if (transactionType === 'expense') {
@@ -515,7 +553,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
       setReason("");
       setContentmentLevel(3);
       deleteRecording();
-      
+
       // Reset selected account to monthly default
       if (monthlyAccount && monthlyAccount.accountId) {
         setSelectedAccountId(monthlyAccount.accountId);

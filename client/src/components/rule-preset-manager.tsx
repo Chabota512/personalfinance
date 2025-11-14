@@ -1,6 +1,5 @@
-
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +9,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Layers, Plus, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+type AutomationRule = {
+  id: string;
+  name: string;
+  [key: string]: any;
+};
+
+type AutomationRulesResponse = AutomationRule[];
 
 const PRESET_TEMPLATES = {
   "50/30/20": { Needs: 50, Wants: 30, Savings: 20 },
@@ -26,7 +33,7 @@ export function RulePresetManager({ budgetId, onApply }: { budgetId?: number; on
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: presets } = useQuery({
+  const { data: presets } = useQuery<AutomationRulesResponse>({
     queryKey: ["/api/rule-presets"],
     enabled: open,
   });
@@ -81,14 +88,14 @@ export function RulePresetManager({ budgetId, onApply }: { budgetId?: number; on
         <DialogHeader>
           <DialogTitle>Budget Rule Presets</DialogTitle>
         </DialogHeader>
-        
+
         {!creating ? (
           <div className="space-y-4">
             <Button onClick={() => setCreating(true)} className="w-full">
               <Plus className="h-4 w-4 mr-2" />
               Create New Preset
             </Button>
-            
+
             <div className="space-y-2">
               {presets?.map((preset: any) => (
                 <div key={preset.id} className="border rounded-lg p-3 flex items-center justify-between">
@@ -124,7 +131,7 @@ export function RulePresetManager({ budgetId, onApply }: { budgetId?: number; on
                 placeholder="My Custom Rule"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="preset-template">Base Template</Label>
               <Select value={template} onValueChange={setTemplate}>
@@ -138,7 +145,7 @@ export function RulePresetManager({ budgetId, onApply }: { budgetId?: number; on
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div>
               <Label htmlFor="preset-desc">Description</Label>
               <Textarea
@@ -148,7 +155,7 @@ export function RulePresetManager({ budgetId, onApply }: { budgetId?: number; on
                 placeholder="Optional description"
               />
             </div>
-            
+
             <div className="flex gap-2">
               <Button
                 onClick={() => {

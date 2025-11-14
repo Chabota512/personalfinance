@@ -280,7 +280,7 @@ export const insertBudgetCategoryItemSchema = createInsertSchema(budgetCategoryI
 });
 
 export type BudgetCategoryItem = typeof budgetCategoryItems.$inferSelect;
-export type InsertBudgetCategoryItem = z.infer<typeof insertBudgetCategoryItemSchema>;
+export type InsertBudgetCategoryItem = z.infer<typeof insertBudgetCategorySchema>;
 
 // ===== BUDGET ITEMS TABLE =====
 export const budgetItems = pgTable("budget_items", {
@@ -290,18 +290,18 @@ export const budgetItems = pgTable("budget_items", {
     .references(() => budgets.id, { onDelete: "cascade" }),
   category: varchar("category", { length: 100 }).notNull(),
   itemName: varchar("item_name", { length: 255 }).notNull(),
+  estimatedPrice: varchar("estimated_price", { length: 50 }),
   quantity: varchar("quantity", { length: 50 }),
+  quantityPurchased: varchar("quantity_purchased", { length: 50 }),
   unit: varchar("unit", { length: 50 }),
-  estimatedPrice: varchar("estimated_price", { length: 50 }).notNull(),
+  purchased: boolean("purchased").notNull().default(false),
   actualPrice: varchar("actual_price", { length: 50 }),
+  purchaseDate: timestamp("purchase_date"),
   locationLat: varchar("location_lat", { length: 50 }),
   locationLon: varchar("location_lon", { length: 50 }),
   locationName: varchar("location_name", { length: 255 }),
-  purchased: boolean("purchased").notNull().default(false),
-  purchaseDate: timestamp("purchase_date"),
-  quantityPurchased: varchar("quantity_purchased", { length: 50 }).default('0'),
-  notes: text("notes"),
   linkedDebtId: varchar("linked_debt_id", { length: 255 }).references(() => debts.id, { onDelete: "set null" }),
+  notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

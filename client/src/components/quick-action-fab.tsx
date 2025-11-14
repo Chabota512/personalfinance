@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Receipt, Target, PieChart, X } from "lucide-react";
+import {
+  Plus,
+  DollarSign,
+  Target,
+  Receipt,
+  TrendingUp,
+  X,
+} from "lucide-react";
 import { Link } from "wouter";
 import { cn } from "@/lib/utils";
 

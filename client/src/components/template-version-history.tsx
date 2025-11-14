@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -8,14 +7,23 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { History, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+type TemplateVersion = {
+  id: string;
+  version: number;
+  createdAt: string;
+  [key: string]: any;
+};
+
+type TemplateVersionsResponse = TemplateVersion[];
+
 export function TemplateVersionHistory({ templateId }: { templateId: number }) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: versions } = useQuery({
+  const { data: versions, isLoading } = useQuery<TemplateVersionsResponse>({
     queryKey: [`/api/templates/${templateId}/versions`],
-    enabled: open,
+    enabled: !!templateId,
   });
 
   const createVersion = useMutation({
@@ -49,7 +57,7 @@ export function TemplateVersionHistory({ templateId }: { templateId: number }) {
         </DialogHeader>
         <ScrollArea className="h-[400px]">
           <div className="space-y-4">
-            {versions?.map((version: any) => (
+            {versions?.map((version: TemplateVersion) => (
               <div key={version.id} className="border rounded-lg p-4">
                 <div className="flex items-start justify-between">
                   <div>
