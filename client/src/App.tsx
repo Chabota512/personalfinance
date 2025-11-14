@@ -109,33 +109,35 @@ function Router() {
         <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     }>
-      <Switch>
-      <Route path="/" component={Landing} />
-      <Route path="/auth" component={Auth} />
-      <Route path="/home" component={() => <ProtectedRoute component={Home} />} />
-      <Route path="/onboarding" component={() => <ProtectedRoute component={Onboarding} />} />
-      <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
-      <Route path="/transactions" component={() => <ProtectedRoute component={Transactions} />} />
-      <Route path="/accounts" component={() => <ProtectedRoute component={Accounts} />} />
-      <Route path="/budget" component={() => <ProtectedRoute component={Budget} />} />
-      <Route path="/budget/new" component={() => <ProtectedRoute component={BudgetWizard} />} />
-      <Route path="/budget-wizard" component={() => <ProtectedRoute component={BudgetWizard} />} />
-      <Route path="/budgets/:budgetId/shop" component={() => <ProtectedRoute component={BudgetExecution} />} />
-      <Route path="/goals" component={() => <ProtectedRoute component={Goals} />} />
-      <Route path="/balance-sheet" component={() => <ProtectedRoute component={BalanceSheet} />} />
-      <Route path="/cash-flow" component={() => <ProtectedRoute component={CashFlow} />} />
-      <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
-      <Route path="/settings" component={() => <ProtectedRoute component={Settings} />} />
-      <Route path="/learn" component={() => <ProtectedRoute component={Learn} />} />
-      <Route path="/learn/:lessonId" component={() => <ProtectedRoute component={LessonViewer} />} />
-      <Route path="/items" component={() => <ProtectedRoute component={Items} />} />
-      <Route path="/debts/:id" component={() => <ProtectedRoute component={DebtDetail} />} />
-      <Route path="/debts" component={() => <ProtectedRoute component={Debts} />} />
-      <Route path="/debt-dashboard" component={() => <ProtectedRoute component={DebtDashboard} />} />
-      <Route path="/privacy" component={PrivacyPolicy} />
-      <Route path="/terms" component={TermsOfService} />
-      <Route component={NotFound} />
-    </Switch>
+      <div className="page-enter">
+        <Switch>
+        <Route path="/" component={Landing} />
+        <Route path="/auth" component={Auth} />
+        <Route path="/home" component={() => <ProtectedRoute component={Home} />} />
+        <Route path="/onboarding" component={() => <ProtectedRoute component={Onboarding} />} />
+        <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
+        <Route path="/transactions" component={() => <ProtectedRoute component={Transactions} />} />
+        <Route path="/accounts" component={() => <ProtectedRoute component={Accounts} />} />
+        <Route path="/budget" component={() => <ProtectedRoute component={Budget} />} />
+        <Route path="/budget/new" component={() => <ProtectedRoute component={BudgetWizard} />} />
+        <Route path="/budget-wizard" component={() => <ProtectedRoute component={BudgetWizard} />} />
+        <Route path="/budgets/:budgetId/shop" component={() => <ProtectedRoute component={BudgetExecution} />} />
+        <Route path="/goals" component={() => <ProtectedRoute component={Goals} />} />
+        <Route path="/balance-sheet" component={() => <ProtectedRoute component={BalanceSheet} />} />
+        <Route path="/cash-flow" component={() => <ProtectedRoute component={CashFlow} />} />
+        <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
+        <Route path="/settings" component={() => <ProtectedRoute component={Settings} />} />
+        <Route path="/learn" component={() => <ProtectedRoute component={Learn} />} />
+        <Route path="/learn/:lessonId" component={() => <ProtectedRoute component={LessonViewer} />} />
+        <Route path="/items" component={() => <ProtectedRoute component={Items} />} />
+        <Route path="/debts/:id" component={() => <ProtectedRoute component={DebtDetail} />} />
+        <Route path="/debts" component={() => <ProtectedRoute component={Debts} />} />
+        <Route path="/debt-dashboard" component={() => <ProtectedRoute component={DebtDashboard} />} />
+        <Route path="/privacy" component={PrivacyPolicy} />
+        <Route path="/terms" component={TermsOfService} />
+        <Route component={NotFound} />
+      </Switch>
+      </div>
     </React.Suspense>
   );
 }

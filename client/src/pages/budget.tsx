@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,7 @@ import { BurnRateBar } from "@/components/burn-rate-bar";
 import { MobilePageShell, MobileSection } from "@/components/mobile-page-shell";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { PullToRefresh } from "@/components/pull-to-refresh";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -85,6 +86,12 @@ export default function BudgetPage() {
       });
     },
   });
+
+  // Pull-to-refresh handler for mobile
+  const handleRefresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ["/api/budgets"] });
+    await queryClient.invalidateQueries({ queryKey: ["/api/budgets/active"] });
+  }, []);
 
   const handleDeleteClick = (budget: Budget) => {
     setSelectedBudget(budget);

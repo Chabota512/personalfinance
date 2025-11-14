@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import { useGoals, useCreateGoal, useUpdateGoal, useDeleteGoal, useAccounts } fr
 import { GoalCard } from "@/components/goal-card";
 import { MobilePageShell } from "@/components/mobile-page-shell";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { PullToRefresh } from "@/components/pull-to-refresh";
 import { Plus, Target, Plane, GraduationCap, Home, Wallet, TrendingUp, ChevronDown, ChevronUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { calculateScheduledAmount, calculateTargetDate, formatFrequency, formatDayOfWeek } from "@shared/goal-utils";

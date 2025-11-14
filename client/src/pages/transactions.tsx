@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { useTransactionsByDateRange } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +18,8 @@ import { Label } from "@/components/ui/label";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { formatCurrency } from "@/lib/financial-utils";
 import { MobilePageShell } from "@/components/mobile-page-shell";
+import { PullToRefresh } from "@/components/pull-to-refresh";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Assuming EXPENSE_CATEGORIES and INCOME_CATEGORIES are defined elsewhere in your project
 // For demonstration purposes, let's define them here:
@@ -41,6 +43,7 @@ const INCOME_CATEGORIES = [
 
 export default function TransactionsPage() {
   const isMobile = useIsMobile();
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
   const [timePeriod, setTimePeriod] = useState<TimePeriod>("month");
@@ -58,6 +61,11 @@ export default function TransactionsPage() {
 
   const { data: transactions, isLoading, error, refetch } = useTransactionsByDateRange(startDate, endDate);
 
+  // Pull-to-refresh handler for mobile
+  const handleRefresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ['/api/transactions'] });
+  }, [queryClient]);
+
   // Auto-refresh on mount to recover from stale data
   useEffect(() => {
     refetch();
@@ -73,7 +81,7 @@ export default function TransactionsPage() {
       return [];
     }
 
-    const filtered = transactions.filter(t => {
+    const filtered = transactions.filter((t: any) => {
       // Search filter
       const matchesSearch = !searchTerm || 
                            t.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -113,7 +121,7 @@ export default function TransactionsPage() {
 
   if (isMobile) {
     return (
-      <MobilePageShell compact scrollable className="bg-background pb-20">
+      <MobilePageShell compact className="bg-background pb-20">
         {/* Mobile Header - Ultra Compact */}
         <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
           <div className="px-3 py-1 mobile-space-sm">
@@ -139,7 +147,8 @@ export default function TransactionsPage() {
         </div>
 
         {/* Mobile Transaction List - Scrollable Area */}
-        <div className="mobile-scroll-area px-3 py-2">
+        <PullToRefresh onRefresh={handleRefresh}>
+          <div className="px-3 py-2">
           {filteredTransactions && filteredTransactions.length > 0 ? (
             <div className="flex flex-col gap-2">
               {filteredTransactions.map((transaction: any) => (
@@ -171,7 +180,8 @@ export default function TransactionsPage() {
               </CardContent>
             </Card>
           )}
-        </div>
+          </div>
+        </PullToRefresh>
 
         <TransactionDialog 
           open={open && !selectedTransaction} 

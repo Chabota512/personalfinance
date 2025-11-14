@@ -22,12 +22,13 @@ import {
   ChevronUp
 } from "lucide-react";
 import { Link } from "wouter";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useQueryClient } from '@tanstack/react-query';
 import { MonthlyAccountSetupDialog } from "@/components/monthly-account-setup-dialog";
 import { apiRequest } from "@/lib/queryClient";
 import { MobilePageShell, MobileSection } from "@/components/mobile-page-shell";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { PullToRefresh } from "@/components/pull-to-refresh";
 import { 
   Collapsible,
   CollapsibleContent,
@@ -102,12 +103,21 @@ export default function HomePage() {
     return 'secondary';
   };
 
+  // Pull-to-refresh handler for mobile
+  const handleRefresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ['/api/financial-health'] });
+    await queryClient.invalidateQueries({ queryKey: ['/api/transactions'] });
+    await queryClient.invalidateQueries({ queryKey: ['/api/ai/recommendations'] });
+    await queryClient.invalidateQueries({ queryKey: ['/api/analytics/spending-days-comparison'] });
+  }, [queryClient]);
+
   // Mobile ultra-compact layout
   if (isMobile) {
     return (
       <>
         <MobilePageShell className="bg-background mobile-compact">
-          <div className="mobile-space-sm">
+          <PullToRefresh onRefresh={handleRefresh}>
+            <div className="mobile-space-sm">
             {/* Compact Header - 1 line only */}
             <h1 className="text-base font-bold text-center">Financial Pulse</h1>
 
@@ -273,6 +283,7 @@ export default function HomePage() {
               </Button>
             </Link>
           </div>
+          </PullToRefresh>
         </MobilePageShell>
 
         <MonthlyAccountSetupDialog
