@@ -1,0 +1,221 @@
+I need to fix approximately 40 TypeScript errors in the frontend (client) code. These errors are preventing a clean build for the mobile APK. Please fix ALL of them systematically.
+
+Run npm run check first to see all errors, then fix them one by one.
+
+ERROR CATEGORY 1: client/src/lib/queryClient.ts
+Errors:
+
+Line 55: Cannot find name 'QueryFunction'
+Line 57: Binding element 'queryKey' implicitly has an 'any' type
+How to Fix:
+
+Import the missing type at the top of the file:
+import { QueryClient, type QueryFunction } from '@tanstack/react-query';
+
+Add proper type annotation to the defaultQueryFn:
+const defaultQueryFn: QueryFunction = async ({ queryKey }) => {
+  // existing code
+}
+
+ERROR CATEGORY 2: client/src/components/quick-action-fab.tsx
+Error:
+
+Line 69: Cannot find name 'Plus'
+How to Fix:
+Add the missing import at the top:
+
+import { Plus } from 'lucide-react';
+
+ERROR CATEGORY 3: client/src/components/recurring-income-reminder.tsx
+Errors:
+
+Line 53 & 63: Type 'Set<string>' can only be iterated through with '--downlevelIteration' flag
+How to Fix:
+Convert Set to Array before iterating:
+
+// BEFORE:
+for (const id of dismissedReminders) {
+  // ...
+}
+// AFTER:
+for (const id of Array.from(dismissedReminders)) {
+  // ...
+}
+
+Do this for both lines 53 and 63.
+
+ERROR CATEGORY 4: client/src/components/ai-budget-review.tsx
+Errors:
+
+Line 34 & 42: Cannot redeclare block-scoped variable 'review'
+Line 44, 137: Property 'shouldShow' and 'engagementRate' don't exist
+Line 51: 'onSuccess' doesn't exist in useQuery options (TanStack Query v5 removed it)
+Line 85, 137: Type assignment issues
+How to Fix:
+
+Variable redeclaration - Find where 'review' is declared twice and rename one:
+// If you have:
+const review = ...
+// and later:
+const review = ...
+// Change to:
+const review = ...
+// and later:
+const reviewData = ...
+
+Missing properties - Add type definitions or use proper typing:
+// Define the AIReview type properly in the component or import it
+type AIReview = {
+  shouldShow: boolean;
+  engagementRate: number;
+  // ... other properties
+}
+
+Remove deprecated onSuccess - Replace with useEffect:
+// BEFORE:
+useQuery({
+  queryKey: [...],
+  onSuccess: (data) => {
+    // do something
+  }
+})
+// AFTER:
+const { data } = useQuery({
+  queryKey: [...]
+})
+useEffect(() => {
+  if (data) {
+    // do something with data
+  }
+}, [data])
+
+ERROR CATEGORY 5: client/src/components/quick-deal-form.tsx
+Errors:
+
+Lines 134-136: Properties 'category' and 'confidence' don't exist on Response
+Line 342: Property 'showInsufficientFundsWarning' doesn't exist
+Line 364: Property 'showBudgetOverspendWarning' doesn't exist
+Line 493: Property 'id' doesn't exist on Response
+How to Fix:
+
+Define proper response types for the API calls:
+type CategorySuggestion = {
+  category: string;
+  confidence: number;
+}
+type WarningResponse = {
+  showInsufficientFundsWarning: boolean;
+  showBudgetOverspendWarning: boolean;
+}
+type TransactionResponse = {
+  id: string;
+  // other properties
+}
+
+Type the API response properly in the query/mutation:
+const { data } = useQuery<CategorySuggestion>({
+  queryKey: ['/api/categorize']
+})
+
+ERROR CATEGORY 6: client/src/pages/accounts.tsx
+Errors:
+
+Lines 489, 499, 509, 519: Parameter 'account' implicitly has 'any' type
+How to Fix:
+Import and use the proper Account type:
+
+import type { Account } from '@shared/schema';
+// Then use it:
+const handleSomething = (account: Account) => {
+  // ...
+}
+
+ERROR CATEGORY 7: client/src/pages/budget-execution.tsx
+Errors:
+
+Multiple lines: Property 'linkedDebtId' doesn't exist on BudgetItem
+Lines 311, 313: Property 'notes' doesn't exist on BudgetItem
+How to Fix:
+Check if these properties exist in the BudgetItem schema in shared/schema.ts. If they don't exist:
+
+Option A: Add them to the schema if they should exist
+Option B: Remove references to these properties if they're not needed
+
+Most likely you need to add them to the schema:
+
+// In shared/schema.ts
+export const budgetItems = pgTable('budget_items', {
+  // ... existing fields
+  linkedDebtId: varchar('linked_debt_id'),
+  notes: text('notes'),
+})
+
+ERROR CATEGORY 8: client/src/pages/budget.tsx
+Error:
+
+Line 258: Property 'title' doesn't exist on Budget
+How to Fix:
+Check the Budget type in shared/schema.ts. Either:
+
+Add 'title' field if it should exist
+Use the correct property name (maybe it's 'name' instead of 'title')
+ERROR CATEGORY 9: client/src/pages/debt-dashboard.tsx
+Errors:
+
+Line 32: Property 'message' doesn't exist
+Lines 78-87: Properties 'grade', 'score', 'totalDebt' don't exist
+How to Fix:
+Define proper types for the API responses:
+
+type DebtHealthResponse = {
+  grade: string;
+  score: number;
+  totalDebt: number;
+  // other properties
+}
+const { data } = useQuery<DebtHealthResponse>({
+  queryKey: ['/api/debt-health']
+})
+
+ERROR CATEGORY 10: Other Components
+Files with missing properties on Response types:
+
+debt-method-selector.tsx (line 27): Missing 'methods' property
+overspend-warning.tsx (line 47): Type assignment issue
+rule-preset-manager.tsx (line 93): Missing 'map' property
+template-version-history.tsx (line 52): Missing 'map' property
+How to Fix:
+For each of these, add proper TypeScript types to the useQuery calls:
+
+type YourResponseType = {
+  methods: DebtMethodProjection[];
+  // or whatever properties are expected
+}
+const { data } = useQuery<YourResponseType>({
+  queryKey: [...]
+})
+
+SYSTEMATIC APPROACH:
+Fix in this order:
+
+queryClient.ts - This is fundamental, fix first
+Import errors (quick-action-fab.tsx) - Easy wins
+Schema issues (budget-execution.tsx, budget.tsx) - Add missing fields to schema
+Type definitions - Add proper types for all API responses
+TanStack Query v5 updates - Replace deprecated onSuccess with useEffect
+Implicit any types - Add explicit types everywhere
+TESTING AFTER FIXES:
+After all fixes:
+
+Run npm run check - should show 0 errors
+Run npm run dev - app should start without errors
+Check that all pages load correctly in the browser
+Verify forms and API calls still work
+CRITICAL:
+
+Do NOT break any functionality
+Make sure types match what the backend actually returns
+Check shared/schema.ts for the correct field names
+Test the app runs after fixes
+Please fix all errors systematically and confirm when complete with npm run check showing 0 errors.
+
