@@ -130,8 +130,20 @@ app.use((req, res, next) => {
     const { setupVite } = await import("./vite");
     await setupVite(app, server);
   } else {
-    const { serveStatic } = await import("./vite");
-    serveStatic(app);
+    // In production, serve static files directly without importing vite.ts
+    // This avoids loading vite.config.ts and Replit plugins
+    const distPath = path.join(import.meta.dirname, "..", "dist", "public");
+    
+    if (fs.existsSync(distPath)) {
+      app.use(express.static(distPath));
+      
+      // Fall through to index.html for client-side routing
+      app.use("*", (_req, res) => {
+        res.sendFile(path.join(distPath, "index.html"));
+      });
+    } else {
+      console.log("[express] Production mode: dist/public not found, skipping static file serving");
+    }
   }
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
