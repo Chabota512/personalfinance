@@ -1,0 +1,35 @@
+2025-11-14T17:40:55.965350931Z ==> Cloning from https://github.com/Chabota512/personalfinance
+2025-11-14T17:40:56.739940529Z ==> Checking out commit b7d1ffb2507d018c38ef3d56c13d6bf74d92fdb1 in branch main
+2025-11-14T17:41:06.093577897Z ==> Using Node.js version 22.16.0 (default)
+2025-11-14T17:41:06.120481903Z ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+2025-11-14T17:41:13.196164231Z ==> Running build command 'npm install && npm run build'...
+2025-11-14T17:41:43.998101226Z 
+2025-11-14T17:41:43.998124216Z added 838 packages, and audited 839 packages in 31s
+2025-11-14T17:41:43.998134396Z 
+2025-11-14T17:41:43.998140067Z 179 packages are looking for funding
+2025-11-14T17:41:43.998145536Z   run `npm fund` for details
+2025-11-14T17:41:44.000200166Z 
+2025-11-14T17:41:44.002020031Z 1 low severity vulnerability
+2025-11-14T17:41:44.002027151Z 
+2025-11-14T17:41:44.002032241Z To address all issues, run:
+2025-11-14T17:41:44.002036361Z   npm audit fix
+2025-11-14T17:41:44.002040571Z 
+2025-11-14T17:41:44.002045111Z Run `npm audit` for details.
+2025-11-14T17:41:47.640083303Z 
+2025-11-14T17:41:47.804901328Z > rest-express@1.0.0 build
+2025-11-14T17:41:47.804921149Z > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+2025-11-14T17:41:47.804928069Z 
+2025-11-14T17:41:49.588202888Z failed to load config from /opt/render/project/src/vite.config.ts
+2025-11-14T17:41:49.730514411Z error during build:
+2025-11-14T17:41:49.730525841Z Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@replit/vite-plugin-runtime-error-modal' imported from /opt/render/project/src/node_modules/.vite-temp/vite.config.ts.timestamp-1763142109585-f613e48a1d3b.mjs
+2025-11-14T17:41:49.730534071Z     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:256:9)
+2025-11-14T17:41:49.730537391Z     at packageResolve (node:internal/modules/esm/resolve:768:81)
+2025-11-14T17:41:49.730540181Z     at moduleResolve (node:internal/modules/esm/resolve:854:18)
+2025-11-14T17:41:49.730543261Z     at defaultResolve (node:internal/modules/esm/resolve:984:11)
+2025-11-14T17:41:49.730546881Z     at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:780:12)
+2025-11-14T17:41:49.730549652Z     at #cachedDefaultResolve (node:internal/modules/esm/loader:704:25)
+2025-11-14T17:41:49.730552472Z     at ModuleLoader.resolve (node:internal/modules/esm/loader:687:38)
+2025-11-14T17:41:49.730555221Z     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:305:38)
+2025-11-14T17:41:49.730561612Z     at ModuleJob._link (node:internal/modules/esm/module_job:137:49)
+2025-11-14T17:41:50.184118341Z ==> Build failed 😞
+2025-11-14T17:41:50.362412624Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
