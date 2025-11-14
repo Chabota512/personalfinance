@@ -40,9 +40,9 @@ const app = express();
 // Setup security headers
 setupSecurity(app);
 
-// Session configuration - use PostgreSQL in production, SQLite in development
-const isProduction = process.env.NODE_ENV === 'production';
-const sessionStore = isProduction
+// Session configuration - use PostgreSQL when DATABASE_URL is available, SQLite otherwise
+const usePostgres = !!process.env.DATABASE_URL;
+const sessionStore = usePostgres
   ? new PostgresStore({
       conString: process.env.DATABASE_URL,
       createTableIfMissing: true,
@@ -60,7 +60,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: isProduction, // Use secure cookies in production (HTTPS)
+    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production (HTTPS)
     httpOnly: true,
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days - serves as "remember me"
     sameSite: 'lax'
