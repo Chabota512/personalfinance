@@ -1,0 +1,66 @@
+My backend is now successfully deployed on Render.com at:
+https://personalfinance-pro-backend.onrender.com
+
+Now I need to prepare my PersonalFinance Pro app to be built as an Android APK using Capacitor. The mobile app needs to connect to this deployed backend.
+
+What I need you to do:
+
+1. **Update CORS Configuration**
+   - Open server/index.ts
+   - Update the CORS settings to allow requests from:
+     - capacitor://localhost (Android app scheme)
+     - https://localhost (Android app HTTPS)
+     - Any other origins needed for Capacitor apps
+   - Keep existing development origins (http://localhost:5000, etc.)
+
+2. **Configure Capacitor for Production**
+   - Open capacitor.config.ts
+   - Update the server URL to point to: https://personalfinance-pro-backend.onrender.com
+   - Ensure webDir is correctly set to 'dist/public'
+   - Keep androidScheme as 'https'
+
+3. **Create Mobile Build Script**
+   - Add a new script to package.json called "build:mobile"
+   - This script should:
+     - Set VITE_API_URL=https://personalfinance-pro-backend.onrender.com
+     - Run vite build to create production frontend
+   - Example: "build:mobile": "VITE_API_URL=https://personalfinance-pro-backend.onrender.com vite build"
+
+4. **Add Android Platform**
+   - Check if android/ folder already exists
+   - If not, run: npx cap add android
+   - If it exists, verify it's configured correctly
+
+5. **Configure Android Permissions**
+   - Ensure android/app/src/main/AndroidManifest.xml exists and has:
+     - INTERNET permission
+     - ACCESS_NETWORK_STATE permission
+   - These are required for the app to connect to the backend
+
+6. **Create APK Build Documentation**
+   - Create a file called APK_BUILD_GUIDE.md
+   - Include step-by-step instructions for:
+     a. Running npm run build:mobile to build the frontend
+     b. Running npx cap sync android to copy files to Android project
+     c. Running npx cap open android to open in Android Studio
+     d. Building the APK in Android Studio (Build → Build Bundle(s) / APK(s) → Build APK(s))
+     e. Finding the APK file at: android/app/build/outputs/apk/debug/app-debug.apk
+
+7. **Test the Setup**
+   - Run npm run build:mobile to verify the build works
+   - Check that dist/public folder is created with the frontend files
+   - Verify the built files reference the Render.com backend URL
+
+Important Notes:
+- The mobile app must use the deployed backend URL, not localhost
+- CORS must be configured to accept Capacitor app origins
+- The build process should work without errors
+- Don't modify package.json dependencies, just add the build script
+
+After completing these tasks, I should be able to:
+1. Build the production frontend with npm run build:mobile
+2. Sync with Capacitor using npx cap sync android
+3. Open in Android Studio with npx cap open android
+4. Generate the APK file
+
+Please complete all these tasks and let me know when done.

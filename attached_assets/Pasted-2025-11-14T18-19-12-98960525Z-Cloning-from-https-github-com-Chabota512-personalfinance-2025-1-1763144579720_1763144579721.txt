@@ -1,0 +1,60 @@
+2025-11-14T18:19:12.98960525Z ==> Cloning from https://github.com/Chabota512/personalfinance
+2025-11-14T18:19:13.693189699Z ==> Checking out commit 60578e7cb2f98cf95f827209484e5826c7d7fd86 in branch main
+2025-11-14T18:19:14.97068143Z ==> Using Node.js version 22.16.0 (default)
+2025-11-14T18:19:15.009473668Z ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+2025-11-14T18:19:17.090668527Z ==> Running build command 'npm install'...
+2025-11-14T18:19:27.176632804Z 
+2025-11-14T18:19:27.176662165Z added 838 packages, and audited 839 packages in 10s
+2025-11-14T18:19:27.176676756Z 
+2025-11-14T18:19:27.176683556Z 179 packages are looking for funding
+2025-11-14T18:19:27.176690386Z   run `npm fund` for details
+2025-11-14T18:19:27.178357927Z 
+2025-11-14T18:19:27.178376158Z 1 low severity vulnerability
+2025-11-14T18:19:27.178381268Z 
+2025-11-14T18:19:27.178385628Z To address all issues, run:
+2025-11-14T18:19:27.178389888Z   npm audit fix
+2025-11-14T18:19:27.178394058Z 
+2025-11-14T18:19:27.178398448Z Run `npm audit` for details.
+2025-11-14T18:19:33.211124363Z ==> Uploading build...
+2025-11-14T18:19:43.290747394Z ==> Uploaded in 5.6s. Compression took 4.5s
+2025-11-14T18:19:43.331298086Z ==> Build successful 🎉
+2025-11-14T18:20:06.876325622Z ==> Deploying...
+2025-11-14T18:21:05.201564369Z ==> Running 'npm start'
+2025-11-14T18:21:06.11621494Z 
+2025-11-14T18:21:06.116239751Z > rest-express@1.0.0 start
+2025-11-14T18:21:06.116244791Z > NODE_ENV=production tsx server/index.ts
+2025-11-14T18:21:06.116247051Z 
+2025-11-14T18:21:22.307306199Z Checking and seeding lessons...
+2025-11-14T18:21:22.307499323Z Starting lesson seed...
+2025-11-14T18:21:23.046279692Z Lesson already exists: Mastering Needs vs Wants
+2025-11-14T18:21:23.115191691Z   Quiz questions already exist for Mastering Needs vs Wants
+2025-11-14T18:21:23.182618168Z Lesson already exists: Building Your First Budget
+2025-11-14T18:21:23.250108256Z   Quiz questions already exist for Building Your First Budget
+2025-11-14T18:21:23.317622014Z Lesson already exists: Starting an Emergency Fund
+2025-11-14T18:21:23.384260064Z   Quiz questions already exist for Starting an Emergency Fund
+2025-11-14T18:21:23.451831923Z Lesson already exists: Understanding Credit
+2025-11-14T18:21:23.519969306Z   Quiz questions already exist for Understanding Credit
+2025-11-14T18:21:23.588391305Z Lesson already exists: Setting SMART Financial Goals
+2025-11-14T18:21:23.657203962Z   Quiz questions already exist for Setting SMART Financial Goals
+2025-11-14T18:21:23.721868647Z Lesson already exists: Tracking and Reviewing Progress
+2025-11-14T18:21:23.78822457Z   Quiz questions already exist for Tracking and Reviewing Progress
+2025-11-14T18:21:23.855467643Z Lesson already exists: Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-14T18:21:23.92293533Z   Quiz questions already exist for Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-14T18:21:23.922962641Z Lesson seed completed successfully!
+2025-11-14T18:21:24.412949827Z [SCHEDULER] Initializing scheduler...
+2025-11-14T18:21:24.501083123Z [SCHEDULER] Running daily checks at 2025-11-14T18:21:24.413Z
+2025-11-14T18:21:24.501243947Z [SCHEDULER] Checking goal contributions...
+2025-11-14T18:21:24.50138639Z [SCHEDULER] Scheduler initialized - running every hour
+2025-11-14T18:21:24.501715988Z [express] Production mode: dist/public not found, skipping static file serving
+2025-11-14T18:21:24.603744192Z 6:21:24 PM [express] serving on port 10000
+2025-11-14T18:21:24.669240726Z [SCHEDULER] Sent 0 goal contribution reminders
+2025-11-14T18:21:24.669515322Z [SCHEDULER] Checking debt payments...
+2025-11-14T18:21:24.736629522Z [SCHEDULER] Sent 0 debt payment reminders
+2025-11-14T18:21:24.736665452Z [SCHEDULER] Daily checks completed
+2025-11-14T18:21:32.769925613Z ==> Your service is live 🎉
+2025-11-14T18:21:32.814835088Z ==> 
+2025-11-14T18:21:32.862035793Z ==> ///////////////////////////////////////////////////////////
+2025-11-14T18:21:32.902385629Z ==> 
+2025-11-14T18:21:32.942995525Z ==> Available at your primary URL https://personalfinance-pro-backend.onrender.com
+2025-11-14T18:21:32.984803781Z ==> 
+2025-11-14T18:21:33.023048388Z ==> ///////////////////////////////////////////////////////////
