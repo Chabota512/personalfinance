@@ -1,0 +1,62 @@
+Dell@DESKTOP-IFQJNE2 MINGW64 /d/MyProjects/APP DEVELOPMENT/2025/November/Personalfinance/personalfinance (main)
+$ cd /d/MyProjects/APP\ DEVELOPMENT/2025/November/Personalfinance/personalfinance
+git pull origin main
+npm install
+remote: Enumerating objects: 36, done.
+remote: Counting objects: 100% (36/36), done.
+remote: Compressing objects: 100% (9/9), done.
+remote: Total 25 (delta 16), reused 25 (delta 16), pack-reused 0 (from 0)
+Unpacking objects: 100% (25/25), 24.93 KiB | 34.00 KiB/s, done.
+From https://github.com/Chabota512/personalfinance
+ * branch            main       -> FETCH_HEAD
+   60578e7..fac9c17  main       -> origin/main
+Updating 60578e7..fac9c17
+Fast-forward
+ APK_BUILD_GUIDE.md                                 | 154 +++++++++++++++++++++
+ android-permissions-check.md                       |  20 +++
+ ...lfinance-git-cl-1763145806462_1763145806465.txt |  52 +++++++
+ ...er-Personalfina-1763145909206_1763145909207.txt |  35 +++++
+ ...er-Personalfina-1763145926685_1763145926685.txt |  35 +++++
+ ...lfinance-2025-1-1763144579720_1763144579721.txt |  60 ++++++++
+ ...o-backend-onren-1763144771010_1763144771011.txt |  66 +++++++++
+ attached_assets/image_1763144563622.png            | Bin 0 -> 16620 bytes
+ capacitor.config.ts                                |  12 +-
+ client/src/lib/api-config.ts                       |  30 ++--
+ package-lock.json                                  |  24 ++++
+ package.json                                       |  12 +-
+ server/security.ts                                 |  51 ++++---
+ 13 files changed, 495 insertions(+), 56 deletions(-)
+ create mode 100644 APK_BUILD_GUIDE.md
+ create mode 100644 android-permissions-check.md
+ create mode 100644 attached_assets/Pasted--Dell-DESKTOP-IFQJNE2-MINGW64-d-MyProjects-APP-DEVELOPMENT-2025-November-Personalfinance-git-cl-1763145806462_1763145806465.txt
+ create mode 100644 attached_assets/Pasted--workspace-Dell-DESKTOP-IFQJNE2-MINGW64-d-MyProjects-APP-DEVELOPMENT-2025-November-Personalfina-1763145909206_1763145909207.txt
+ create mode 100644 attached_assets/Pasted--workspace-Dell-DESKTOP-IFQJNE2-MINGW64-d-MyProjects-APP-DEVELOPMENT-2025-November-Personalfina-1763145926685_1763145926685.txt
+ create mode 100644 attached_assets/Pasted-2025-11-14T18-19-12-98960525Z-Cloning-from-https-github-com-Chabota512-personalfinance-2025-1-1763144579720_1763144579721.txt
+ create mode 100644 attached_assets/Pasted-My-backend-is-now-successfully-deployed-on-Render-com-at-https-personalfinance-pro-backend-onren-1763144771010_1763144771011.txt
+ create mode 100644 attached_assets/image_1763144563622.png
+
+added 2 packages, and audited 965 packages in 10s
+
+191 packages are looking for funding
+  run `npm fund` for details
+
+5 vulnerabilities (1 low, 4 moderate)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+Dell@DESKTOP-IFQJNE2 MINGW64 /d/MyProjects/APP DEVELOPMENT/2025/November/Personalfinance/personalfinance (main)
+$ npm run build:mobile
+
+> rest-express@1.0.0 build:mobile
+> VITE_API_URL=https://personalfinance-pro-backend.onrender.com vite build
+
+'VITE_API_URL' is not recognized as an internal or external command,
+operable program or batch file.
+
+Dell@DESKTOP-IFQJNE2 MINGW64 /d/MyProjects/APP DEVELOPMENT/2025/November/Personalfinance/personalfinance (main)
