@@ -1129,7 +1129,7 @@ export const userPreferences = pgTable("user_preferences", {
 export const userPreferencesRelations = relations(userPreferences, ({ one }) => ({
   user: one(users, {
     fields: [userPreferences.userId],
-    references: [userPreferences.userId],
+    references: [users.id],
   }),
 }));
 
