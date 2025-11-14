@@ -56,7 +56,7 @@ const sessionStore = usePostgres
     });
 
 app.use(session({
-  store: sessionStore,
+  store: sessionStore as any, // Type assertion to bypass store type mismatch
   secret: getSessionSecret(),
   resave: false,
   saveUninitialized: false,

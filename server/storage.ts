@@ -1472,7 +1472,7 @@ export async function createBudgetTemplate(userId: string, name: string, categor
   return template;
 }
 
-export async function getBudgetTemplateById(id: number) {
+export async function getBudgetTemplateById(id: string) {
   return await db.query.budgetTemplates.findFirst({
     where: eq(budgetTemplates.id, id),
     with: {
@@ -1491,7 +1491,7 @@ export async function getBudgetTemplatesByUserId(userId: string) {
   });
 }
 
-export async function incrementTemplateUsageCount(templateId: number) {
+export async function incrementTemplateUsageCount(templateId: string) {
   const [template] = await db.update(budgetTemplates)
     .set({
       usageCount: sql`${budgetTemplates.usageCount} + 1`,
@@ -1501,7 +1501,7 @@ export async function incrementTemplateUsageCount(templateId: number) {
   return template;
 }
 
-export async function deleteBudgetTemplate(id: number) {
+export async function deleteBudgetTemplate(id: string) {
   await db.delete(budgetTemplates).where(eq(budgetTemplates.id, id));
 }
 
