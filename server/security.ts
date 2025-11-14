@@ -51,8 +51,12 @@ export function setupSecurity(app: Express) {
       const allowedOrigins = [
         'http://localhost:5000',
         'http://localhost:5173',
+        'http://127.0.0.1:5000',
+        'http://127.0.0.1:5173',
         'https://localhost:5000',
         'https://localhost:5173',
+        'https://127.0.0.1:5000',
+        'https://127.0.0.1:5173',
         'capacitor://localhost',
         'https://localhost',
         'ionic://localhost',
@@ -60,9 +64,18 @@ export function setupSecurity(app: Express) {
         'https://personalfinance-pro-backend.onrender.com',
       ];
 
-      if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.replit.dev') || origin.endsWith('.onrender.com')) {
+      // Check if origin matches allowed patterns
+      const isAllowed = allowedOrigins.indexOf(origin) !== -1 || 
+                       origin.endsWith('.replit.dev') || 
+                       origin.endsWith('.replit.app') ||
+                       origin.endsWith('.onrender.com') ||
+                       origin.includes('replit.dev') ||
+                       origin.includes('replit.app');
+
+      if (isAllowed) {
         callback(null, true);
       } else {
+        console.error(`CORS blocked origin: ${origin}`);
         callback(new Error('Not allowed by CORS'));
       }
     },

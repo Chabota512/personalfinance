@@ -376,36 +376,46 @@
     }
   }
 
-  /* Better touch targets for mobile */
-  @media (max-width: 768px) {
-    button, a, [role="button"] {
-      min-height: 44px;
-      min-width: 44px;
-    }
-  }
-
-  /* Mobile-first base font size */
+  /* Mobile-first base font size - 16px prevents iOS zoom on focus */
   html {
     font-size: 16px;
-  }
-
-  @media (min-width: 768px) {
-    html {
-      font-size: 16px;
-    }
   }
 
   /* Support Dynamic Type for accessibility */
-  html {
-    font-size: 16px;
-  }
-
   html[data-font-size="large"] {
     font-size: 18px;
   }
 
   html[data-font-size="x-large"] {
     font-size: 20px;
+  }
+
+  /* Touch targets for mobile - minimum 44x44px (Apple HIG) */
+  @media (max-width: 768px) {
+    button, 
+    a, 
+    [role="button"],
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    /* Form controls need minimum height for easy tapping */
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="search"],
+    input[type="date"],
+    input[type="time"],
+    select,
+    textarea {
+      min-height: 44px;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -672,33 +682,58 @@
     }
   }
 
-  /* Safe area insets for modern mobile devices (notches, home indicators) */
+  /**
+   * Safe Area Insets - iOS notch, Android navigation, etc.
+   * Use these utilities to ensure content doesn't clash with system UI.
+   * Apply to: headers, footers, modals, fixed/sticky elements
+   */
   .safe-area-top {
-    padding-top: env(safe-area-inset-top, 0);
+    padding-top: max(env(safe-area-inset-top, 0px), 0px);
   }
 
   .safe-area-bottom {
-    padding-bottom: env(safe-area-inset-bottom, 0);
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 0px);
   }
 
   .safe-area-left {
-    padding-left: env(safe-area-inset-left, 0);
+    padding-left: max(env(safe-area-inset-left, 0px), 0px);
   }
 
   .safe-area-right {
-    padding-right: env(safe-area-inset-right, 0);
+    padding-right: max(env(safe-area-inset-right, 0px), 0px);
   }
 
   .safe-area-inset {
-    padding-top: env(safe-area-inset-top, 0);
-    padding-bottom: env(safe-area-inset-bottom, 0);
-    padding-left: env(safe-area-inset-left, 0);
-    padding-right: env(safe-area-inset-right, 0);
+    padding-top: max(env(safe-area-inset-top, 0px), 0px);
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 0px);
+    padding-left: max(env(safe-area-inset-left, 0px), 0px);
+    padding-right: max(env(safe-area-inset-right, 0px), 0px);
   }
 
-  /* Bottom navigation safe area */
-  .bottom-nav {
-    padding-bottom: env(safe-area-inset-bottom, 0);
+  /* Bottom navigation safe area - no extra padding on standard devices */
+  .bottom-nav-safe {
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 0px);
+  }
+
+  /**
+   * Touch Target Utilities
+   * Ensures interactive elements meet minimum 44x44px size (Apple HIG)
+   * Non-intrusive: only sets size, doesn't force layout
+   * Apply to: icon buttons, small interactive elements
+   */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .touch-target-lg {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* Touch-friendly spacing - non-intrusive, doesn't force layout */
+  .touch-stack > * + * {
+    margin-top: 0.5rem; /* 8px minimum gap */
   }
 
   /* Optimize form inputs for mobile */

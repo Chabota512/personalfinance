@@ -92,8 +92,8 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-4 py-4 md:px-6 md:py-6 space-y-4">
+    <div className="min-h-screen bg-background pb-safe">
+      <div className="max-w-4xl mx-auto page-shell space-y-3 md:space-y-4">
 
         {/* Header */}
         <div className="text-center space-y-2 py-2 md:py-3">
@@ -105,16 +105,16 @@ export default function HomePage() {
         <Card className="border-2 hover-elevate active-elevate-2" data-testid="card-health-hero">
           <CardContent className="py-6 md:py-8">
             {healthLoading ? (
-              <div className="flex items-center justify-center py-8">
+              <div className="flex items-center justify-center py-12">
                 <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
               </div>
             ) : healthScore ? (
-              <div className="text-center space-y-4">
-                <div className="flex items-center justify-center gap-4 flex-wrap">
+              <div className="text-center space-y-3 md:space-y-4">
+                <div className="flex items-center justify-center gap-3 md:gap-4 flex-wrap">
                   <div className="text-5xl md:text-6xl font-bold text-foreground" data-testid="text-health-score-hero">
                     {healthScore.score}
                   </div>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-1.5 md:gap-2">
                     <Badge 
                       variant={getGradeBadgeVariant(healthScore.grade)} 
                       className="text-base px-4 py-1.5"
@@ -124,27 +124,27 @@ export default function HomePage() {
                     </Badge>
                     {healthScore.aiPowered && (
                       <Badge variant="outline" className="text-body-xs px-2 py-0.5 bg-purple-500/10 border-purple-500/30">
-                        <Sparkles className="h-3 w-3 mr-1" />
+                        <Sparkles className="h-4 w-4 mr-1" />
                         AI-Powered
                       </Badge>
                     )}
                   </div>
                 </div>
-                <Progress value={healthScore.score} className="max-w-md mx-auto" />
-                <p className="text-body-md md:text-body-lg text-muted-foreground max-w-md mx-auto leading-relaxed">
+                <Progress value={healthScore.score} className="max-w-md mx-auto h-2" />
+                <p className="text-body-md md:text-body-lg text-muted-foreground max-w-md mx-auto leading-relaxed px-2">
                   {healthScore.explanation}
                 </p>
               </div>
             ) : (
-              <div className="text-center py-8 space-y-4">
-                <Sparkles className="h-12 w-12 mx-auto text-primary opacity-80" />
+              <div className="text-center py-8 md:py-12 space-y-3 md:space-y-4 px-2">
+                <Sparkles className="h-10 w-10 md:h-12 md:w-12 mx-auto text-primary opacity-80" />
                 <div>
-                  <h3 className="text-display-md font-semibold mb-2">Welcome to Your Financial Journey!</h3>
-                  <p className="text-body-md text-muted-foreground max-w-md mx-auto">
+                  <h3 className="text-display-sm md:text-display-md font-semibold mb-2">Welcome to Your Financial Journey!</h3>
+                  <p className="text-body-sm md:text-body-md text-muted-foreground max-w-md mx-auto">
                     Start by recording your first transaction below. Your financial health score will appear once you have some activity.
                   </p>
                 </div>
-                <div className="flex items-center justify-center gap-2 text-body-sm text-muted-foreground">
+                <div className="flex items-center justify-center gap-2 text-body-xs md:text-body-sm text-muted-foreground">
                   <Zap className="h-4 w-4" />
                   <span>Track a few transactions to unlock your score</span>
                 </div>
@@ -189,7 +189,7 @@ export default function HomePage() {
           </CardContent>
         </Card>
 
-        {/* 3. Quick Deal Button - Primary CTA */}
+        {/* 3. Quick Deal Button - Primary CTA (Touch-Optimized) */}
         <QuickDealForm
           open={showQuickDeal}
           onOpenChange={setShowQuickDeal}
@@ -199,11 +199,11 @@ export default function HomePage() {
           }}
           trigger={
             <Card className="bg-primary text-primary-foreground border-primary hover-elevate active-elevate-2 cursor-pointer" data-testid="card-quick-deal-cta">
-              <CardContent className="py-6 md:py-8">
-                <div className="text-center space-y-3">
+              <CardContent className="p-5 md:py-8">
+                <div className="text-center space-y-2 md:space-y-3">
                   <div className="text-display-md md:text-display-lg font-bold">Record a Transaction</div>
                   <p className="text-body-md text-primary-foreground/90">Tap here to log your latest transaction</p>
-                  <Button size="lg" variant="secondary" className="mt-4">
+                  <Button size="lg" variant="secondary" className="mt-3 md:mt-4 touch-target-lg">
                     Add Quick Deal
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
@@ -243,6 +243,7 @@ export default function HomePage() {
                   <Button
                     variant="ghost"
                     size="icon"
+                    className="touch-target"
                     onClick={async () => {
                       try {
                         await apiRequest('POST', '/api/ai/insights-feedback', {
@@ -253,12 +254,14 @@ export default function HomePage() {
                         console.error('Failed to record feedback:', error);
                       }
                     }}
+                    aria-label="Mark helpful"
                   >
-                    👍
+                    <TrendingUp className="h-5 w-5" />
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon"
+                    className="touch-target"
                     onClick={async () => {
                       try {
                         await apiRequest('POST', '/api/ai/insights-feedback', {
@@ -269,8 +272,9 @@ export default function HomePage() {
                         console.error('Failed to record feedback:', error);
                       }
                     }}
+                    aria-label="Mark not helpful"
                   >
-                    👎
+                    <TrendingDown className="h-5 w-5" />
                   </Button>
                 </div>
               </div>
@@ -325,8 +329,11 @@ export default function HomePage() {
         </Link>
 
         {/* Helper text */}
-        <div className="text-center text-xs text-muted-foreground space-y-1 pt-4">
-          <p>💡 Tip: The dashboard has detailed charts, budgets, and goals</p>
+        <div className="text-center text-body-xs text-muted-foreground space-y-1 pt-4">
+          <p className="flex items-center justify-center gap-1.5">
+            <Sparkles className="h-3 w-3" />
+            <span>Tip: The dashboard has detailed charts, budgets, and goals</span>
+          </p>
           <p>This page is your quick daily check-in</p>
         </div>
       </div>

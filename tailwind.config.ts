@@ -102,17 +102,24 @@ export default {
         mono: ["var(--font-mono)"],
       },
       fontSize: {
-        // Mobile-first compact typography scale
+        // Mobile-first compact typography scale (all sizes in rem for scalability)
         'display-2xl': ['2rem', { lineHeight: '2.25rem', fontWeight: '700', letterSpacing: '-0.02em' }], // 32px - hero
         'display-xl': ['1.75rem', { lineHeight: '2rem', fontWeight: '700', letterSpacing: '-0.01em' }],   // 28px - page title
         'display-lg': ['1.5rem', { lineHeight: '1.75rem', fontWeight: '600', letterSpacing: '-0.01em' }], // 24px - section title
         'display-md': ['1.25rem', { lineHeight: '1.5rem', fontWeight: '600' }],   // 20px - card title
         'display-sm': ['1.125rem', { lineHeight: '1.5rem', fontWeight: '600' }], // 18px - small heading
-        // Body text - optimized for mobile readability
+        // Body text - optimized for mobile readability (minimum 16px base to prevent iOS zoom)
         'body-lg': ['1rem', { lineHeight: '1.5rem', fontWeight: '400' }],     // 16px - main text
         'body-md': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '400' }], // 14px - secondary text
         'body-sm': ['0.8125rem', { lineHeight: '1.125rem', fontWeight: '400' }],     // 13px - captions
         'body-xs': ['0.75rem', { lineHeight: '1rem', fontWeight: '400' }],     // 12px - labels
+      },
+      /* Mobile-optimized container max-widths */
+      maxWidth: {
+        'container-mobile': '100%',
+        'container-tablet': '640px',
+        'container-desktop': '1024px',
+        'container-wide': '1280px',
       },
       spacing: {
         '18': '4.5rem',  // 72px

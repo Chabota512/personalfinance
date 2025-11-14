@@ -76,10 +76,10 @@ export function MobileHeader() {
   const config = routeConfig[location];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border safe-area-top">
-      {/* Mobile view - simple header */}
-      <div className="flex md:hidden items-center justify-between h-12 px-4">
-        <SidebarTrigger data-testid="button-sidebar-toggle" />
+    <header className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-xl border-b border-border md:bg-card/80 safe-area-top">
+      {/* Mobile view - touch-optimized header with proper safe-area */}
+      <div className="flex md:hidden items-center justify-between min-h-[48px] px-4 py-2">
+        <SidebarTrigger data-testid="button-sidebar-toggle" className="touch-target" />
         <div className="flex items-center gap-2">
           <NotificationCenter />
           <ThemeToggle />
