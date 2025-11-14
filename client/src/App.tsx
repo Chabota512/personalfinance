@@ -177,9 +177,9 @@ function AppContent() {
     <BackgroundWrapper>
       <SidebarProvider defaultOpen={false} style={style as React.CSSProperties}>
         <AppSidebar />
-        <div className="flex flex-col flex-1 overflow-hidden">
+        <div className="flex flex-col flex-1 min-h-screen">
           <MobileHeader />
-          <main className="flex-1 overflow-y-auto">
+          <main className="flex-1 overflow-auto">
             <div className="pt-[var(--app-header-height)] pb-[var(--app-bottom-nav-height)] md:pt-[var(--app-header-height-md)] md:pb-0">
               <Router />
             </div>
