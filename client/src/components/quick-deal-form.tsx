@@ -547,9 +547,11 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
         reason: reason.trim() || null,
         reasonAudioUrl,
         contentmentLevel,
-        depositAccountId: transactionType === 'income' ? depositAccountId : null,
-        sourceAccountId: transactionType === 'expense' ? selectedAccountId : null,
+        depositAccountId: transactionType === 'income' ? (depositAccountId || null) : null,
+        sourceAccountId: transactionType === 'expense' ? (selectedAccountId || null) : null,
       };
+
+      console.log('Quick Deal Data:', quickDealData);
 
       // Create Quick Deal transaction
       const transaction = await createQuickDeal.mutateAsync(quickDealData);
