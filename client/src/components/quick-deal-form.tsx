@@ -158,11 +158,18 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
   // Mutation for creating a quick deal
   const createQuickDeal = useMutation({
     mutationFn: async (data: any) => {
-      return await apiRequest('/api/quick-deals', {
+      const response = await fetchApi('/api/quick-deals', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to create quick deal');
+      }
+      
+      return await response.json();
     },
     onSuccess: () => {
       // Invalidate all related queries immediately
@@ -406,11 +413,11 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
     // Check budget overspending if enabled in preferences
     if (preferences?.showBudgetOverspendWarning) {
       try {
-        const budgetsRes = await apiRequest('/api/budgets/active', {
-          method: 'GET',
-        });
-        if (budgetsRes && Array.isArray(budgetsRes)) {
-          for (const budget of budgetsRes) {
+        const response = await fetchApi('/api/budgets/active');
+        if (response.ok) {
+          const budgetsRes = await response.json();
+          if (budgetsRes && Array.isArray(budgetsRes)) {
+            for (const budget of budgetsRes) {
             const categoryItem = budget.categoryItems?.find((item: any) => 
               item.category === finalCategory
             );
@@ -514,7 +521,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
       // Record category choice for learning
       if (suggestedCategory && finalCategory !== suggestedCategory) {
         try {
-          await apiRequest('/api/ai/record-category-choice', {
+          await fetchApi('/api/ai/record-category-choice', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -550,7 +557,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
       // For expenses, check if this matches any budget items
       if (transactionType === 'expense') {
         try {
-          const matchingItems = await apiRequest('/api/quick-deals/detect-budget-items', {
+          const response = await fetchApi('/api/quick-deals/detect-budget-items', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -560,9 +567,12 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
             }),
           });
 
-          if (matchingItems && Array.isArray(matchingItems) && matchingItems.length > 0) {
-            // Show dialog to let user link to budget item
-            showBudgetLinkDialog(matchingItems, transaction.id);
+          if (response.ok) {
+            const matchingItems = await response.json();
+            if (matchingItems && Array.isArray(matchingItems) && matchingItems.length > 0) {
+              // Show dialog to let user link to budget item
+              showBudgetLinkDialog(matchingItems, transaction.id);
+            }
           }
         } catch (e) {
           // Silent fail - budget linking is optional
