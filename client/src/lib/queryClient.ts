@@ -18,8 +18,11 @@ export async function fetchApi(
   url: string,
   options?: RequestInit,
 ): Promise<Response> {
-  const fullUrl = getApiEndpoint(url);
-  const response = await fetch(fullUrl, {
+  const baseUrl = API_BASE_URL;
+  // url already includes /api/, so just append it to base
+  const fullUrl = `${baseUrl}${url}`;
+
+  return fetch(fullUrl, {
     ...options,
     credentials: "include",
     headers: {
@@ -27,26 +30,25 @@ export async function fetchApi(
       ...options?.headers,
     },
   });
-
-  return handleResponse(response);
 }
 
 export async function apiRequest(
   method: string,
   url: string,
-  data?: any,
+  body?: any
 ): Promise<Response> {
-  const fullUrl = getApiEndpoint(url);
-  const response = await fetch(fullUrl, {
+  const baseUrl = API_BASE_URL;
+  // url already includes /api/, so just append it to base
+  const fullUrl = `${baseUrl}${url}`;
+
+  return fetch(fullUrl, {
     method,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-    body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
+    body: body ? JSON.stringify(body) : undefined,
   });
-
-  return handleResponse(response);
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
