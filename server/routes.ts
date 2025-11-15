@@ -1727,7 +1727,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
             scheduledAmount: goal.scheduledAmount,
             daysUntil
           });
+        }
+      }
 
+      // Sort by date
+      upcomingContributions.sort((a, b) => a.daysUntil - b.daysUntil);
+
+      res.json(upcomingContributions);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 
   // ============= Quick Deal Monthly Account Routes =============
 
@@ -1766,13 +1776,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-        }
-      }
-
-      // Sort by date
-      upcomingContributions.sort((a, b) => a.daysUntil - b.daysUntil);
-
-      res.json(upcomingContributions);
+  // Check for transaction warnings (insufficient funds, budget overspend)
+  app.post("/api/quick-deals/check-warnings", authenticate, async (req: any, res) => {
+    try {
+      // This endpoint is deprecated - warnings are now checked client-side
+      // using user preferences. Return empty warnings to maintain compatibility.
+      res.json({
+        showInsufficientFundsWarning: false,
+        showBudgetOverspendWarning: false
+      });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -2941,100 +2953,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // CSV Import removed - manual entry only
 
-  // Enhanced NLP merchant categorization route
+  // AI-powered category suggestion for Quick Deal
   app.post("/api/ai/categorize", authenticate, async (req: any, res) => {
     try {
-      const transactions = req.body.transactions || [];
+      const { description, transactionType } = req.body;
 
-      // Merchant-to-category mapping
-      const merchantRules: { [key: string]: string } = {
+      if (!description) {
+        return res.status(400).json({ error: 'Description is required' });
+      }
+
+      const desc = description.toLowerCase();
+
+      // Merchant-to-category mapping for expenses
+      const expenseCategoryRules: { [key: string]: string } = {
         // Food & Dining
-        'starbucks': 'food',
-        'mcdonalds': 'food',
-        'chipotle': 'food',
-        'subway': 'food',
-        'dominos': 'food',
-        'pizza hut': 'food',
-        'taco bell': 'food',
-        'wendys': 'food',
-        'burger king': 'food',
-        'restaurant': 'food',
-        'cafe': 'food',
-        'coffee': 'food',
-        'bakery': 'food',
-        'grocery': 'food',
-        'safeway': 'food',
-        'kroger': 'food',
-        'trader joe': 'food',
-        'whole foods': 'food',
-        'walmart': 'food',
-        'target': 'food',
-        'costco': 'food',
+        'starbucks': 'food', 'mcdonalds': 'food', 'chipotle': 'food',
+        'subway': 'food', 'dominos': 'food', 'pizza hut': 'food',
+        'taco bell': 'food', 'wendys': 'food', 'burger king': 'food',
+        'restaurant': 'food', 'cafe': 'food', 'coffee': 'food',
+        'bakery': 'food', 'grocery': 'food', 'safeway': 'food',
+        'kroger': 'food', 'trader joe': 'food', 'whole foods': 'food',
+        'walmart': 'food', 'target': 'food', 'costco': 'food',
+        'lunch': 'food', 'dinner': 'food', 'breakfast': 'food',
 
         // Transportation
-        'uber': 'transportation',
-        'lyft': 'transportation',
-        'gas': 'transportation',
-        'shell': 'transportation',
-        'chevron': 'transportation',
-        'exxon': 'transportation',
-        'bp': 'transportation',
-        'parking': 'transportation',
-        'transit': 'transportation',
-        'metro': 'transportation',
+        'uber': 'transportation', 'lyft': 'transportation', 'gas': 'transportation',
+        'shell': 'transportation', 'chevron': 'transportation', 'exxon': 'transportation',
+        'bp': 'transportation', 'parking': 'transportation', 'transit': 'transportation',
+        'metro': 'transportation', 'bus': 'transportation', 'train': 'transportation',
+        'toll': 'transportation',
 
         // Housing
-        'rent': 'housing',
-        'mortgage': 'housing',
-        'property': 'housing',
+        'rent': 'housing', 'mortgage': 'housing', 'property': 'housing',
 
         // Utilities
-        'electric': 'utilities',
-        'power': 'utilities',
-        'water': 'utilities',
-        'internet': 'utilities',
-        'comcast': 'utilities',
-        'verizon': 'utilities',
-        'att': 'utilities',
-        'spectrum': 'utilities',
+        'electric': 'utilities', 'power': 'utilities', 'water': 'utilities',
+        'internet': 'utilities', 'comcast': 'utilities', 'verizon': 'utilities',
+        'att': 'utilities', 'spectrum': 'utilities', 'phone': 'utilities',
+        'bill': 'utilities',
 
         // Healthcare
-        'doctor': 'healthcare',
-        'medical': 'healthcare',
-        'pharmacy': 'healthcare',
-        'cvs': 'healthcare',
-        'walgreens': 'healthcare',
-        'hospital': 'healthcare',
+        'doctor': 'healthcare', 'medical': 'healthcare', 'pharmacy': 'healthcare',
+        'cvs': 'healthcare', 'walgreens': 'healthcare', 'hospital': 'healthcare',
         'clinic': 'healthcare',
 
         // Entertainment
-        'netflix': 'entertainment',
-        'spotify': 'entertainment',
-        'hulu': 'entertainment',
-        'disney': 'entertainment',
-        'amazon prime': 'entertainment',
-        'theater': 'entertainment',
-        'cinema': 'entertainment',
-        'gym': 'entertainment',
-        'fitness': 'entertainment',
+        'netflix': 'entertainment', 'spotify': 'entertainment', 'hulu': 'entertainment',
+        'disney': 'entertainment', 'amazon prime': 'entertainment', 'theater': 'entertainment',
+        'cinema': 'entertainment', 'gym': 'entertainment', 'fitness': 'entertainment',
+        'movie': 'entertainment', 'game': 'entertainment', 'concert': 'entertainment',
+
+        // Shopping
+        'amazon': 'shopping', 'store': 'shopping', 'clothing': 'shopping',
+        'shop': 'shopping', 'mall': 'shopping',
       };
 
-      const categorized = transactions.map((txn: any) => {
-        const desc = txn.description?.toLowerCase() || '';
-        let category = 'other_expense';
+      // Income category rules
+      const incomeCategoryRules: { [key: string]: string } = {
+        'salary': 'salary', 'paycheck': 'salary', 'wage': 'salary',
+        'employer': 'salary', 'job': 'salary', 'work': 'salary',
+        'business': 'business', 'revenue': 'business', 'sales': 'business',
+        'investment': 'investment_income', 'dividend': 'investment_income',
+        'interest': 'investment_income', 'stock': 'investment_income',
+      };
 
-        // Check merchant rules first
-        for (const [merchant, cat] of Object.entries(merchantRules)) {
-          if (desc.includes(merchant)) {
-            category = cat;
-            break;
-          }
+      let category = transactionType === 'income' ? 'other_income' : 'other_expense';
+      let confidence = 0.5; // Default confidence
+
+      const rules = transactionType === 'income' ? incomeCategoryRules : expenseCategoryRules;
+
+      // Check for matches
+      for (const [keyword, cat] of Object.entries(rules)) {
+        if (desc.includes(keyword)) {
+          category = cat;
+          confidence = 0.85; // High confidence for keyword match
+          break;
         }
+      }
 
-        return { ...txn, category, autoCategorized: true };
-      });
-
-      res.json(categorized);
+      res.json({ category, confidence });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
