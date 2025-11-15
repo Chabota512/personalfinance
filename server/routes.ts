@@ -226,29 +226,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/users/preferences", authenticate, async (req: any, res) => {
     try {
-      // Extract alert preferences and other settings from request body
-      const {
-        settings,
-        showInsufficientFundsWarning,
-        showBudgetOverspendWarning,
-        showLowBalanceWarning,
-        lowBalanceThreshold,
-        ...otherPrefs
-      } = req.body;
+      const { hasCompletedOnboarding, preferredCurrency, weekStartDay, skipSampleData } = req.body;
+      const userId = req.userId;
 
-      // Merge all preferences together
-      const allPrefs = {
-        ...otherPrefs,
-        ...(showInsufficientFundsWarning !== undefined && { showInsufficientFundsWarning }),
-        ...(showBudgetOverspendWarning !== undefined && { showBudgetOverspendWarning }),
-        ...(showLowBalanceWarning !== undefined && { showLowBalanceWarning }),
-        ...(lowBalanceThreshold !== undefined && { lowBalanceThreshold }),
-      };
+      const [updatedUser] = await db
+        .update(users)
+        .set({
+          hasCompletedOnboarding: hasCompletedOnboarding ?? undefined,
+          preferredCurrency: preferredCurrency ?? undefined,
+          weekStartDay: weekStartDay ?? undefined,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, userId))
+        .returning();
 
-      const prefs = await storage.upsertUserPreferences(req.userId, { settings, ...allPrefs });
-      res.json(prefs);
+      // Skip sample data seeding - users start with clean slate
+      // Sample data seeding has been disabled per user request
+
+      res.json(updatedUser);
     } catch (error: any) {
-      res.status(400).json({ error: error.message });
+      console.error("Error updating user preferences:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
@@ -829,7 +827,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       res.json({ 
-        success: true, 
+        success: true,
         fullyPurchased,
         quantityPurchased: newPurchased,
         quantityRemaining: totalQuantity - newPurchased
@@ -1181,7 +1179,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (paymentAccount.accountType === 'asset') {
           const accountBalance = parseFloat(paymentAccount.balance);
           const purchaseAmount = parseFloat(validatedData.actualPrice);
-          
+
           if (accountBalance < purchaseAmount) {
             return res.status(400).json({ 
               error: `Insufficient balance in ${paymentAccount.name}. Available: $${accountBalance.toFixed(2)}, Required: $${purchaseAmount.toFixed(2)}` 
@@ -1983,7 +1981,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const debtData = { ...req.body, userId: req.userId };
       const debt = await storage.createDebt(debtData);
-      
+
       // Auto-create or update liability account for "I owe" debts
       if (debt.type === 'i_owe') {
         const userAccounts = await storage.getAccountsByUserId(req.userId);
@@ -2008,7 +2006,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
       }
-      
+
       res.status(201).json(debt);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
@@ -2096,7 +2094,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Check sufficient balance for asset accounts
         if (sourceAccount.accountType === 'asset') {
           const accountBalance = parseFloat(sourceAccount.balance);
-          
+
           if (accountBalance < paymentAmount) {
             return res.status(400).json({ 
               error: `Insufficient balance in ${sourceAccount.name}. Available: $${accountBalance.toFixed(2)}, Required: $${paymentAmount.toFixed(2)}` 
@@ -2258,7 +2256,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Filter out null/undefined and verify all debts belong to user
       const validDebts = debts.filter((d): d is NonNullable<typeof d> => !!d && d.userId === req.userId);
-      
+
       if (validDebts.length === 0) {
         return res.status(404).json({ error: "No valid debts found" });
       }
@@ -2287,11 +2285,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { calculateDebtHealthScore } = await import("./debt-analytics");
       const healthScore = await calculateDebtHealthScore(req.userId);
-      
+
       if (!healthScore) {
         return res.json({ message: "No active debts to analyze" });
       }
-      
+
       res.json(healthScore);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -2516,13 +2514,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const totalAssets = userAccounts
         .filter(a => ['checking', 'savings', 'investment'].includes(a.accountCategory))
         .reduce((sum, a) => sum + parseFloat(a.balance), 0);
-      
+
       const totalLiabilities = userAccounts
         .filter(a => ['credit_card', 'loan', 'mortgage'].includes(a.accountCategory))
         .reduce((sum, a) => sum + Math.abs(parseFloat(a.balance)), 0);
 
       const disposableIncome = (monthlyIncome || 0) - (monthlyLivingCosts || 0);
-      
+
       // Calculate projection for the chosen method
       const normalizedInput = {
         principal: parseFloat(principal || 0),
@@ -2638,7 +2636,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Generate smart recommendation
       let recommendation = '';
-      
+
       if (riskLevel === 'high') {
         if (paymentToDisposable > 60) {
           const safePeriods = Math.ceil(periods * (paymentToDisposable / 40));
@@ -3958,7 +3956,7 @@ Total Liabilities: ${Math.abs(accounts.filter(a => a.accountType === 'liability'
       });
 
       const results = [];
-      
+
       for (const sweep of sweeps) {
         if (!sweep.targetGoal) {
           console.warn(`Sweep ${sweep.id} has no target goal, skipping`);

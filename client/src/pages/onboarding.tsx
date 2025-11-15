@@ -253,9 +253,10 @@ export default function Onboarding() {
         }
       }
 
-      // Mark onboarding as complete
+      // Mark onboarding as complete (without seeding sample data)
       await apiRequest('PUT', '/api/users/preferences', {
-        hasCompletedOnboarding: true
+        hasCompletedOnboarding: true,
+        skipSampleData: true
       });
 
       // Force clear the cache and refetch
