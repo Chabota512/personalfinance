@@ -1500,14 +1500,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Create goal
   app.post("/api/goals", authenticate, async (req: any, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).send("Not authenticated");
-    }
-
     try {
       const goalData = insertGoalSchema.parse({
         ...req.body,
-        userId: req.user.id,
+        userId: req.userId,
         currentAmount: req.body.currentAmount || "0",
         status: req.body.status || "active",
       });
