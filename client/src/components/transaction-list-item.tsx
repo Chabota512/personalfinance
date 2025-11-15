@@ -1,22 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { formatCurrency } from "@/lib/financial-utils";
-import { MapPin, Volume2, AlertCircle } from "lucide-react";
+import { Volume2 } from "lucide-react";
 import type { Transaction } from "@shared/schema";
 import { format } from "date-fns";
 import { getCategoryById } from "@/lib/categories";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-
-// Assume TransactionStatusBadge and formatDate are defined elsewhere or imported
-// For this example, let's provide dummy implementations if they are not in the original snippet
-const TransactionStatusBadge = ({ status }: { status: string }) => (
-  <div className={`text-xs font-medium px-1.5 py-0.5 rounded-md ${status === 'pending' ? 'bg-yellow-200 text-yellow-800' : ''}`}>
-    {status.toUpperCase()}
-  </div>
-);
-
-const formatDate = (date: string | Date) => format(new Date(date), 'MMM dd, yyyy');
 
 interface TransactionListItemProps {
   transaction: Transaction;
@@ -27,13 +16,11 @@ export function TransactionListItem({ transaction, onClick }: TransactionListIte
   const amount = parseFloat(transaction.totalAmount);
   const isExpense = amount < 0;
   const category = transaction.category ? getCategoryById(transaction.category) : null;
-  const CategoryIcon = category?.icon;
   const { toast } = useToast();
 
   // Voice note playback state
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPlayingReason, setIsPlayingReason] = useState(false);
-  const [hasError, setHasError] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const reasonAudioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -65,7 +52,6 @@ export function TransactionListItem({ transaction, onClick }: TransactionListIte
         });
 
         audioRef.current.addEventListener('error', () => {
-          setHasError(true);
           setIsPlaying(false);
           toast({
             title: "Playback Error",
@@ -81,10 +67,8 @@ export function TransactionListItem({ transaction, onClick }: TransactionListIte
       } else {
         audioRef.current.play();
         setIsPlaying(true);
-        setHasError(false);
       }
     } catch (error) {
-      setHasError(true);
       toast({
         title: "Playback Error",
         description: "Could not play voice note",
@@ -132,106 +116,75 @@ export function TransactionListItem({ transaction, onClick }: TransactionListIte
     }
   };
 
+  const dateStr = format(new Date(transaction.date), 'MMM dd, yyyy');
+  const amountStr = `${isExpense ? '-' : '+'}${formatCurrency(Math.abs(amount))}`;
+  const categoryName = category?.name || 'Uncategorized';
+
   return (
     <div
-      className="flex items-center justify-between p-4 hover-elevate rounded-lg cursor-pointer border border-transparent hover:border-border transition-all"
+      className="font-mono text-sm py-1 px-2 hover:bg-muted/50 cursor-pointer transition-colors"
       onClick={onClick}
       data-testid={`transaction-${transaction.id}`}
     >
-      <div className="flex items-center gap-4 flex-1 min-w-0">
-        {/* Category Icon */}
-        <div className={`p-2 rounded-lg ${
-          CategoryIcon
-            ? 'bg-card'
-            : isExpense ? 'bg-destructive/10' : 'bg-success/10'
-        }`}>
-          {CategoryIcon ? (
-            <CategoryIcon className={`h-5 w-5 ${category?.color || 'text-muted-foreground'}`} />
-          ) : (
-            <div className={`h-5 w-5 ${isExpense ? 'text-destructive' : 'text-success'}`}>
-              {isExpense ? '−' : '+'}
-            </div>
-          )}
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <p className="font-medium truncate">{transaction.description}</p>
-            {transaction.voiceNoteUrl && (
-              <button
-                onClick={handleVoiceNoteClick}
-                className={cn(
-                  "p-1 rounded-full hover:bg-muted transition-colors",
-                  isPlaying && "bg-primary/10"
-                )}
-                title={isPlaying ? "Playing voice note..." : "Play voice note"}
-              >
-                <Volume2 className={cn("h-4 w-4", isPlaying ? "text-primary" : "text-muted-foreground")} />
-              </button>
+      <div className="flex items-start gap-2">
+        <span className="text-muted-foreground shrink-0">[{dateStr}]</span>
+        <span className={cn("shrink-0 font-semibold", isExpense ? "text-destructive" : "text-success")}>
+          {amountStr.padEnd(12)}
+        </span>
+        <span className="flex-1 truncate">{transaction.description}</span>
+        {transaction.voiceNoteUrl && (
+          <button
+            onClick={handleVoiceNoteClick}
+            className={cn(
+              "shrink-0 p-0.5 rounded hover:bg-muted",
+              isPlaying && "bg-primary/10"
             )}
-          </div>
-          <div className="flex items-center gap-3 mt-1">
-            <p className="text-sm text-muted-foreground">
-              {format(new Date(transaction.date), 'MMM dd, yyyy')}
-            </p>
-
-            {/* Location Display */}
-            {transaction.locationName && (
-              <>
-                <span className="text-muted-foreground">•</span>
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <MapPin className="h-3 w-3" />
-                  <span className="truncate" data-testid={`location-${transaction.id}`}>
-                    {transaction.locationName}
-                  </span>
-                </div>
-              </>
-            )}
-
-            {/* Contentment Level Display */}
-            {transaction.contentmentLevel !== null && transaction.contentmentLevel !== undefined && (
-              <>
-                <span className="text-muted-foreground">•</span>
-                <div className="flex items-center gap-1 text-sm" title={`Contentment: ${transaction.contentmentLevel}/5`}>
-                  {transaction.contentmentLevel === 5 && <span>😄</span>}
-                  {transaction.contentmentLevel === 4 && <span>🙂</span>}
-                  {transaction.contentmentLevel === 3 && <span>😐</span>}
-                  {transaction.contentmentLevel === 2 && <span>😕</span>}
-                  {transaction.contentmentLevel === 1 && <span>😞</span>}
-                </div>
-              </>
-            )}
-          </div>
-          {transaction.reason && (
-            <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground italic">
-              <span className="truncate">"{transaction.reason}"</span>
-              {transaction.reasonAudioUrl && (
-                <button
-                  onClick={handleReasonAudioClick}
-                  className={cn(
-                    "p-1 rounded-full hover:bg-muted transition-colors shrink-0",
-                    isPlayingReason && "bg-primary/10"
-                  )}
-                  title={isPlayingReason ? "Playing..." : "Hear why you did this"}
-                >
-                  <Volume2 className={cn("h-3 w-3", isPlayingReason ? "text-primary" : "text-muted-foreground")} />
-                </button>
+            title={isPlaying ? "Playing..." : "Play voice note"}
+          >
+            <Volume2 className={cn("h-3 w-3", isPlaying ? "text-primary" : "text-muted-foreground")} />
+          </button>
+        )}
+      </div>
+      <div className="flex items-start gap-2 pl-2 text-xs text-muted-foreground">
+        <span className="shrink-0">└─</span>
+        <span className="shrink-0">{categoryName}</span>
+        {transaction.locationName && (
+          <>
+            <span>|</span>
+            <span className="truncate" data-testid={`location-${transaction.id}`}>📍 {transaction.locationName}</span>
+          </>
+        )}
+        {transaction.contentmentLevel !== null && transaction.contentmentLevel !== undefined && (
+          <>
+            <span>|</span>
+            <span title={`Contentment: ${transaction.contentmentLevel}/5`}>
+              {transaction.contentmentLevel === 5 && '😄'}
+              {transaction.contentmentLevel === 4 && '🙂'}
+              {transaction.contentmentLevel === 3 && '😐'}
+              {transaction.contentmentLevel === 2 && '😕'}
+              {transaction.contentmentLevel === 1 && '😞'}
+            </span>
+          </>
+        )}
+      </div>
+      {transaction.reason && (
+        <div className="flex items-start gap-2 pl-2 text-xs text-muted-foreground italic">
+          <span className="shrink-0">└─</span>
+          <span className="truncate">"{transaction.reason}"</span>
+          {transaction.reasonAudioUrl && (
+            <button
+              onClick={handleReasonAudioClick}
+              className={cn(
+                "shrink-0 p-0.5 rounded hover:bg-muted",
+                isPlayingReason && "bg-primary/10"
               )}
-            </div>
+              title={isPlayingReason ? "Playing..." : "Hear why you did this"}
+            >
+              <Volume2 className={cn("h-3 w-3", isPlayingReason ? "text-primary" : "text-muted-foreground")} />
+            </button>
           )}
         </div>
-      </div>
-
-      <div className="flex items-center gap-3">
-        {/* Amount */}
-        <div className="text-right">
-          <p className={`font-mono font-semibold text-lg ${
-            isExpense ? 'text-destructive' : 'text-success'
-          }`} data-testid={`amount-${transaction.id}`}>
-            {isExpense ? '-' : '+'}{formatCurrency(Math.abs(amount))}
-          </p>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
