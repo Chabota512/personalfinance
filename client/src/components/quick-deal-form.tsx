@@ -158,12 +158,11 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
   // Mutation for creating a quick deal
   const createQuickDeal = useMutation({
     mutationFn: async (data: any) => {
-      const res = await apiRequest('POST', '/api/quick-deals', data);
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || 'Failed to create quick deal');
-      }
-      return await res.json();
+      return await apiRequest('/api/quick-deals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
     },
     onSuccess: () => {
       // Invalidate all related queries immediately
@@ -407,7 +406,9 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
     // Check budget overspending if enabled in preferences
     if (preferences?.showBudgetOverspendWarning) {
       try {
-        const budgetsRes = await apiRequest('GET', '/api/budgets/active');
+        const budgetsRes = await apiRequest('/api/budgets/active', {
+          method: 'GET',
+        });
         if (budgetsRes && Array.isArray(budgetsRes)) {
           for (const budget of budgetsRes) {
             const categoryItem = budget.categoryItems?.find((item: any) => 
@@ -513,11 +514,15 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
       // Record category choice for learning
       if (suggestedCategory && finalCategory !== suggestedCategory) {
         try {
-          await apiRequest('POST', '/api/ai/record-category-choice', {
-            description,
-            transactionType,
-            suggestedCategory,
-            userSelectedCategory: finalCategory
+          await apiRequest('/api/ai/record-category-choice', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              description,
+              transactionType,
+              suggestedCategory,
+              userSelectedCategory: finalCategory
+            }),
           });
         } catch (e) {
           // Silent fail - learning is optional
@@ -545,10 +550,14 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
       // For expenses, check if this matches any budget items
       if (transactionType === 'expense') {
         try {
-          const matchingItems = await apiRequest('POST', '/api/quick-deals/detect-budget-items', {
-            description: description.trim(),
-            category: finalCategory,
-            amount
+          const matchingItems = await apiRequest('/api/quick-deals/detect-budget-items', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              description: description.trim(),
+              category: finalCategory,
+              amount
+            }),
           });
 
           if (matchingItems && Array.isArray(matchingItems) && matchingItems.length > 0) {
