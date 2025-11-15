@@ -852,9 +852,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         longitude: z.string().regex(/^-?\d+(\.\d+)?$/).optional().nullable(),
         reason: z.string().max(1000).optional().nullable(),
         reasonAudioUrl: z.string().max(500).optional().nullable(),
-        contentmentLevel: z.number().min(1).max(5).optional(),
-        depositAccountId: z.string().optional(),
-        sourceAccountId: z.string().optional(),
+        contentmentLevel: z.number().min(1).max(5).optional().nullable(),
+        depositAccountId: z.string().optional().nullable(),
+        sourceAccountId: z.string().optional().nullable(),
       });
 
       const validatedData = quickDealSchema.parse(req.body);
