@@ -1,0 +1,63 @@
+2025-11-15T12:12:34.794624387Z ../dist/public/assets/lesson-viewer-BAjFjbTt.js              165.80 kB │ gzip:  50.39 kB
+2025-11-15T12:12:34.794657469Z ../dist/public/assets/index-D1N7ejvj.js                      370.95 kB │ gzip: 117.54 kB
+2025-11-15T12:12:34.794660449Z ../dist/public/assets/generateCategoricalChart-BrnaslzB.js   383.03 kB │ gzip: 105.61 kB
+2025-11-15T12:12:34.794955855Z ✓ built in 7.87s
+2025-11-15T12:12:42.153896572Z ==> Uploading build...
+2025-11-15T12:12:52.633344553Z ==> Uploaded in 7.0s. Compression took 3.4s
+2025-11-15T12:12:52.673474Z ==> Build successful 🎉
+2025-11-15T12:12:57.407336409Z ==> Deploying...
+2025-11-15T12:13:27.430738Z ==> Running 'npm start'
+2025-11-15T12:13:28.543466399Z 
+2025-11-15T12:13:28.54348952Z > rest-express@1.0.0 start
+2025-11-15T12:13:28.54349451Z > NODE_ENV=production tsx server/index.ts
+2025-11-15T12:13:28.543497021Z 
+2025-11-15T12:13:46.136385052Z Checking and seeding lessons...
+2025-11-15T12:13:46.137063213Z Starting lesson seed...
+2025-11-15T12:13:46.710970751Z Lesson already exists: Mastering Needs vs Wants
+2025-11-15T12:13:46.778311402Z   Quiz questions already exist for Mastering Needs vs Wants
+2025-11-15T12:13:46.845230656Z Lesson already exists: Building Your First Budget
+2025-11-15T12:13:46.911959209Z   Quiz questions already exist for Building Your First Budget
+2025-11-15T12:13:46.978090706Z Lesson already exists: Starting an Emergency Fund
+2025-11-15T12:13:47.044123056Z   Quiz questions already exist for Starting an Emergency Fund
+2025-11-15T12:13:47.110340998Z Lesson already exists: Understanding Credit
+2025-11-15T12:13:47.17753656Z   Quiz questions already exist for Understanding Credit
+2025-11-15T12:13:47.246074594Z Lesson already exists: Setting SMART Financial Goals
+2025-11-15T12:13:47.312580143Z   Quiz questions already exist for Setting SMART Financial Goals
+2025-11-15T12:13:47.378313116Z Lesson already exists: Tracking and Reviewing Progress
+2025-11-15T12:13:47.445741851Z   Quiz questions already exist for Tracking and Reviewing Progress
+2025-11-15T12:13:47.511727149Z Lesson already exists: Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-15T12:13:47.578286272Z   Quiz questions already exist for Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-15T12:13:47.578305953Z Lesson seed completed successfully!
+2025-11-15T12:13:48.04253408Z [SCHEDULER] Initializing scheduler...
+2025-11-15T12:13:48.042554781Z [SCHEDULER] Running daily checks at 2025-11-15T12:13:48.039Z
+2025-11-15T12:13:48.042559731Z [SCHEDULER] Checking goal contributions...
+2025-11-15T12:13:48.042563921Z [SCHEDULER] Scheduler initialized - running every hour
+2025-11-15T12:13:48.042568571Z [express] Production mode: serving from /opt/render/project/src/dist/public
+2025-11-15T12:13:48.042573862Z [express] Directory exists: true
+2025-11-15T12:13:48.236550981Z 12:13:48 PM [express] serving on port 10000
+2025-11-15T12:13:48.336129674Z [SCHEDULER] Sent 0 goal contribution reminders
+2025-11-15T12:13:48.336145615Z [SCHEDULER] Checking debt payments...
+2025-11-15T12:13:48.402212948Z [SCHEDULER] Sent 0 debt payment reminders
+2025-11-15T12:13:48.402232439Z [SCHEDULER] Daily checks completed
+2025-11-15T12:13:48.818988149Z ==> Your service is live 🎉
+2025-11-15T12:13:48.871468775Z ==> 
+2025-11-15T12:13:48.91557596Z ==> ///////////////////////////////////////////////////////////
+2025-11-15T12:13:48.955788246Z ==> 
+2025-11-15T12:13:48.992850543Z ==> Available at your primary URL https://personalfinance-pro-backend.onrender.com
+2025-11-15T12:13:49.027886729Z ==> 
+2025-11-15T12:13:49.065623855Z ==> ///////////////////////////////////////////////////////////
+2025-11-15T12:14:08.43393397Z 12:14:08 PM [express] POST /api/notifications/subscribe 401 in 2ms :: {"error":"Unauthorized - Please…
+2025-11-15T12:14:08.444737801Z 12:14:08 PM [express] GET /api/auth/me 401 in 1ms :: {"error":"Unauthorized - Please log in"}
+2025-11-15T12:14:47.268935769Z 12:14:47 PM [express] POST /api/auth/register 200 in 820ms :: {"id":"6357ea97-0269-4c78-bd83-6820fea2…
+2025-11-15T12:14:48.072827057Z 12:14:48 PM [express] GET /api/auth/me 200 in 134ms :: {"id":"6357ea97-0269-4c78-bd83-6820fea2e582","…
+2025-11-15T12:14:49.086745185Z 12:14:49 PM [express] GET /api/users/preferences 200 in 134ms :: {"userId":"6357ea97-0269-4c78-bd83-6…
+2025-11-15T12:14:49.576424687Z 12:14:49 PM [express] GET /api/notifications 304 in 196ms :: []
+2025-11-15T12:14:49.874277942Z 12:14:49 PM [express] GET /api/api/quick-deals/needs-setup 200 in 79ms
+2025-11-15T12:14:49.876072112Z 12:14:49 PM [express] GET /api/api/analytics/health-score 200 in 75ms
+2025-11-15T12:14:50.024267589Z 12:14:50 PM [express] GET /api/users/preferences 304 in 131ms :: {"userId":"6357ea97-0269-4c78-bd83-6…
+2025-11-15T12:14:50.314283555Z 12:14:50 PM [express] GET /api/api/analytics/spending-days-comparison 200 in 71ms
+2025-11-15T12:14:50.327408678Z 12:14:50 PM [express] GET /api/api/recommendations 200 in 72ms
+2025-11-15T12:14:50.335639751Z 12:14:50 PM [express] GET /api/transactions/range 304 in 540ms :: []
+2025-11-15T12:15:09.822716845Z 12:15:09 PM [express] POST /api/api/accounts 200 in 65ms
+2025-11-15T12:15:21.456939952Z 12:15:21 PM [express] POST /api/api/accounts 200 in 70ms
+2025-11-15T12:16:26.796269639Z 12:16:26 PM [express] GET /api/users/preferences 304 in 327ms :: {"userId":"6357ea97-0269-4c78-bd83-6…
