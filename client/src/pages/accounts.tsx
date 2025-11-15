@@ -9,7 +9,8 @@ import {
   ArrowDownCircle,
   ArrowUpCircle,
   Zap,
-  ChevronDown
+  ChevronDown,
+  Plus
 } from "lucide-react";
 import { useAccounts, useCreateAccount, useUpdateAccount } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
