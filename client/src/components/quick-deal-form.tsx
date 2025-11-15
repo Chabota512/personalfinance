@@ -26,6 +26,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import type { UserPreferences } from "@shared/schema";
 
 type CategorySuggestion = {
   category: string;
@@ -124,7 +125,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
   const [alertData, setAlertData] = useState<any>(null);
 
   // Fetch user preferences to check alert settings
-  const { data: preferences } = useQuery({
+  const { data: preferences } = useQuery<UserPreferences>({
     queryKey: ["/api/users/preferences"],
     enabled: !!user, // Only fetch when user is authenticated
   });
@@ -134,10 +135,12 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
     queryKey: ['/api/ai/categorize', description],
     queryFn: async () => {
       if (!description || description.length < 3) return null;
-      return await apiRequest<CategorySuggestion>('/api/ai/categorize', {
-        method: 'POST',
-        body: JSON.stringify({ description, transactionType: transactionType }),
+      const response = await apiRequest('POST', '/api/ai/categorize', {
+        description,
+        transactionType: transactionType,
       });
+      if (!response.ok) return null;
+      return await response.json();
     },
     enabled: description.length >= 3,
   });
@@ -147,10 +150,13 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
     queryKey: ['/api/quick-deals/check-warnings', amount, category, transactionType],
     queryFn: async () => {
       if (!amount || parseFloat(amount) <= 0) return null;
-      return await apiRequest<WarningResponse>('/api/quick-deals/check-warnings', {
-        method: 'POST',
-        body: JSON.stringify({ amount, category, type: transactionType }),
+      const response = await apiRequest('POST', '/api/quick-deals/check-warnings', {
+        amount,
+        category,
+        type: transactionType,
       });
+      if (!response.ok) return null;
+      return await response.json();
     },
     enabled: !!amount && parseFloat(amount) > 0 && !!category,
   });
@@ -414,32 +420,33 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
           const budgetsRes = await response.json();
           if (budgetsRes && Array.isArray(budgetsRes)) {
             for (const budget of budgetsRes) {
-            const categoryItem = budget.categoryItems?.find((item: any) => 
-              item.category === finalCategory
-            );
+              const categoryItem = budget.categoryItems?.find((item: any) => 
+                item.category === finalCategory
+              );
 
-            if (categoryItem) {
-              const budgetLimit = parseFloat(categoryItem.allocated);
-              const currentSpent = parseFloat(categoryItem.spent || '0');
+              if (categoryItem) {
+                const budgetLimit = parseFloat(categoryItem.allocated);
+                const currentSpent = parseFloat(categoryItem.spent || '0');
 
-              // Validate budget numbers are valid
-              if (isNaN(budgetLimit) || isNaN(currentSpent)) {
-                console.warn('Invalid budget data, skipping overspend check for this category');
-                continue;
-              }
+                // Validate budget numbers are valid
+                if (isNaN(budgetLimit) || isNaN(currentSpent)) {
+                  console.warn('Invalid budget data, skipping overspend check for this category');
+                  continue;
+                }
 
-              const newTotal = currentSpent + amountNum;
+                const newTotal = currentSpent + amountNum;
 
-              if (newTotal > budgetLimit) {
-                setAlertData({
-                  type: 'budgetOverspend',
-                  categoryName: finalCategory,
-                  budgetLimit,
-                  currentSpent,
-                  transactionAmount: amountNum,
-                });
-                setShowBudgetOverspendDialog(true);
-                return false;
+                if (newTotal > budgetLimit) {
+                  setAlertData({
+                    type: 'budgetOverspend',
+                    categoryName: finalCategory,
+                    budgetLimit,
+                    currentSpent,
+                    transactionAmount: amountNum,
+                  });
+                  setShowBudgetOverspendDialog(true);
+                  return false;
+                }
               }
             }
           }
@@ -449,9 +456,6 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
         console.warn('Budget overspend check failed:', e);
       }
     }
-
-    return true; // All checks passed
-  };
 
     return true; // All checks passed
   };
