@@ -201,7 +201,7 @@ export default function TransactionsPage() {
             </p>
           </div>
         <Button onClick={() => {
-          setSelectedTransaction(null); // Clear selected transaction for new entry
+          setSelectedTransaction(null);
           setOpen(true);
         }} className="w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" />
@@ -303,7 +303,14 @@ export default function TransactionsPage() {
         <CardContent className="space-y-2">
           {filteredTransactions && filteredTransactions.length > 0 ? (
             filteredTransactions.map((transaction: any) => (
-              <TransactionListItem key={transaction.id} transaction={transaction} />
+              <TransactionListItem 
+                key={transaction.id} 
+                transaction={transaction}
+                onClick={() => {
+                  setSelectedTransaction(transaction);
+                  setOpen(true);
+                }}
+              />
             ))
           ) : (
             <div className="text-center py-8 text-muted-foreground">
@@ -317,6 +324,7 @@ export default function TransactionsPage() {
       <TransactionDialog 
           open={open} 
           onOpenChange={setOpen}
+          transaction={selectedTransaction}
         />
       </div>
     </div>

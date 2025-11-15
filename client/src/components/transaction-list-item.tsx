@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { getCategoryById } from "@/lib/categories";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useLocation } from "wouter";
 
 interface TransactionListItemProps {
   transaction: Transaction;
@@ -17,6 +18,7 @@ export function TransactionListItem({ transaction, onClick }: TransactionListIte
   const isExpense = amount < 0;
   const category = transaction.category ? getCategoryById(transaction.category) : null;
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   // Voice note playback state
   const [isPlaying, setIsPlaying] = useState(false);
@@ -122,85 +124,39 @@ export function TransactionListItem({ transaction, onClick }: TransactionListIte
 
   return (
     <div
-      className="group relative font-mono text-xs py-2 px-3 hover:bg-accent/50 cursor-pointer transition-all duration-200 border-l-2 border-transparent hover:border-l-primary"
-      onClick={onClick}
+      className="group relative font-mono text-xs py-2 px-3 hover:bg-accent/50 transition-all duration-200 border-l-2 border-transparent hover:border-l-primary"
       data-testid={`transaction-${transaction.id}`}
     >
       <div className="flex items-center gap-3">
+        <span className="flex-1 truncate font-medium text-foreground text-[12px]">
+          {transaction.description}
+        </span>
+        
         <span className={cn(
-          "shrink-0 font-bold min-w-[100px] text-right tabular-nums",
+          "shrink-0 font-bold tabular-nums text-[12px]",
           isExpense ? "text-destructive" : "text-success"
         )}>
           {amountStr}
         </span>
         
-        <span className="shrink-0 text-muted-foreground/70 text-[10px] min-w-[80px]">
+        <span className="shrink-0 text-muted-foreground/70 text-[12px] min-w-[90px]">
           {dateStr}
         </span>
-        
-        <span className="flex-1 truncate font-medium text-foreground">
-          {transaction.description}
-        </span>
 
-        <div className="flex items-center gap-1.5 shrink-0">
-          <span className="text-muted-foreground/60 text-[10px] px-2 py-0.5 bg-muted/30 rounded">
-            {categoryName}
-          </span>
-          
-          {transaction.contentmentLevel !== null && transaction.contentmentLevel !== undefined && (
-            <span className="text-sm" title={`Contentment: ${transaction.contentmentLevel}/5`}>
-              {transaction.contentmentLevel === 5 && '😄'}
-              {transaction.contentmentLevel === 4 && '🙂'}
-              {transaction.contentmentLevel === 3 && '😐'}
-              {transaction.contentmentLevel === 2 && '😕'}
-              {transaction.contentmentLevel === 1 && '😞'}
-            </span>
-          )}
-          
-          {transaction.voiceNoteUrl && (
-            <button
-              onClick={handleVoiceNoteClick}
-              className={cn(
-                "p-1 rounded-md hover:bg-muted transition-colors",
-                isPlaying && "bg-primary/10 text-primary"
-              )}
-              title={isPlaying ? "Playing..." : "Play voice note"}
-            >
-              <Volume2 className={cn("h-3 w-3", isPlaying ? "text-primary" : "text-muted-foreground")} />
-            </button>
-          )}
-        </div>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onClick) {
+              onClick();
+            } else {
+              setLocation('/transactions');
+            }
+          }}
+          className="shrink-0 text-primary hover:text-primary/80 underline text-[12px] font-medium"
+        >
+          See more
+        </button>
       </div>
-
-      {(transaction.locationName || transaction.reason) && (
-        <div className="flex items-center gap-3 mt-1.5 ml-[100px] pl-3 text-[10px] text-muted-foreground/60">
-          {transaction.locationName && (
-            <span className="flex items-center gap-1" data-testid={`location-${transaction.id}`}>
-              <span className="text-[9px]">📍</span>
-              {transaction.locationName}
-            </span>
-          )}
-          
-          {transaction.reason && (
-            <span className="flex items-center gap-1 italic">
-              <span>•</span>
-              {transaction.reason}
-              {transaction.reasonAudioUrl && (
-                <button
-                  onClick={handleReasonAudioClick}
-                  className={cn(
-                    "ml-1 p-0.5 rounded hover:bg-muted transition-colors",
-                    isPlayingReason && "bg-primary/10 text-primary"
-                  )}
-                  title={isPlayingReason ? "Playing..." : "Hear why you did this"}
-                >
-                  <Volume2 className={cn("h-2.5 w-2.5", isPlayingReason ? "text-primary" : "text-muted-foreground")} />
-                </button>
-              )}
-            </span>
-          )}
-        </div>
-      )}
     </div>
   );
 }
