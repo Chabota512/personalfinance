@@ -3,8 +3,6 @@ export const API_BASE_URL = import.meta.env.PROD
   ? 'https://personalfinance-pro-backend.onrender.com'
   : '';
 
-export const API_URL = `${API_BASE_URL}/api`;
-
 // Helper to construct full API URLs
 export const getApiEndpoint = (path: string): string => {
   // Ensure path starts with /
@@ -15,6 +13,6 @@ export const getApiEndpoint = (path: string): string => {
     return normalizedPath;
   }
 
-  // Otherwise, combine base URL with path
-  return `${API_URL}${normalizedPath}`;
+  // Otherwise, combine base URL with path (path already includes /api)
+  return `${API_BASE_URL}${normalizedPath}`;
 };
