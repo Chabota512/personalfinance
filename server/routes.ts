@@ -1755,6 +1755,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const currentMonth = new Date().toISOString().slice(0, 7);
       const account = await storage.getQuickDealMonthlyAccount(req.userId, currentMonth);
+      
+      if (!account) {
+        return res.json(null);
+      }
+      
       res.json(account);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
