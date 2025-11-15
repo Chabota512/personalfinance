@@ -1,5 +1,5 @@
 import { QueryClient, type QueryFunction } from "@tanstack/react-query";
-import { getApiEndpoint } from "./api-config";
+import { API_BASE_URL } from "./api-config";
 
 async function handleResponse(response: Response) {
   if (response.status === 401) {
