@@ -405,15 +405,39 @@ export default function Onboarding() {
                             </select>
                           </div>
                         </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeCustomAccount(custom.id)}
-                          data-testid={`button-remove-custom-${custom.id}`}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
+                        <div className="flex flex-col gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => {
+                              if (custom.name.trim()) {
+                                toast({
+                                  title: "Saved",
+                                  description: `${custom.name} has been saved.`,
+                                });
+                              } else {
+                                toast({
+                                  title: "Error",
+                                  description: "Please enter an account name.",
+                                  variant: "destructive"
+                                });
+                              }
+                            }}
+                            data-testid={`button-save-custom-${custom.id}`}
+                          >
+                            <CheckCircle2 className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeCustomAccount(custom.id)}
+                            data-testid={`button-remove-custom-${custom.id}`}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
