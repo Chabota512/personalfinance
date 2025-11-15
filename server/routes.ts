@@ -854,26 +854,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         reasonAudioUrl: z.string().max(500).optional().nullable(),
         contentmentLevel: z.number().min(1).max(5).optional(),
         depositAccountId: z.string().optional(),
+        sourceAccountId: z.string().optional(),
       });
 
       const validatedData = quickDealSchema.parse(req.body);
 
       // Auto-categorize if no category provided
       const category = validatedData.category || autoCategorize(validatedData.description, validatedData.type);
-
-      // Get monthly account for expenses
-      let sourceAccountId = validatedData.depositAccountId;
-      if (validatedData.type === 'expense') {
-        const currentMonth = new Date().toISOString().slice(0, 7);
-        const monthlyAccount = await storage.getQuickDealMonthlyAccount(req.userId, currentMonth);
-        if (!monthlyAccount) {
-          return res.status(400).json({ 
-            error: "Please set up your Quick Deals account for this month first",
-            needsSetup: true 
-          });
-        }
-        sourceAccountId = monthlyAccount.accountId;
-      }
 
       const transaction = await storage.createQuickDeal(req.userId, {
         type: validatedData.type,
@@ -886,7 +873,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         reason: validatedData.reason || null,
         reasonAudioUrl: validatedData.reasonAudioUrl || null,
         contentmentLevel: validatedData.contentmentLevel || null,
-        depositAccountId: sourceAccountId,
+        depositAccountId: validatedData.depositAccountId || null,
+        sourceAccountId: validatedData.sourceAccountId || null,
       });
 
       res.status(201).json(transaction);
