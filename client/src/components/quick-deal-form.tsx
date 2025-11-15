@@ -158,11 +158,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
   // Mutation for creating a quick deal
   const createQuickDeal = useMutation({
     mutationFn: async (data: any) => {
-      const response = await fetchApi('/api/quick-deals', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+      const response = await apiRequest('POST', '/api/quick-deals', data);
       
       if (!response.ok) {
         const error = await response.json();
@@ -204,7 +200,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
   useEffect(() => {
     if (open) {
       // Fetch all accounts
-      fetchApi('/api/accounts')
+      apiRequest('GET', '/api/accounts')
         .then(res => res.json())
         .then(data => {
           const assetAccounts = data.filter((a: any) => 
@@ -228,7 +224,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
 
       // Fetch monthly account for expenses
       if (transactionType === 'expense') {
-        fetchApi('/api/quick-deals/monthly-account')
+        apiRequest('GET', '/api/quick-deals/monthly-account')
           .then(res => res.json())
           .then(data => {
             if (data && data.accountId) {
@@ -413,7 +409,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
     // Check budget overspending if enabled in preferences
     if (preferences?.showBudgetOverspendWarning) {
       try {
-        const response = await fetchApi('/api/budgets/active');
+        const response = await apiRequest('GET', '/api/budgets/active');
         if (response.ok) {
           const budgetsRes = await response.json();
           if (budgetsRes && Array.isArray(budgetsRes)) {
@@ -505,8 +501,9 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
         const formData = new FormData();
         formData.append('audio', audioBlob, 'reason.webm');
 
-        const uploadResponse = await fetchApi('/api/upload/audio', {
+        const uploadResponse = await fetch('/api/upload/audio', {
           method: 'POST',
+          credentials: 'include',
           body: formData,
         });
 
@@ -521,15 +518,11 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
       // Record category choice for learning
       if (suggestedCategory && finalCategory !== suggestedCategory) {
         try {
-          await fetchApi('/api/ai/record-category-choice', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              description,
-              transactionType,
-              suggestedCategory,
-              userSelectedCategory: finalCategory
-            }),
+          await apiRequest('POST', '/api/ai/record-category-choice', {
+            description,
+            transactionType,
+            suggestedCategory,
+            userSelectedCategory: finalCategory
           });
         } catch (e) {
           // Silent fail - learning is optional
@@ -557,14 +550,10 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
       // For expenses, check if this matches any budget items
       if (transactionType === 'expense') {
         try {
-          const response = await fetchApi('/api/quick-deals/detect-budget-items', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              description: description.trim(),
-              category: finalCategory,
-              amount
-            }),
+          const response = await apiRequest('POST', '/api/quick-deals/detect-budget-items', {
+            description: description.trim(),
+            category: finalCategory,
+            amount
           });
 
           if (response.ok) {
