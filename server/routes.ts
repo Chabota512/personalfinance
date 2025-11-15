@@ -209,17 +209,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User preferences
   app.get("/api/users/preferences", authenticate, async (req: any, res) => {
     try {
+      // Get user first to ensure they exist
+      const user = await storage.getUserById(req.userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
       const prefs = await storage.getUserPreferences(req.userId);
       if (!prefs) {
         // Return default preferences if none exist yet
         return res.json({
           userId: req.userId,
-          hasCompletedOnboarding: false,
+          hasCompletedOnboarding: user.hasCompletedOnboarding || false,
           settings: {}
         });
       }
       res.json(prefs);
     } catch (error: any) {
+      console.error("Error fetching user preferences:", error);
       res.status(500).json({ error: error.message });
     }
   });

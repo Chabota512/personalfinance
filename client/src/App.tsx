@@ -53,11 +53,8 @@ function ProtectedRoute({ component: Component, ...rest }: any) {
   // Fetch user preferences to check onboarding status
   const { data: preferences, isLoading: prefsLoading } = useQuery<UserPreferences>({
     queryKey: ["/api/users/preferences"],
-    enabled: !!user, // Only fetch if user is authenticated
-    staleTime: 0,
-    gcTime: 0, // Don't cache at all
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
+    enabled: !!user && !isLoading, // Only fetch if user is authenticated and not loading
+    retry: false, // Don't retry on failure
   });
 
   useEffect(() => {
@@ -76,7 +73,7 @@ function ProtectedRoute({ component: Component, ...rest }: any) {
     }
   }, [user, isLoading, prefsLoading, preferences, currentLocation, setLocation]);
 
-  if (isLoading || prefsLoading) {
+  if (isLoading || (user && prefsLoading)) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin" data-testid="loading-spinner" />
