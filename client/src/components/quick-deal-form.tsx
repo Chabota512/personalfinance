@@ -451,6 +451,25 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
       return;
     }
 
+    // Validate account selection
+    if (transactionType === 'expense' && !selectedAccountId) {
+      toast({
+        title: "No account selected",
+        description: "Please select an account to deduct from",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (transactionType === 'income' && !depositAccountId) {
+      toast({
+        title: "No account selected",
+        description: "Please select an account to deposit to",
+        variant: "destructive"
+      });
+      return;
+    }
+
     // Run pre-submission checks unless skipping
     if (!skipChecks) {
       const canProceed = await checkBeforeSubmit();
@@ -561,8 +580,10 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
 
       if (onSuccess) onSuccess();
     } catch (error: any) {
+      console.error("Quick Deal error:", error);
       toast({
         title: "Failed to save",
+        description: error.message || "Please check that you have an account selected and try again",
         variant: "destructive"
       });
     } finally {
