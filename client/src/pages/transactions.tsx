@@ -344,58 +344,66 @@ export default function TransactionsPage() {
 
         {/* Transaction Details Dialog */}
         <Dialog open={detailsDialogOpen} onOpenChange={setDetailsDialogOpen}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Transaction Details</DialogTitle>
+              <DialogTitle className="text-xl">Transaction Details</DialogTitle>
               <DialogDescription>
                 Complete information about this transaction
               </DialogDescription>
             </DialogHeader>
             {viewTransaction && (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <Card>
+              <div className="space-y-6">
+                {/* Amount and Date */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="bg-gradient-to-br from-background to-muted/30">
                     <CardContent className="pt-6">
                       <div className="flex items-center gap-2 mb-2">
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground">Amount</p>
+                        <DollarSign className="h-5 w-5 text-muted-foreground" />
+                        <p className="text-sm font-semibold text-muted-foreground">Total Amount</p>
                       </div>
-                      <p className={`text-2xl font-bold ${parseFloat(viewTransaction.totalAmount) >= 0 ? 'text-success' : 'text-destructive'}`}>
-                        {parseFloat(viewTransaction.totalAmount) >= 0 ? '+' : '-'}
-                        {formatCurrency(Math.abs(parseFloat(viewTransaction.totalAmount)))}
+                      <p className={`text-3xl font-bold ${parseFloat(viewTransaction.totalAmount) >= 0 ? 'text-success' : 'text-destructive'}`}>
+                        {parseFloat(viewTransaction.totalAmount) >= 0 ? '+' : ''}
+                        {formatCurrency(parseFloat(viewTransaction.totalAmount))}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {parseFloat(viewTransaction.totalAmount) >= 0 ? 'Income' : 'Expense'}
                       </p>
                     </CardContent>
                   </Card>
-                  <Card>
+                  <Card className="bg-gradient-to-br from-background to-muted/30">
                     <CardContent className="pt-6">
                       <div className="flex items-center gap-2 mb-2">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground">Date</p>
+                        <Calendar className="h-5 w-5 text-muted-foreground" />
+                        <p className="text-sm font-semibold text-muted-foreground">Transaction Date</p>
                       </div>
-                      <p className="text-2xl font-bold">
+                      <p className="text-3xl font-bold">
                         {format(new Date(viewTransaction.date), 'MMM dd, yyyy')}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {format(new Date(viewTransaction.date), 'EEEE')}
                       </p>
                     </CardContent>
                   </Card>
                 </div>
 
+                {/* Description and Category */}
                 <Card>
-                  <CardContent className="pt-6 space-y-3">
+                  <CardContent className="pt-6 space-y-4">
                     <div>
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-2 mb-2">
                         <FileText className="h-4 w-4 text-muted-foreground" />
                         <p className="text-sm font-semibold text-muted-foreground">Description</p>
                       </div>
-                      <p className="text-base">{viewTransaction.description}</p>
+                      <p className="text-lg font-medium">{viewTransaction.description}</p>
                     </div>
 
                     {viewTransaction.category && (
                       <div>
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-2">
                           <Tag className="h-4 w-4 text-muted-foreground" />
                           <p className="text-sm font-semibold text-muted-foreground">Category</p>
                         </div>
-                        <Badge variant="outline" className="capitalize">
+                        <Badge variant="outline" className="capitalize text-sm px-3 py-1">
                           {viewTransaction.category.replace(/_/g, ' ')}
                         </Badge>
                       </div>
@@ -403,31 +411,64 @@ export default function TransactionsPage() {
 
                     {viewTransaction.notes && (
                       <div>
-                        <p className="text-sm font-semibold text-muted-foreground mb-1">Notes</p>
-                        <p className="text-sm text-muted-foreground">{viewTransaction.notes}</p>
+                        <p className="text-sm font-semibold text-muted-foreground mb-2">Notes</p>
+                        <p className="text-sm bg-muted/50 p-3 rounded-md">{viewTransaction.notes}</p>
                       </div>
                     )}
 
-                    {viewTransaction.entries && viewTransaction.entries.length > 0 && (
+                    {viewTransaction.voiceNoteUrl && (
                       <div>
-                        <p className="text-sm font-semibold text-muted-foreground mb-2">Journal Entries</p>
-                        <div className="space-y-2">
-                          {viewTransaction.entries.map((entry: any, index: number) => (
-                            <div key={index} className="flex items-center justify-between p-2 bg-muted rounded-md">
-                              <div>
-                                <p className="font-medium text-sm">{entry.accountName || `Account ${entry.accountId}`}</p>
-                                <Badge variant={entry.entryType === 'debit' ? 'default' : 'secondary'} className="text-xs mt-1">
-                                  {entry.entryType}
-                                </Badge>
-                              </div>
-                              <p className="font-semibold">{formatCurrency(parseFloat(entry.amount))}</p>
-                            </div>
-                          ))}
-                        </div>
+                        <p className="text-sm font-semibold text-muted-foreground mb-2">Voice Note</p>
+                        <audio controls className="w-full">
+                          <source src={viewTransaction.voiceNoteUrl} type="audio/webm" />
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                    )}
+
+                    {viewTransaction.reasonAudioUrl && (
+                      <div>
+                        <p className="text-sm font-semibold text-muted-foreground mb-2">Reason Audio</p>
+                        <audio controls className="w-full">
+                          <source src={viewTransaction.reasonAudioUrl} type="audio/webm" />
+                          Your browser does not support the audio element.
+                        </audio>
                       </div>
                     )}
                   </CardContent>
                 </Card>
+
+                {/* Journal Entries (Double-Entry Bookkeeping) */}
+                {viewTransaction.entries && viewTransaction.entries.length > 0 && (
+                  <Card>
+                    <CardContent className="pt-6">
+                      <p className="text-sm font-semibold text-muted-foreground mb-3">Double-Entry Journal Entries</p>
+                      <div className="space-y-2">
+                        {viewTransaction.entries.map((entry: any, index: number) => (
+                          <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border">
+                            <div className="flex-1">
+                              <p className="font-semibold text-sm">{entry.accountName || `Account ${entry.accountId}`}</p>
+                              <Badge 
+                                variant={entry.entryType === 'debit' ? 'default' : 'secondary'} 
+                                className="text-xs mt-1.5 capitalize"
+                              >
+                                {entry.entryType}
+                              </Badge>
+                            </div>
+                            <p className="font-bold text-lg">{formatCurrency(parseFloat(entry.amount))}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Transaction ID */}
+                <div className="pt-2 border-t border-border">
+                  <p className="text-xs text-muted-foreground">
+                    Transaction ID: <span className="font-mono">{viewTransaction.id}</span>
+                  </p>
+                </div>
               </div>
             )}
           </DialogContent>
