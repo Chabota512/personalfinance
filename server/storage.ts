@@ -62,7 +62,7 @@ export async function getUserPreferences(userId: string) {
 export async function upsertUserPreferences(userId: string, data: Partial<InsertUserPreferences>) {
   // Check if preferences already exist
   const existing = await getUserPreferences(userId);
-  
+
   if (existing) {
     // Update existing preferences
     const [updated] = await db.update(userPreferences)
@@ -318,7 +318,7 @@ export async function createQuickDeal(
 
   // Determine the source account for the transaction
   let sourceAccount;
-  
+
   if (data.type === 'income' && data.depositAccountId) {
     // For income, use the specified deposit account
     sourceAccount = userAccounts.find(acc => acc.id === data.depositAccountId);
