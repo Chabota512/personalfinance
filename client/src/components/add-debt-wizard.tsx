@@ -14,6 +14,7 @@ import { VoiceRecorder } from "./voice-recorder";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/financial-utils";
 import { useAccounts } from "@/lib/api";
+import { fetchApi } from "@/lib/queryClient";
 
 interface DebtWizardData {
   // Step 1: Basic Info
@@ -160,9 +161,7 @@ export function AddDebtWizard({ open, onClose, onComplete }: AddDebtWizardProps)
             const today = new Date();
             const currentMonth = today.toISOString().slice(0, 7);
 
-            const cashFlowResponse = await fetch(`/api/cash-flow?month=${currentMonth}`, {
-              credentials: 'include'
-            });
+            const cashFlowResponse = await fetchApi(`/api/cash-flow?month=${currentMonth}`);
 
             if (cashFlowResponse.ok) {
               const cashFlowData = await cashFlowResponse.json();
@@ -179,9 +178,7 @@ export function AddDebtWizard({ open, onClose, onComplete }: AddDebtWizardProps)
           // Step 2: If no cash flow data, try active budgets (planned spending)
           if (!income && !expenses) {
             try {
-              const budgetsResponse = await fetch('/api/budgets/active', {
-                credentials: 'include'
-              });
+              const budgetsResponse = await fetchApi('/api/budgets/active');
 
               if (budgetsResponse.ok) {
                 const budgets = await budgetsResponse.json();
@@ -207,9 +204,7 @@ export function AddDebtWizard({ open, onClose, onComplete }: AddDebtWizardProps)
           // Step 3: If still no data, try financial ratios (3-month average)
           if (!income && !expenses) {
             try {
-              const ratiosResponse = await fetch('/api/analytics/financial-ratios', {
-                credentials: 'include'
-              });
+              const ratiosResponse = await fetchApi('/api/analytics/financial-ratios');
 
               if (ratiosResponse.ok) {
                 const ratios = await ratiosResponse.json();
@@ -288,9 +283,8 @@ export function AddDebtWizard({ open, onClose, onComplete }: AddDebtWizardProps)
         totalPeriods = totalPeriods * 12;
       }
 
-      const response = await fetch('/api/debts/analyze-risk', {
+      const response = await fetchApi('/api/debts/analyze-risk', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           principal: parseFloat(formData.principalAmount),
           interestRate: annualRate,

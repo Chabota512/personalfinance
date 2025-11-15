@@ -33,6 +33,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useCreateBudget, useActiveDebts, useAccounts } from "@/lib/api";
 import { useLocation } from "wouter";
+import { fetchApi } from "@/lib/queryClient";
 import {
   Tooltip,
   TooltipContent,
@@ -499,10 +500,8 @@ export default function BudgetWizard() {
       const budgetTitle = (budgetData.title || '').trim() || `${budgetPeriod} Budget - ${new Date().toLocaleDateString()}`;
 
       // Create the budget using the create-with-items endpoint
-      const response = await fetch('/api/budgets/create-with-items', {
+      const response = await fetchApi('/api/budgets/create-with-items', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({
           budget: {
             title: budgetTitle,

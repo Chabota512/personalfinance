@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, fetchApi } from "@/lib/queryClient";
 import { Wallet, Calendar } from "lucide-react";
 
 interface MonthlyAccountSetupDialogProps {
@@ -28,7 +28,7 @@ export function MonthlyAccountSetupDialog({ open, onOpenChange, onSuccess }: Mon
       setCurrentMonth(month);
       
       // Fetch asset accounts
-      fetch('/api/accounts', { credentials: 'include' })
+      fetchApi('/api/accounts')
         .then(res => res.json())
         .then(data => {
           const assetAccounts = data.filter((a: any) => 

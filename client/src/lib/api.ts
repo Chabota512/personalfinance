@@ -170,9 +170,7 @@ export function useTransactions(limit = 100) {
   return useQuery({
     queryKey: ["/api/transactions", { limit }],
     queryFn: async () => {
-      const res = await fetch(`/api/transactions?limit=${limit}`, {
-        credentials: "include",
-      });
+      const res = await fetchApi(`/api/transactions?limit=${limit}`);
       if (!res.ok) throw new Error(await res.text());
       return await res.json();
     },
@@ -184,9 +182,8 @@ export function useTransactionsByDateRange(startDate?: Date, endDate?: Date) {
     queryKey: ["/api/transactions/range", startDate?.toISOString(), endDate?.toISOString()],
     queryFn: async () => {
       if (!startDate || !endDate) return [];
-      const res = await fetch(
-        `/api/transactions/range?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`,
-        { credentials: "include" }
+      const res = await fetchApi(
+        `/api/transactions/range?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
       );
       if (!res.ok) throw new Error(await res.text());
       return await res.json();
@@ -334,9 +331,7 @@ export function useBudgetSpending(budgetId: string) {
   return useQuery({
     queryKey: ["/api/budgets", budgetId, "spending"],
     queryFn: async () => {
-      const res = await fetch(`/api/budgets/${budgetId}/spending`, {
-        credentials: "include",
-      });
+      const res = await fetchApi(`/api/budgets/${budgetId}/spending`);
       if (!res.ok) throw new Error(await res.text());
       return await res.json();
     },
@@ -565,9 +560,8 @@ export function useCategorySpending(startDate?: Date, endDate?: Date) {
     queryKey: ["/api/analytics/category-spending", startDate?.toISOString(), endDate?.toISOString()],
     queryFn: async () => {
       if (!startDate || !endDate) return [];
-      const res = await fetch(
-        `/api/analytics/category-spending?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`,
-        { credentials: "include" }
+      const res = await fetchApi(
+        `/api/analytics/category-spending?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
       );
       if (!res.ok) throw new Error(await res.text());
       return await res.json();
@@ -592,9 +586,8 @@ export function useCashFlow(startDate?: Date, endDate?: Date) {
     queryKey: ["/api/analytics/cash-flow", startDate?.toISOString(), endDate?.toISOString()],
     queryFn: async () => {
       if (!startDate || !endDate) return null;
-      const res = await fetch(
-        `/api/analytics/cash-flow?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`,
-        { credentials: "include" }
+      const res = await fetchApi(
+        `/api/analytics/cash-flow?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
       );
       if (!res.ok) throw new Error(await res.text());
       return await res.json();

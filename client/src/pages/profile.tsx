@@ -9,6 +9,7 @@ import { User, Mail, Calendar, TrendingUp, Award, Lock } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/hooks/use-toast";
+import { fetchApi } from "@/lib/queryClient";
 
 export default function ProfilePage() {
   const [editing, setEditing] = useState(false);
@@ -23,7 +24,7 @@ export default function ProfilePage() {
   const { data: userApiData } = useQuery({
     queryKey: ["/api/users/me"],
     queryFn: async () => {
-      const res = await fetch("/api/users/me", { credentials: "include" });
+      const res = await fetchApi("/api/users/me");
       if (!res.ok) throw new Error("Failed to fetch user");
       return await res.json();
     },
@@ -31,10 +32,8 @@ export default function ProfilePage() {
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data: { email?: string; password?: string }) => {
-      const res = await fetch("/api/users/me", {
+      const res = await fetchApi("/api/users/me", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify(data),
       });
       if (!res.ok) {
@@ -250,9 +249,7 @@ export default function ProfilePage() {
                   variant="outline"
                   onClick={async () => {
                     try {
-                      const response = await fetch('/api/export/json', {
-                        credentials: 'include',
-                      });
+                      const response = await fetchApi('/api/export/json');
                       const data = await response.json();
                       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                       const url = URL.createObjectURL(blob);
@@ -272,9 +269,7 @@ export default function ProfilePage() {
                   variant="outline"
                   onClick={async () => {
                     try {
-                      const response = await fetch('/api/export/csv', {
-                        credentials: 'include',
-                      });
+                      const response = await fetchApi('/api/export/csv');
                       const blob = await response.blob();
                       const url = URL.createObjectURL(blob);
                       const a = document.createElement('a');
@@ -293,9 +288,7 @@ export default function ProfilePage() {
                   variant="outline"
                   onClick={async () => {
                     try {
-                      const response = await fetch('/api/export/pdf', {
-                        credentials: 'include',
-                      });
+                      const response = await fetchApi('/api/export/pdf');
                       const blob = await response.blob();
                       const url = URL.createObjectURL(blob);
                       const a = document.createElement('a');

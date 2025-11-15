@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Trash2, DollarSign } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { fetchApi } from "@/lib/queryClient";
 
 export function AutoSweepConfig() {
   const [category, setCategory] = useState("");
@@ -22,10 +23,8 @@ export function AutoSweepConfig() {
 
   const createSweep = useMutation({
     mutationFn: async (data: any) => {
-      const res = await fetch("/api/auto-sweep", {
+      const res = await fetchApi("/api/auto-sweep", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error(await res.text());
@@ -42,9 +41,8 @@ export function AutoSweepConfig() {
 
   const deleteSweep = useMutation({
     mutationFn: async (id: number) => {
-      const res = await fetch(`/api/auto-sweep/${id}`, {
+      const res = await fetchApi(`/api/auto-sweep/${id}`, {
         method: "DELETE",
-        credentials: "include",
       });
       if (!res.ok) throw new Error(await res.text());
       return res.json();

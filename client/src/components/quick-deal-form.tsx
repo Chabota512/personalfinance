@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/auth-context";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { apiRequest, queryClient, fetchApi } from "@/lib/queryClient";
 import { MapPin, Loader2, Navigation, Mic, Square, Play, Pause, TrendingDown, TrendingUp, X, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BudgetLinkDialog } from "@/components/budget-link-dialog";
@@ -188,9 +188,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
   useEffect(() => {
     if (open) {
       // Fetch all accounts
-      fetch('/api/accounts', {
-        credentials: 'include'
-      })
+      fetchApi('/api/accounts')
         .then(res => res.json())
         .then(data => {
           const assetAccounts = data.filter((a: any) => 
@@ -214,9 +212,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
 
       // Fetch monthly account for expenses
       if (transactionType === 'expense') {
-        fetch('/api/quick-deals/monthly-account', {
-          credentials: 'include'
-        })
+        fetchApi('/api/quick-deals/monthly-account')
           .then(res => res.json())
           .then(data => {
             if (data && data.accountId) {
@@ -472,7 +468,7 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
         const formData = new FormData();
         formData.append('audio', audioBlob, 'reason.webm');
 
-        const uploadResponse = await fetch('/api/upload/audio', {
+        const uploadResponse = await fetchApi('/api/upload/audio', {
           method: 'POST',
           body: formData,
         });

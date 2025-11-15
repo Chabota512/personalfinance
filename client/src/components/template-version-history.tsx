@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { History, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { fetchApi } from "@/lib/queryClient";
 
 type TemplateVersion = {
   id: string;
@@ -28,10 +29,8 @@ export function TemplateVersionHistory({ templateId }: { templateId: number }) {
 
   const createVersion = useMutation({
     mutationFn: async (data: { name: string; description?: string }) => {
-      const res = await fetch(`/api/templates/${templateId}/create-version`, {
+      const res = await fetchApi(`/api/templates/${templateId}/create-version`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error(await res.text());

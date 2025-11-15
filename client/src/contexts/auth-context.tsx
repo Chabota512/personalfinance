@@ -1,5 +1,6 @@
 
 import { createContext, useContext, ReactNode, useState, useEffect } from "react";
+import { fetchApi } from "@/lib/queryClient";
 
 interface User {
   id: string;
@@ -26,9 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch('/api/auth/me', {
-          credentials: 'include'
-        });
+        const response = await fetchApi('/api/auth/me');
         
         if (response.ok) {
           const userData = await response.json();
@@ -49,10 +48,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetchApi('/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ username, password })
       });
 
@@ -74,10 +71,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (username: string, email: string, password: string) => {
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetchApi('/api/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ username, email, password })
       });
 
@@ -92,9 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await new Promise(resolve => setTimeout(resolve, 100));
       
       // Verify the session is working by fetching user data
-      const verifyResponse = await fetch('/api/auth/me', {
-        credentials: 'include'
-      });
+      const verifyResponse = await fetchApi('/api/auth/me');
       
       if (verifyResponse.ok) {
         const verifiedUser = await verifyResponse.json();
@@ -114,9 +107,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    await fetch('/api/auth/logout', {
-      method: 'POST',
-      credentials: 'include'
+    await fetchApi('/api/auth/logout', {
+      method: 'POST'
     });
     setUser(null);
   };

@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Layers, Plus, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { fetchApi } from "@/lib/queryClient";
 
 type AutomationRule = {
   id: string;
@@ -40,10 +41,8 @@ export function RulePresetManager({ budgetId, onApply }: { budgetId?: number; on
 
   const createPreset = useMutation({
     mutationFn: async (data: any) => {
-      const res = await fetch("/api/rule-presets", {
+      const res = await fetchApi("/api/rule-presets", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error(await res.text());
@@ -60,10 +59,8 @@ export function RulePresetManager({ budgetId, onApply }: { budgetId?: number; on
 
   const applyPreset = useMutation({
     mutationFn: async (presetId: number) => {
-      const res = await fetch(`/api/budgets/${budgetId}/apply-preset`, {
+      const res = await fetchApi(`/api/budgets/${budgetId}/apply-preset`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ presetId }),
       });
       if (!res.ok) throw new Error(await res.text());

@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { apiRequest, queryClient, fetchApi } from "@/lib/queryClient";
 
 interface AccountType {
   id: string;
@@ -263,9 +263,7 @@ export default function Onboarding() {
       queryClient.removeQueries({ queryKey: ['/api/users/preferences'] });
       
       // Fetch fresh preferences data
-      const prefsResponse = await fetch('/api/users/preferences', {
-        credentials: 'include'
-      });
+      const prefsResponse = await fetchApi('/api/users/preferences');
       
       if (prefsResponse.ok) {
         const freshPrefs = await prefsResponse.json();

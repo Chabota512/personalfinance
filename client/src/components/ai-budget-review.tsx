@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Sparkles, Loader2, ThumbsUp, AlertTriangle, Info, TrendingDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, fetchApi } from "@/lib/queryClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface BudgetReviewProps {
@@ -50,10 +50,8 @@ export function AIBudgetReview({ budgetId, onApprove, onRevise }: BudgetReviewPr
 
   const trackAction = useMutation({
     mutationFn: async (action: string) => {
-      const res = await fetch("/api/ai/track-suggestion-action", {
+      const res = await fetchApi("/api/ai/track-suggestion-action", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({
           action,
           suggestionId: `budget-${Date.now()}`,

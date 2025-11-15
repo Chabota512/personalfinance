@@ -11,6 +11,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useDarkMode } from "@/contexts/dark-mode-context";
 import { useAccessibility } from "@/components/accessibility-provider";
+import { fetchApi } from "@/lib/queryClient";
 import { 
   User, 
   Palette, 
@@ -54,7 +55,7 @@ export default function SettingsPage() {
   const { data: userData } = useQuery({
     queryKey: ["/api/users/me"],
     queryFn: async () => {
-      const res = await fetch("/api/users/me", { credentials: "include" });
+      const res = await fetchApi("/api/users/me");
       if (!res.ok) throw new Error("Failed to fetch user");
       return await res.json();
     },
@@ -64,7 +65,7 @@ export default function SettingsPage() {
   const { data: preferences } = useQuery({
     queryKey: ["/api/users/preferences"],
     queryFn: async () => {
-      const res = await fetch("/api/users/preferences", { credentials: "include" });
+      const res = await fetchApi("/api/users/preferences");
       if (!res.ok) throw new Error("Failed to fetch preferences");
       const data = await res.json();
       // Set notification states from preferences
@@ -86,10 +87,8 @@ export default function SettingsPage() {
   // Update profile mutation
   const updateProfileMutation = useMutation({
     mutationFn: async (data: { email?: string; password?: string }) => {
-      const res = await fetch("/api/users/me", {
+      const res = await fetchApi("/api/users/me", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify(data),
       });
       if (!res.ok) {
@@ -120,10 +119,8 @@ export default function SettingsPage() {
   // Update preferences mutation
   const updatePreferencesMutation = useMutation({
     mutationFn: async (settings: any) => {
-      const res = await fetch("/api/users/preferences", {
+      const res = await fetchApi("/api/users/preferences", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ settings }),
       });
       if (!res.ok) {
@@ -211,9 +208,7 @@ export default function SettingsPage() {
 
   const handleExport = async (format: 'json' | 'csv' | 'pdf') => {
     try {
-      const res = await fetch(`/api/export/${format}`, { 
-        credentials: "include" 
-      });
+      const res = await fetchApi(`/api/export/${format}`);
       
       if (!res.ok) throw new Error(`Export failed`);
 

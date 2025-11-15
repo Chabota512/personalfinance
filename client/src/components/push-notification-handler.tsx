@@ -1,6 +1,7 @@
 
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { fetchApi } from "@/lib/queryClient";
 
 export function PushNotificationHandler() {
   const { toast } = useToast();
@@ -30,10 +31,8 @@ export function PushNotificationHandler() {
       });
 
       // Send subscription to server
-      await fetch("/api/notifications/subscribe", {
+      await fetchApi("/api/notifications/subscribe", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify(subscription.toJSON()),
       });
 

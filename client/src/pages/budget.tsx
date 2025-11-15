@@ -24,7 +24,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { queryClient } from "@/lib/queryClient";
+import { queryClient, fetchApi } from "@/lib/queryClient";
 
 interface Budget {
   id: string;
@@ -58,9 +58,8 @@ export default function BudgetPage() {
 
   const deleteBudgetMutation = useMutation({
     mutationFn: async (budgetId: string) => {
-      const res = await fetch(`/api/budgets/${budgetId}`, {
+      const res = await fetchApi(`/api/budgets/${budgetId}`, {
         method: "DELETE",
-        credentials: "include",
       });
       if (!res.ok) {
         const error = await res.json();
@@ -100,9 +99,7 @@ export default function BudgetPage() {
 
   const handleEditClick = async (budget: Budget) => {
     try {
-      const res = await fetch(`/api/budgets/${budget.id}/can-edit`, {
-        credentials: "include",
-      });
+      const res = await fetchApi(`/api/budgets/${budget.id}/can-edit`);
       const data = await res.json();
 
       if (!data.canEdit) {

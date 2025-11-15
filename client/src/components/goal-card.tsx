@@ -10,6 +10,7 @@ import type { Goal } from "@shared/schema";
 import { formatFrequency, formatDayOfWeek, calculateScheduleAdherence } from "@shared/goal-utils";
 import { useAccounts, useAccount, useContributeToGoal } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { fetchApi } from "@/lib/queryClient";
 import {
   Dialog,
   DialogContent,
@@ -138,12 +139,8 @@ export function GoalCard({ goal }: GoalCardProps) {
     }
 
     try {
-      const res = await fetch(`/api/goals/${goal.id}/contribute`, {
+      const res = await fetchApi(`/api/goals/${goal.id}/contribute`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
         body: JSON.stringify({
           amount: parseFloat(contributeAmount),
           sourceAccountId: selectedSourceAccountId,
