@@ -136,6 +136,27 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### November 15, 2025 - Authentication & Onboarding Flow Fix
+
+**Issue**: Users who completed onboarding were being redirected back to the onboarding wizard upon subsequent logins, even though their accounts were successfully created.
+
+**Root Cause**: The `hasCompletedOnboarding` flag is stored in the `userPreferences` table, but the PUT `/api/users/preferences` endpoint was incorrectly attempting to update the `users` table (which doesn't have this field). This caused a 500 error during onboarding completion, preventing the flag from being set.
+
+**Solution Implemented**:
+- Changed PUT `/api/users/preferences` endpoint to use `storage.upsertUserPreferences()` instead of directly updating the `users` table
+- Fixed GET `/api/users/preferences` to correctly return default preferences when no record exists
+- Removed invalid field `weekStartDay` from the preferences update
+
+**Verification**: End-to-end test confirms the complete flow now works:
+1. New user registration successfully creates account and redirects to onboarding
+2. Onboarding wizard completes all 3 steps (account selection, balance entry, review)
+3. Accounts are created with correct balances
+4. `hasCompletedOnboarding` flag is properly set in userPreferences table
+5. Subsequent logins redirect to /home instead of /onboarding
+6. User can access all protected routes without being forced back to onboarding
+
+**Impact**: Authentication and onboarding flow now works correctly for all users. New users complete onboarding once and are never shown it again on subsequent logins.
+
 ### October 27, 2025 - Goal Creation Bug Fix
 
 **Issue**: Goal creation was failing with validation errors when decimal fields (targetAmount, currentAmount, monthlyContribution) were sent as numbers instead of strings.

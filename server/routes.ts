@@ -220,7 +220,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Return default preferences if none exist yet
         return res.json({
           userId: req.userId,
-          hasCompletedOnboarding: user.hasCompletedOnboarding || false,
+          hasCompletedOnboarding: false,
           settings: {}
         });
       }
@@ -233,24 +233,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put('/api/users/preferences', authenticate, async (req: any, res) => {
     try {
-      const { hasCompletedOnboarding, preferredCurrency, weekStartDay, skipSampleData } = req.body;
+      const { hasCompletedOnboarding, preferredCurrency, skipSampleData } = req.body;
       const userId = req.userId;
 
-      const [updatedUser] = await db
-        .update(users)
-        .set({
-          hasCompletedOnboarding: hasCompletedOnboarding ?? undefined,
-          preferredCurrency: preferredCurrency ?? undefined,
-          weekStartDay: weekStartDay ?? undefined,
-          updatedAt: new Date(),
-        })
-        .where(eq(users.id, userId))
-        .returning();
+      // Use upsertUserPreferences to update or create preferences record
+      const updatedPrefs = await storage.upsertUserPreferences(userId, {
+        hasCompletedOnboarding: hasCompletedOnboarding ?? undefined,
+        preferredCurrency: preferredCurrency ?? undefined,
+      });
 
       // Skip sample data seeding - users start with clean slate
       // Sample data seeding has been disabled per user request
 
-      res.json(updatedUser);
+      res.json(updatedPrefs);
     } catch (error: any) {
       console.error("Error updating user preferences:", error);
       res.status(500).json({ error: error.message });
