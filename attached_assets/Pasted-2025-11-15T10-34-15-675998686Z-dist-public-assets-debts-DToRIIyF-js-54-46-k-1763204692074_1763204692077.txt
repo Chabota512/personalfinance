@@ -1,0 +1,102 @@
+2025-11-15T10:34:15.675998686Z ../dist/public/assets/debts-DToRIIyF.js                       54.46 kB │ gzip:  11.52 kB
+2025-11-15T10:34:15.676021197Z ../dist/public/assets/dashboard-D63M3BtJ.js                   64.16 kB │ gzip:  14.62 kB
+2025-11-15T10:34:15.676030897Z ../dist/public/assets/lesson-viewer-Cf7ffgUJ.js              165.80 kB │ gzip:  50.40 kB
+2025-11-15T10:34:15.676035157Z ../dist/public/assets/index-DIWIZKwB.js                      370.97 kB │ gzip: 117.42 kB
+2025-11-15T10:34:15.676038827Z ../dist/public/assets/generateCategoricalChart-BBCs-BeR.js   383.03 kB │ gzip: 105.61 kB
+2025-11-15T10:34:15.676391625Z ✓ built in 9.43s
+2025-11-15T10:34:19.085471388Z ==> Uploading build...
+2025-11-15T10:34:29.050365052Z ==> Uploaded in 5.8s. Compression took 4.2s
+2025-11-15T10:34:29.092860545Z ==> Build successful 🎉
+2025-11-15T10:34:32.672525702Z ==> Deploying...
+2025-11-15T10:34:58.227840682Z ==> Running 'npm start'
+2025-11-15T10:34:59.32198164Z 
+2025-11-15T10:34:59.322009471Z > rest-express@1.0.0 start
+2025-11-15T10:34:59.322015292Z > NODE_ENV=production tsx server/index.ts
+2025-11-15T10:34:59.322018232Z 
+2025-11-15T10:35:16.215694707Z Checking and seeding lessons...
+2025-11-15T10:35:16.215924921Z Starting lesson seed...
+2025-11-15T10:35:16.78578448Z Lesson already exists: Mastering Needs vs Wants
+2025-11-15T10:35:16.852015504Z   Quiz questions already exist for Mastering Needs vs Wants
+2025-11-15T10:35:16.91764284Z Lesson already exists: Building Your First Budget
+2025-11-15T10:35:16.9824993Z   Quiz questions already exist for Building Your First Budget
+2025-11-15T10:35:17.0478622Z Lesson already exists: Starting an Emergency Fund
+2025-11-15T10:35:17.11387028Z   Quiz questions already exist for Starting an Emergency Fund
+2025-11-15T10:35:17.177513535Z Lesson already exists: Understanding Credit
+2025-11-15T10:35:17.242888026Z   Quiz questions already exist for Understanding Credit
+2025-11-15T10:35:17.308243486Z Lesson already exists: Setting SMART Financial Goals
+2025-11-15T10:35:17.373292747Z   Quiz questions already exist for Setting SMART Financial Goals
+2025-11-15T10:35:17.437520688Z Lesson already exists: Tracking and Reviewing Progress
+2025-11-15T10:35:17.502794124Z   Quiz questions already exist for Tracking and Reviewing Progress
+2025-11-15T10:35:17.570859899Z Lesson already exists: Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-15T10:35:17.636482605Z   Quiz questions already exist for Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-15T10:35:17.636511067Z Lesson seed completed successfully!
+2025-11-15T10:35:18.119509524Z [SCHEDULER] Initializing scheduler...
+2025-11-15T10:35:18.119927109Z [SCHEDULER] Running daily checks at 2025-11-15T10:35:18.119Z
+2025-11-15T10:35:18.120056267Z [SCHEDULER] Checking goal contributions...
+2025-11-15T10:35:18.120163783Z [SCHEDULER] Scheduler initialized - running every hour
+2025-11-15T10:35:18.120392397Z [express] Production mode: serving from /opt/render/project/src/dist/public
+2025-11-15T10:35:18.120410939Z [express] Directory exists: true
+2025-11-15T10:35:18.224664033Z 10:35:18 AM [express] serving on port 10000
+2025-11-15T10:35:18.311312613Z [SCHEDULER] Sent 0 goal contribution reminders
+2025-11-15T10:35:18.311623752Z [SCHEDULER] Checking debt payments...
+2025-11-15T10:35:18.376499053Z [SCHEDULER] Sent 0 debt payment reminders
+2025-11-15T10:35:18.376524794Z [SCHEDULER] Daily checks completed
+2025-11-15T10:35:23.741888347Z ==> Your service is live 🎉
+2025-11-15T10:35:23.781148003Z ==> 
+2025-11-15T10:35:23.819259019Z ==> ///////////////////////////////////////////////////////////
+2025-11-15T10:35:23.856321405Z ==> 
+2025-11-15T10:35:23.894054351Z ==> Available at your primary URL https://personalfinance-pro-backend.onrender.com
+2025-11-15T10:35:23.935312257Z ==> 
+2025-11-15T10:35:23.973355144Z ==> ///////////////////////////////////////////////////////////
+2025-11-15T10:40:24.699184232Z ==> Detected service running on port 10000
+2025-11-15T10:40:24.90161984Z ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+2025-11-15T10:40:24.699184232Z ==> Detected service running on port 10000
+2025-11-15T10:40:24.90161984Z ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+2025-11-15T10:41:28.916774043Z 10:41:28 AM [express] GET /api/auth/me 401 in 2ms :: {"error":"Unauthorized - Please log in"}
+2025-11-15T10:42:03.482344685Z 10:42:03 AM [express] POST /api/auth/register 200 in 1734ms :: {"id":"ae467810-b59a-46a4-a76d-0334c0b…
+2025-11-15T10:42:04.485169757Z 10:42:04 AM [express] GET /api/auth/me 200 in 141ms :: {"id":"ae467810-b59a-46a4-a76d-0334c0b3ede7","…
+2025-11-15T10:42:05.503277451Z 10:42:05 AM [express] GET /api/notifications 200 in 229ms :: []
+2025-11-15T10:42:05.845824276Z 10:42:05 AM [express] GET /api/users/preferences 200 in 144ms :: {"userId":"ae467810-b59a-46a4-a76d-0…
+2025-11-15T10:42:08.119840166Z 10:42:08 AM [express] GET /api/api/analytics/spending-days-comparison 200 in 149ms
+2025-11-15T10:42:08.121252682Z 10:42:08 AM [express] GET /api/api/quick-deals/needs-setup 200 in 142ms
+2025-11-15T10:42:08.211954578Z 10:42:08 AM [express] GET /api/api/recommendations 200 in 196ms
+2025-11-15T10:42:08.212280278Z 10:42:08 AM [express] GET /api/api/analytics/health-score 200 in 197ms
+2025-11-15T10:42:08.214385586Z 10:42:08 AM [express] GET /api/transactions/range 200 in 201ms :: []
+2025-11-15T10:42:09.231136587Z 10:42:09 AM [express] GET /api/users/preferences 304 in 140ms :: {"userId":"ae467810-b59a-46a4-a76d-0…
+2025-11-15T10:42:57.040864261Z 10:42:57 AM [express] POST /api/api/accounts 200 in 68ms
+2025-11-15T10:43:45.447096893Z 10:43:45 AM [express] POST /api/api/accounts 200 in 67ms
+2025-11-15T10:43:50.285641208Z 10:43:50 AM [express] POST /api/api/accounts 200 in 68ms
+2025-11-15T10:43:51.887842407Z 10:43:51 AM [express] POST /api/api/accounts 200 in 67ms
+2025-11-15T10:43:53.139043644Z 10:43:53 AM [express] POST /api/api/accounts 200 in 67ms
+2025-11-15T10:43:54.189765247Z 10:43:54 AM [express] POST /api/api/accounts 200 in 67ms
+2025-11-15T10:43:55.395554323Z 10:43:55 AM [express] POST /api/api/accounts 200 in 68ms
+2025-11-15T10:43:56.701407007Z 10:43:56 AM [express] POST /api/api/accounts 200 in 66ms
+2025-11-15T10:43:57.978039166Z 10:43:57 AM [express] POST /api/api/accounts 200 in 67ms
+2025-11-15T10:43:59.138014696Z 10:43:59 AM [express] POST /api/api/accounts 200 in 67ms
+2025-11-15T10:44:00.279285485Z 10:44:00 AM [express] POST /api/api/accounts 200 in 66ms
+2025-11-15T10:44:01.369675869Z 10:44:01 AM [express] POST /api/api/accounts 200 in 67ms
+2025-11-15T10:44:02.541736177Z 10:44:02 AM [express] POST /api/api/accounts 200 in 67ms
+2025-11-15T10:44:03.624678166Z 10:44:03 AM [express] POST /api/api/accounts 200 in 67ms
+2025-11-15T10:44:04.769601908Z 10:44:04 AM [express] POST /api/api/accounts 200 in 67ms
+2025-11-15T10:44:05.909751439Z 10:44:05 AM [express] POST /api/api/accounts 200 in 67ms
+2025-11-15T10:44:07.025597276Z 10:44:07 AM [express] POST /api/api/accounts 200 in 67ms
+2025-11-15T10:44:08.131799205Z 10:44:08 AM [express] POST /api/api/accounts 200 in 67ms
+2025-11-15T10:44:34.810686423Z 10:44:34 AM [express] GET /api/auth/me 401 in 1ms :: {"error":"Unauthorized - Please log in"}
+2025-11-15T10:44:36.413669519Z 10:44:36 AM [express] POST /api/notifications/subscribe 401 in 1ms :: {"error":"Unauthorized - Please…
+2025-11-15T10:44:57.784046498Z 10:44:57 AM [express] POST /api/auth/login 401 in 263ms :: {"error":"Invalid credentials"}
+2025-11-15T10:45:02.600134658Z 10:45:02 AM [express] POST /api/auth/login 200 in 836ms :: {"id":"ae467810-b59a-46a4-a76d-0334c0b3ede…
+2025-11-15T10:45:04.16816224Z 10:45:04 AM [express] GET /api/notifications 200 in 198ms :: []
+2025-11-15T10:45:04.357199606Z 10:45:04 AM [express] GET /api/users/preferences 200 in 349ms :: {"userId":"ae467810-b59a-46a4-a76d-0…
+2025-11-15T10:45:09.839822513Z 10:45:09 AM [express] GET /api/api/quick-deals/needs-setup 200 in 70ms
+2025-11-15T10:45:09.97807343Z 10:45:09 AM [express] GET /api/api/analytics/health-score 200 in 71ms
+2025-11-15T10:45:12.211869061Z 10:45:12 AM [express] GET /api/api/recommendations 200 in 105ms
+2025-11-15T10:45:12.219250672Z 10:45:12 AM [express] GET /api/api/analytics/spending-days-comparison 200 in 65ms
+2025-11-15T10:45:12.2827907Z 10:45:12 AM [express] GET /api/transactions/range 200 in 171ms :: []
+2025-11-15T10:45:13.280902941Z 10:45:13 AM [express] GET /api/users/preferences 304 in 139ms :: {"userId":"ae467810-b59a-46a4-a76d-0…
+2025-11-15T10:45:55.185051221Z 10:45:55 AM [express] POST /api/api/accounts 200 in 66ms
+2025-11-15T11:00:53.963152458Z 11:00:53 AM [express] GET /api/users/preferences 304 in 358ms :: {"userId":"ae467810-b59a-46a4-a76d-0…
+2025-11-15T11:00:56.182278961Z 11:00:56 AM [express] POST /api/api/accounts 200 in 69ms
+2025-11-15T11:01:16.486095208Z 11:01:16 AM [express] GET /api/users/preferences 304 in 339ms :: {"userId":"ae467810-b59a-46a4-a76d-0…
+2025-11-15T11:03:45.108450542Z 11:03:45 AM [express] GET /api/users/preferences 304 in 344ms :: {"userId":"ae467810-b59a-46a4-a76d-0…
+2025-11-15T11:04:00.219094025Z 11:04:00 AM [express] GET /api/users/preferences 304 in 344ms :: {"userId":"ae467810-b59a-46a4-a76d-0…
+2025-11-15T11:04:01.826507585Z 11:04:01 AM [express] POST /api/api/accounts 200 in 70ms
