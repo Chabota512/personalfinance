@@ -1,5 +1,5 @@
 // PersonalFinance Pro - Database Schema
-// Implements professional double-entry bookkeeping with comprehensive financial tracking
+// Simple transaction tracking with comprehensive financial features
 
 import { sql, relations } from "drizzle-orm";
 import { pgTable, text, varchar, decimal, timestamp, integer, date, pgEnum, serial, boolean, numeric, jsonb } from "drizzle-orm/pg-core";
@@ -94,7 +94,7 @@ export const accountsRelations = relations(accounts, ({ one, many }) => ({
     fields: [accounts.userId],
     references: [users.id],
   }),
-  transactionEntries: many(transactionEntries),
+  transactions: many(transactions),
 }));
 
 export const insertAccountSchema = createInsertSchema(accounts).omit({
@@ -108,12 +108,19 @@ export const selectAccountSchema = createSelectSchema(accounts);
 export type Account = typeof accounts.$inferSelect;
 export type InsertAccount = z.infer<typeof insertAccountSchema>;
 
+// ===== TRANSACTION TYPE ENUM =====
+export const transactionTypeEnum = pgEnum("transaction_type", ["income", "expense"]);
+
 // ===== TRANSACTIONS TABLE =====
 export const transactions = pgTable("transactions", {
   id: varchar("id", { length: 255 }).primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id", { length: 255 })
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  accountId: varchar("account_id", { length: 255 })
+    .notNull()
+    .references(() => accounts.id, { onDelete: "cascade" }),
+  transactionType: transactionTypeEnum("transaction_type").notNull(),
   date: date("date").notNull(),
   description: text("description").notNull(),
   totalAmount: decimal("total_amount", { precision: 15, scale: 2 }).notNull(),
@@ -132,12 +139,15 @@ export const transactions = pgTable("transactions", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const transactionsRelations = relations(transactions, ({ one, many }) => ({
+export const transactionsRelations = relations(transactions, ({ one }) => ({
   user: one(users, {
     fields: [transactions.userId],
     references: [users.id],
   }),
-  entries: many(transactionEntries),
+  account: one(accounts, {
+    fields: [transactions.accountId],
+    references: [accounts.id],
+  }),
 }));
 
 export const insertTransactionSchema = createInsertSchema(transactions).omit({
@@ -148,41 +158,6 @@ export const insertTransactionSchema = createInsertSchema(transactions).omit({
 
 export type Transaction = typeof transactions.$inferSelect;
 export type InsertTransaction = z.infer<typeof insertTransactionSchema>;
-
-// ===== TRANSACTION ENTRIES (Double-Entry Bookkeeping) =====
-export const entryTypeEnum = pgEnum("entry_type", ["debit", "credit"]);
-
-export const transactionEntries = pgTable("transaction_entries", {
-  id: varchar("id", { length: 255 }).primaryKey().default(sql`gen_random_uuid()`),
-  transactionId: varchar("transaction_id", { length: 255 })
-    .notNull()
-    .references(() => transactions.id, { onDelete: "cascade" }),
-  accountId: varchar("account_id", { length: 255 })
-    .notNull()
-    .references(() => accounts.id, { onDelete: "cascade" }),
-  entryType: entryTypeEnum("entry_type").notNull(),
-  amount: decimal("amount", { precision: 15, scale: 2 }).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const transactionEntriesRelations = relations(transactionEntries, ({ one }) => ({
-  transaction: one(transactions, {
-    fields: [transactionEntries.transactionId],
-    references: [transactions.id],
-  }),
-  account: one(accounts, {
-    fields: [transactionEntries.accountId],
-    references: [accounts.id],
-  }),
-}));
-
-export const insertTransactionEntrySchema = createInsertSchema(transactionEntries).omit({
-  id: true,
-  createdAt: true,
-});
-
-export type TransactionEntry = typeof transactionEntries.$inferSelect;
-export type InsertTransactionEntry = z.infer<typeof insertTransactionEntrySchema>;
 
 // ===== BUDGETS TABLE =====
 export const budgetPeriodEnum = pgEnum("budget_period", ["weekly", "monthly", "quarterly", "yearly"]);

@@ -1,12 +1,12 @@
 import { db } from "./db";
 import {
-  users, accounts, transactions, transactionEntries, budgets, goals, goalContributions,
+  users, accounts, transactions, budgets, goals, goalContributions,
   savingsRecommendations, lessons, userLessonProgress, quizQuestions, quizResults,
   budgetItems, budgetTemplates, budgetTemplateItems, items, itemPriceHistory,
   budgetCategories, debts, debtPayments, recurringIncome, categoryOverrides, userStreaks,
   userPreferences, quickDealMonthlyAccounts,
   type InsertUser, type InsertAccount, type InsertTransaction,
-  type InsertTransactionEntry, type InsertBudget, type InsertGoal, type InsertGoalContribution,
+  type InsertBudget, type InsertGoal, type InsertGoalContribution,
   type InsertLesson, type InsertUserLessonProgress, type InsertQuizQuestion, type InsertQuizResult,
   type InsertBudgetItem, type InsertBudgetTemplate, type InsertBudgetTemplateItem,
   type InsertItem, type InsertItemPriceHistory, type InsertBudgetCategory, type InsertCategoryOverride,
@@ -153,115 +153,110 @@ export async function updateTransaction(id: string, data: Partial<InsertTransact
 }
 
 export async function deleteTransaction(id: string) {
-  await db.delete(transactions).where(eq(transactions.id, id));
+  // Get transaction to restore balance before deleting
+  const transaction = await getTransactionById(id);
+  if (transaction) {
+    await db.transaction(async (tx) => {
+      // Get the account
+      const account = await tx.query.accounts.findFirst({
+        where: eq(accounts.id, transaction.accountId)
+      });
+      
+      if (account) {
+        const currentBalance = parseFloat(account.balance);
+        const transactionAmount = parseFloat(transaction.totalAmount);
+        
+        // Reverse the transaction effect on balance
+        let newBalance: number;
+        if (transaction.transactionType === 'income') {
+          newBalance = currentBalance - transactionAmount;
+        } else {
+          newBalance = currentBalance + transactionAmount;
+        }
+        
+        // Update account balance
+        await tx.update(accounts)
+          .set({ balance: newBalance.toFixed(2) })
+          .where(eq(accounts.id, transaction.accountId));
+      }
+      
+      // Delete the transaction
+      await tx.delete(transactions).where(eq(transactions.id, id));
+    });
+  } else {
+    await db.delete(transactions).where(eq(transactions.id, id));
+  }
 }
 
-export async function createTransactionWithEntries(
+export async function createSimpleTransaction(
   userId: string,
-  txData: { date: string; description: string; totalAmount: string; notes?: string | null; category?: string | null; locationName?: string | null; latitude?: string | null; longitude?: string | null; voiceNoteUrl?: string | null; reasonAudioUrl?: string | null; contentmentLevel?: number | null },
-  entries: Array<{ accountId: string; entryType: 'debit' | 'credit'; amount: string }>
+  data: {
+    accountId: string;
+    transactionType: 'income' | 'expense';
+    date: string;
+    description: string;
+    totalAmount: string;
+    status?: string;
+    notes?: string | null;
+    category?: string | null;
+    locationName?: string | null;
+    latitude?: string | null;
+    longitude?: string | null;
+    voiceNoteUrl?: string | null;
+    reasonAudioUrl?: string | null;
+    contentmentLevel?: number | null;
+  }
 ) {
-  // SECURITY: Enforce double-entry accounting invariants
-  if (!entries || entries.length < 2) {
-    throw new Error('Transaction must have at least 2 entries for double-entry bookkeeping');
+  const amount = parseFloat(data.totalAmount);
+  if (isNaN(amount) || amount <= 0) {
+    throw new Error('Invalid amount');
   }
 
-  // Validate all accounts exist and belong to userId
-  let totalDebits = 0;
-  let totalCredits = 0;
-
-  for (const entry of entries) {
-    const account = await getAccountById(entry.accountId);
-    if (!account) {
-      throw new Error(`Account ${entry.accountId} not found`);
-    }
-    if (account.userId !== userId) {
-      throw new Error(`Unauthorized: Account ${entry.accountId} does not belong to user`);
-    }
-
-    const amount = parseFloat(entry.amount);
-    if (entry.entryType === 'debit') {
-      totalDebits += amount;
-    } else {
-      totalCredits += amount;
-    }
+  // Verify account exists and belongs to user
+  const account = await getAccountById(data.accountId);
+  if (!account) {
+    throw new Error(`Account ${data.accountId} not found`);
   }
-
-  // ACCOUNTING: Enforce balanced entries (debits must equal credits)
-  // Round to cents and require exact balance
-  const debitsRounded = Math.round(totalDebits * 100);
-  const creditsRounded = Math.round(totalCredits * 100);
-  if (debitsRounded !== creditsRounded) {
-    throw new Error(`Transaction not balanced: debits=${(debitsRounded/100).toFixed(2)}, credits=${(creditsRounded/100).toFixed(2)}`);
+  if (account.userId !== userId) {
+    throw new Error(`Unauthorized: Account does not belong to user`);
   }
 
   // Wrap in database transaction for atomicity
   return await db.transaction(async (tx) => {
     // Create transaction
     const [transaction] = await tx.insert(transactions)
-      .values({ ...txData, userId })
+      .values({ 
+        userId,
+        accountId: data.accountId,
+        transactionType: data.transactionType,
+        date: data.date,
+        description: data.description,
+        totalAmount: data.totalAmount,
+        status: data.status || 'posted',
+        notes: data.notes,
+        category: data.category,
+        locationName: data.locationName,
+        latitude: data.latitude,
+        longitude: data.longitude,
+        voiceNoteUrl: data.voiceNoteUrl,
+        reasonAudioUrl: data.reasonAudioUrl,
+        contentmentLevel: data.contentmentLevel,
+      })
       .returning();
 
-    // Maintain in-memory balance map to handle multiple entries per account
-    const balanceMap = new Map<string, { balance: number; accountType: string }>();
-
-    // Create entries and update account balances
-    for (const entry of entries) {
-      await tx.insert(transactionEntries).values({
-        transactionId: transaction.id,
-        accountId: entry.accountId,
-        entryType: entry.entryType,
-        amount: entry.amount
-      });
-
-      // Get account info (use transaction handle or cache)
-      let accountInfo = balanceMap.get(entry.accountId);
-      if (!accountInfo) {
-        const account = await tx.query.accounts.findFirst({
-          where: eq(accounts.id, entry.accountId)
-        });
-        if (!account) {
-          throw new Error(`Account ${entry.accountId} not found during transaction`);
-        }
-        accountInfo = {
-          balance: parseFloat(account.balance),
-          accountType: account.accountType
-        };
-        balanceMap.set(entry.accountId, accountInfo);
-      }
-
-      const entryAmount = parseFloat(entry.amount);
-      let currentBalance = accountInfo.balance;
-
-      // Asset and Expense accounts increase with debits, decrease with credits
-      if ((accountInfo.accountType === 'asset' || accountInfo.accountType === 'expense') && entry.entryType === 'debit') {
-        currentBalance += entryAmount;
-      } else if ((accountInfo.accountType === 'asset' || accountInfo.accountType === 'expense') && entry.entryType === 'credit') {
-        currentBalance -= entryAmount;
-      }
-      // Liability accounts (stored as negative): debit decreases absolute value (less negative), credit increases absolute value (more negative)
-      else if (accountInfo.accountType === 'liability' && entry.entryType === 'debit') {
-        currentBalance += entryAmount;  // Paying off debt: -1000 + 100 = -900
-      } else if (accountInfo.accountType === 'liability' && entry.entryType === 'credit') {
-        currentBalance -= entryAmount;  // Borrowing more: -1000 - 100 = -1100
-      }
-      // Income accounts (stored as positive): credit increases, debit decreases
-      else if (accountInfo.accountType === 'income' && entry.entryType === 'credit') {
-        currentBalance += entryAmount;  // Earning income: 1000 + 100 = 1100
-      } else if (accountInfo.accountType === 'income' && entry.entryType === 'debit') {
-        currentBalance -= entryAmount;  // Reducing income: 1000 - 100 = 900
-      }
-
-      // Update in-memory balance
-      accountInfo.balance = currentBalance;
+    // Update account balance
+    const currentBalance = parseFloat(account.balance);
+    let newBalance: number;
+    
+    if (data.transactionType === 'income') {
+      newBalance = currentBalance + amount;
+    } else {
+      newBalance = currentBalance - amount;
     }
 
-    // Commit all balance updates
-    for (const [accountId, accountInfo] of Array.from(balanceMap.entries())) {
-      await tx.update(accounts)
-        .set({ balance: accountInfo.balance.toFixed(2) })
-        .where(eq(accounts.id, accountId));
-    }
+    await tx.update(accounts)
+      .set({ balance: newBalance.toFixed(2), updatedAt: new Date() })
+      .where(eq(accounts.id, data.accountId));
 
     return transaction;
   });
@@ -289,140 +284,51 @@ export async function createQuickDeal(
     throw new Error('Invalid amount');
   }
 
-  // Category mapping for both expenses and income
-  const categoryToAccountCategory: { [key: string]: string } = {
-    // Expense categories
-    'food': 'food',
-    'transport': 'transportation',
-    'transportation': 'transportation',
-    'shopping': 'other_expense',
-    'entertainment': 'entertainment',
-    'housing': 'housing',
-    'healthcare': 'healthcare',
-    'personal_care': 'personal_care',
-    'education': 'education',
-    'utilities': 'utilities',
-    'insurance': 'insurance',
-    'other_expense': 'other_expense',
-    // Income categories
-    'salary': 'salary',
-    'business': 'business',
-    'investment_income': 'investment_income',
-    'other_income': 'other_income',
-  };
-
-  const accountCategory = categoryToAccountCategory[data.category.toLowerCase()] ||
-    (data.type === 'income' ? 'other_income' : 'other_expense');
-
   const userAccounts = await getAccountsByUserId(userId);
 
-  // Determine the source account for the transaction
-  let sourceAccount;
+  // Determine the account for the transaction
+  let account;
 
   if (data.type === 'income' && data.depositAccountId) {
     // For income, use the specified deposit account
-    sourceAccount = userAccounts.find(acc => acc.id === data.depositAccountId);
-    if (!sourceAccount) {
+    account = userAccounts.find(acc => acc.id === data.depositAccountId);
+    if (!account) {
       throw new Error('Specified deposit account not found');
     }
   } else if (data.type === 'expense' && data.sourceAccountId) {
-    // For expense, use the specified source account (could be monthly default or temporary override)
-    sourceAccount = userAccounts.find(acc => acc.id === data.sourceAccountId);
-    if (!sourceAccount) {
+    // For expense, use the specified source account
+    account = userAccounts.find(acc => acc.id === data.sourceAccountId);
+    if (!account) {
       throw new Error('Specified source account not found');
     }
   } else {
     // Fallback: Find checking account (primary cash account)
-    sourceAccount = userAccounts.find(
+    account = userAccounts.find(
       acc => acc.accountType === 'asset' && acc.accountCategory === 'checking' && acc.isActive === 1
     );
 
-    if (!sourceAccount) {
-      sourceAccount = userAccounts.find(
+    if (!account) {
+      account = userAccounts.find(
         acc => acc.accountType === 'asset' && acc.isActive === 1
       );
     }
 
-    if (!sourceAccount) {
+    if (!account) {
       throw new Error('No active asset account found. Please create a checking account first.');
     }
   }
 
-  const checkingAccount = sourceAccount;
-
-  // Find or create the appropriate income/expense account
-  const accountType = data.type === 'income' ? 'income' : 'expense';
-  let targetAccount = userAccounts.find(
-    acc => acc.accountType === accountType && acc.accountCategory === accountCategory && acc.isActive === 1
-  );
-
-  if (!targetAccount) {
-    const categoryNames: { [key: string]: string } = {
-      // Expense categories
-      'food': 'Food & Dining',
-      'transportation': 'Transportation',
-      'entertainment': 'Entertainment',
-      'housing': 'Housing',
-      'healthcare': 'Healthcare',
-      'personal_care': 'Personal Care',
-      'education': 'Education',
-      'utilities': 'Utilities',
-      'insurance': 'Insurance',
-      'other_expense': 'Other Expenses',
-      // Income categories
-      'salary': 'Salary Income',
-      'business': 'Business Income',
-      'investment_income': 'Investment Income',
-      'other_income': 'Other Income',
-    };
-
-    targetAccount = await createAccount({
-      userId,
-      name: categoryNames[accountCategory] || (data.type === 'income' ? 'Other Income' : 'Other Expenses'),
-      accountType: accountType as any,
-      accountCategory: accountCategory as any,
-      balance: '0',
-      description: `Auto-created for quick deal: ${data.category}`,
-    });
-  }
-
   const today = new Date().toISOString().split('T')[0];
 
-  // Create double-entry bookkeeping entries based on transaction type
-  // For expenses: Debit expense account, Credit checking account (cash decreases)
-  // For income: Debit checking account (cash increases), Credit income account
-  const entries = data.type === 'expense'
-    ? [
-        {
-          accountId: targetAccount.id,
-          entryType: 'debit' as const,
-          amount: data.amount,
-        },
-        {
-          accountId: checkingAccount.id,
-          entryType: 'credit' as const,
-          amount: data.amount,
-        },
-      ]
-    : [
-        {
-          accountId: checkingAccount.id,
-          entryType: 'debit' as const,
-          amount: data.amount,
-        },
-        {
-          accountId: targetAccount.id,
-          entryType: 'credit' as const,
-          amount: data.amount,
-        },
-      ];
-
-  const transaction = await createTransactionWithEntries(
+  // Create the transaction using the simplified model
+  const transaction = await createSimpleTransaction(
     userId,
     {
+      accountId: account.id,
+      transactionType: data.type,
       date: today,
       description: data.description,
-      totalAmount: data.type === 'expense' ? `-${data.amount}` : data.amount,
+      totalAmount: data.amount,
       notes: data.reason || null,
       category: data.category,
       locationName: data.locationName || null,
@@ -431,27 +337,10 @@ export async function createQuickDeal(
       voiceNoteUrl: null,
       reasonAudioUrl: data.reasonAudioUrl || null,
       contentmentLevel: data.contentmentLevel || null,
-    },
-    entries
+    }
   );
 
   return transaction;
-}
-
-// Transaction entry operations
-export async function createTransactionEntry(data: InsertTransactionEntry) {
-  const [entry] = await db.insert(transactionEntries).values(data).returning();
-  return entry;
-}
-
-export async function getTransactionEntriesByTransactionId(transactionId: string) {
-  return await db.query.transactionEntries.findMany({
-    where: eq(transactionEntries.transactionId, transactionId),
-  });
-}
-
-export async function deleteTransactionEntries(transactionId: string) {
-  await db.delete(transactionEntries).where(eq(transactionEntries.transactionId, transactionId));
 }
 
 // Budget operations
@@ -751,10 +640,12 @@ export async function addGoalContribution(
 
   // Wrap everything in a database transaction for atomicity
   return await db.transaction(async (tx) => {
-    // Create the double-entry accounting transaction
+    // Create the transaction record (transfer from source to goal)
     const [accountingTransaction] = await tx.insert(transactions)
       .values({
         userId: goal.userId,
+        accountId: finalSourceAccountId,
+        transactionType: 'expense',
         date: today,
         description: `Contribution to ${goal.name}`,
         totalAmount: amount.toFixed(2),
@@ -762,23 +653,6 @@ export async function addGoalContribution(
         category: 'savings_transfer',
       })
       .returning();
-
-    // Create transaction entries (double-entry)
-    // Entry 1: Debit goal account (increase savings)
-    await tx.insert(transactionEntries).values({
-      transactionId: accountingTransaction.id,
-      accountId: goalAccount.id,
-      entryType: 'debit',
-      amount: amount.toFixed(2),
-    });
-
-    // Entry 2: Credit source account (decrease cash/checking)
-    await tx.insert(transactionEntries).values({
-      transactionId: accountingTransaction.id,
-      accountId: finalSourceAccountId,
-      entryType: 'credit',
-      amount: amount.toFixed(2),
-    });
 
     // Update account balances
     // Increase goal account balance
@@ -998,6 +872,8 @@ export async function getCategorySpending(
     const categoryTransactions = await db.query.transactions.findMany({
       where: and(
         eq(transactions.userId, userId),
+        eq(transactions.transactionType, 'expense'),
+        eq(transactions.category, category),
         gte(transactions.date, startDate),
         lte(transactions.date, endDate)
       ),
@@ -1006,32 +882,21 @@ export async function getCategorySpending(
     return total;
   }
 
-  // Otherwise, return spending grouped by category (account category)
-  const entries = await db
-    .select({
-      accountId: transactionEntries.accountId,
-      accountCategory: accounts.accountCategory,
-      amount: transactionEntries.amount,
-      entryType: transactionEntries.entryType,
-    })
-    .from(transactionEntries)
-    .innerJoin(transactions, eq(transactionEntries.transactionId, transactions.id))
-    .innerJoin(accounts, eq(transactionEntries.accountId, accounts.id))
-    .where(
-      and(
-        eq(transactions.userId, userId),
-        eq(accounts.accountType, 'expense'), // Only expense accounts
-        eq(transactionEntries.entryType, 'debit'), // Expenses increase with debits
-        gte(transactions.date, startDate),
-        lte(transactions.date, endDate)
-      )
-    );
+  // Otherwise, return spending grouped by category
+  const expenseTransactions = await db.query.transactions.findMany({
+    where: and(
+      eq(transactions.userId, userId),
+      eq(transactions.transactionType, 'expense'),
+      gte(transactions.date, startDate),
+      lte(transactions.date, endDate)
+    ),
+  });
 
   // Group by category
   const categoryTotals: Record<string, number> = {};
-  entries.forEach(entry => {
-    const category = entry.accountCategory;
-    const amount = parseFloat(entry.amount);
+  expenseTransactions.forEach(transaction => {
+    const category = transaction.category || 'uncategorized';
+    const amount = parseFloat(transaction.totalAmount);
     if (!categoryTotals[category]) {
       categoryTotals[category] = 0;
     }
@@ -1057,45 +922,18 @@ export async function getBudgetSpending(
 
   if (!budget) return null;
 
-  // Get expense accounts matching the budget category
-  const expenseAccounts = await db.query.accounts.findMany({
+  // Query expense transactions for the budget category within the date range
+  const expenseTransactions = await db.query.transactions.findMany({
     where: and(
-      eq(accounts.userId, userId),
-      eq(accounts.accountCategory, budget.category),
-      eq(accounts.accountType, 'expense')
+      eq(transactions.userId, userId),
+      eq(transactions.transactionType, 'expense'),
+      eq(transactions.category, budget.category),
+      gte(transactions.date, startDate),
+      lte(transactions.date, endDate)
     ),
   });
 
-  if (expenseAccounts.length === 0) {
-    return {
-      budget,
-      spent: 0,
-      remaining: parseFloat(budget.allocatedAmount),
-      percentage: 0,
-    };
-  }
-
-  const accountIds = expenseAccounts.map(a => a.id);
-
-  // Query transaction entries for these expense accounts within the date range
-  const entries = await db
-    .select({
-      amount: transactionEntries.amount,
-      transactionDate: transactions.date,
-    })
-    .from(transactionEntries)
-    .innerJoin(transactions, eq(transactionEntries.transactionId, transactions.id))
-    .where(
-      and(
-        eq(transactions.userId, userId),
-        sql`${transactionEntries.accountId} IN (${sql.join(accountIds.map(id => sql`${id}`), sql`, `)})`,
-        eq(transactionEntries.entryType, 'debit'),
-        gte(transactions.date, startDate),
-        lte(transactions.date, endDate)
-      )
-    );
-
-  const spent = entries.reduce((sum, e) => sum + parseFloat(e.amount), 0);
+  const spent = expenseTransactions.reduce((sum, t) => sum + parseFloat(t.totalAmount), 0);
   const budgetAmount = parseFloat(budget.allocatedAmount);
 
   return {

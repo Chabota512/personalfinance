@@ -1,9 +1,9 @@
 import Papa from 'papaparse';
 // @ts-ignore - ofx-js doesn't have type definitions
 import { parse as parseOfx } from 'ofx-js';
-import { createTransactionWithEntries, getAccountsByUserId } from './storage';
+import { createSimpleTransaction, getAccountsByUserId } from './storage';
 import { db } from "./db";
-import { transactions, transactionEntries, accounts } from "@shared/schema";
+import { transactions, accounts } from "@shared/schema";
 import { parse } from "csv-parse/sync";
 
 interface ImportResult {
@@ -31,23 +31,13 @@ export async function importCSV(userId: string, fileContent: string): Promise<Im
     const imported: any[] = [];
     for (const record of records) {
       // Simple import - creates expense transactions
-      // In real app, you'd want more sophisticated logic
       const amount = Math.abs(parseFloat(record.amount));
 
-      // Get or create a default expense account
-      const expenseAccounts = await getAccountsByUserId(userId);
-      const expenseAccount = expenseAccounts.find(
-        (a) => a.accountType === "expense"
-      );
-
-      if (!expenseAccount) {
-        result.failed++;
-        result.errors.push(`No expense account found for record: ${record.description}`);
-        continue;
-      }
-
+      // Get all user accounts
+      const userAccounts = await getAccountsByUserId(userId);
+      
       // Get checking account (assuming it exists)
-      const checkingAccount = expenseAccounts.find(
+      const checkingAccount = userAccounts.find(
         (a) => a.accountCategory === "checking"
       );
 
@@ -57,26 +47,18 @@ export async function importCSV(userId: string, fileContent: string): Promise<Im
         continue;
       }
 
-      await createTransactionWithEntries(
+      // Create expense transaction using simplified model
+      await createSimpleTransaction(
         userId,
         {
+          accountId: checkingAccount.id,
+          transactionType: 'expense',
           date: record.date,
           description: record.description,
           totalAmount: amount.toFixed(2),
           notes: `Imported from CSV${record.category ? ` - ${record.category}` : ""}`,
-        },
-        [
-          {
-            accountId: expenseAccount.id,
-            entryType: "debit" as const,
-            amount: amount.toFixed(2),
-          },
-          {
-            accountId: checkingAccount.id,
-            entryType: "credit" as const,
-            amount: amount.toFixed(2),
-          },
-        ]
+          category: record.category || null,
+        }
       );
       result.success++;
     }

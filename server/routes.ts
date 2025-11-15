@@ -17,7 +17,7 @@ import { predictExpenses, generateFinancialInsights } from "./gemini-ai";
 import { setupSecurity } from "./security";
 import multer from "multer";
 import { eq, and, desc, or } from "drizzle-orm"; // Imported and, desc, or
-import { users, budgetNotifications, budgetTemplates, budgetTemplateItems, budgetRulePresets, savingsAutoSweep, userPreferences, budgets, budgetItems, budgetCategoryItems, goals, pantryInventory, notificationSubscriptions, userStreaks, priceHistory, accounts, transactions, transactionEntries } from "@shared/schema";
+import { users, budgetNotifications, budgetTemplates, budgetTemplateItems, budgetRulePresets, savingsAutoSweep, userPreferences, budgets, budgetItems, budgetCategoryItems, goals, pantryInventory, notificationSubscriptions, userStreaks, priceHistory, accounts, transactions } from "@shared/schema";
 
 // Extend session type to include userId
 declare module 'express-session' {
@@ -328,50 +328,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "No adjustment needed" });
       }
 
-      // Create adjustment transaction
+      // In the simplified model, balance adjustments directly update the account balance
+      // and create a transaction record for audit purposes
       const today = new Date().toISOString().split('T')[0];
       const description = notes || `Balance adjustment for ${account.name}`;
-
-      // Find or create "Balance Adjustment" equity account
-      let adjustmentAccount = await storage.getAccountsByUserId(req.userId).then(accounts =>
-        accounts.find(a => a.name === 'Balance Adjustments' && a.accountType === 'equity')
-      );
-
-      if (!adjustmentAccount) {
-        adjustmentAccount = await storage.createAccount({
-          userId: req.userId,
-          name: 'Balance Adjustments',
-          accountType: 'equity' as any,
-          accountCategory: 'other_expense' as any,
-          balance: '0',
-          description: 'Auto-created for balance adjustments and reconciliations',
-        });
-      }
-
-      // Create double-entry adjustment
-      if (difference > 0) {
-        // Increase asset balance
-        await storage.createTransactionWithEntries(req.userId, {
-          date: today,
-          description,
-          totalAmount: Math.abs(difference).toFixed(2),
-          notes: `Adjustment: ${formatCurrency(currentBalance)} → ${formatCurrency(newBalance)}`,
-        }, [
-          { accountId: account.id, entryType: 'debit', amount: Math.abs(difference).toFixed(2) },
-          { accountId: adjustmentAccount.id, entryType: 'credit', amount: Math.abs(difference).toFixed(2) },
-        ]);
-      } else {
-        // Decrease asset balance
-        await storage.createTransactionWithEntries(req.userId, {
-          date: today,
-          description,
-          totalAmount: Math.abs(difference).toFixed(2),
-          notes: `Adjustment: ${formatCurrency(currentBalance)} → ${formatCurrency(newBalance)}`,
-        }, [
-          { accountId: adjustmentAccount.id, entryType: 'debit', amount: Math.abs(difference).toFixed(2) },
-          { accountId: account.id, entryType: 'credit', amount: Math.abs(difference).toFixed(2) },
-        ]);
-      }
+      
+      // Create an adjustment transaction (income if increasing, expense if decreasing)
+      const transactionType = difference > 0 ? 'income' : 'expense';
+      const category = transactionType === 'income' ? 'other_income' : 'other_expense';
+      const adjustmentNotes = `Adjustment: ${formatCurrency(currentBalance)} → ${formatCurrency(newBalance)}${notes ? ` - ${notes}` : ''}`;
+      
+      await storage.createSimpleTransaction(req.userId, {
+        accountId: account.id,
+        transactionType,
+        date: today,
+        description,
+        totalAmount: Math.abs(difference).toFixed(2),
+        notes: adjustmentNotes,
+        category,
+      });
 
       const updatedAccount = await storage.getAccountById(accountId);
       res.json(updatedAccount);
@@ -419,42 +394,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/transactions", authenticate, async (req: any, res) => {
     try {
-      // Validate request with Zod schema
-      const transactionEntrySchema = z.object({
-        accountId: z.string().uuid(),
-        entryType: z.enum(['debit', 'credit']),
-        amount: z.string().regex(/^\d+(\.\d{1,2})?$/)
-      });
-
+      // Validate request with Zod schema for simplified transaction model
       const transactionRequestSchema = z.object({
+        accountId: z.string().uuid(),
+        transactionType: z.enum(['income', 'expense']),
         date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
         description: z.string().min(1).max(500),
+        totalAmount: z.string().regex(/^\d+(\.\d{1,2})?$/),
+        status: z.string().optional(),
         notes: z.string().max(1000).optional().nullable(),
-        entries: z.array(transactionEntrySchema).min(2)
+        category: z.string().optional().nullable(),
+        locationName: z.string().optional().nullable(),
+        latitude: z.string().optional().nullable(),
+        longitude: z.string().optional().nullable(),
+        voiceNoteUrl: z.string().optional().nullable(),
+        reasonAudioUrl: z.string().optional().nullable(),
+        contentmentLevel: z.number().optional().nullable(),
       });
 
       const validatedData = transactionRequestSchema.parse(req.body);
 
-      // Calculate total amount from debits
-      let totalDebits = 0;
-      for (const entry of validatedData.entries) {
-        if (entry.entryType === 'debit') {
-          totalDebits += parseFloat(entry.amount);
-        }
-      }
-
-      const totalAmount = totalDebits.toFixed(2);
-
-      // createTransactionWithEntries now enforces all invariants (ownership, balance)
-      const transaction = await storage.createTransactionWithEntries(
+      // Create transaction using simplified model
+      const transaction = await storage.createSimpleTransaction(
         req.userId,
-        {
-          date: validatedData.date,
-          description: validatedData.description,
-          totalAmount,
-          notes: validatedData.notes || null
-        },
-        validatedData.entries
+        validatedData
       );
 
       res.status(201).json(transaction);
@@ -462,7 +425,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error.name === 'ZodError') {
         return res.status(400).json({ error: 'Validation failed', details: error.errors });
       }
-      console.error("Error creating transaction:", error); // Added detailed logging
+      console.error("Error creating transaction:", error);
       res.status(400).json({ error: error.message });
     }
   });
@@ -510,88 +473,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Account not found" });
       }
 
-      // Create an equity/opening balance account if it doesn't exist
-      let equityAccount = await db
-        .select()
-        .from(accounts)
-        .where(
-          and(
-            eq(accounts.userId, req.userId),
-            eq(accounts.name, "Opening Balance Equity"),
-            eq(accounts.accountType, "income")
-          )
-        )
-        .limit(1);
-
-      if (!equityAccount || equityAccount.length === 0) {
-        const [created] = await db.insert(accounts).values({
-          userId: req.userId,
-          name: "Opening Balance Equity",
-          accountType: "income",
-          accountCategory: "other_income",
-          balance: "0",
-          description: "System account for opening balances",
-        }).returning();
-        equityAccount = [created];
-      }
-
-      // Create the opening balance transaction
-      const [transaction] = await db.insert(transactions).values({
-        userId: req.userId,
-        date: data.date,
-        description: `Opening Balance - ${account.name}`,
-        totalAmount: data.amount,
-        status: 'posted',
-        category: account.accountCategory,
-      }).returning();
-
-      // Create transaction entries (double-entry bookkeeping)
-      const amount = data.amount;
-
-      if (account.accountType === 'asset' || account.accountType === 'expense') {
-        // Debit the asset/expense account
-        await db.insert(transactionEntries).values({
-          transactionId: transaction.id,
-          accountId: account.id,
-          entryType: 'debit',
-          amount: amount,
-        });
-
-        // Credit the equity account
-        await db.insert(transactionEntries).values({
-          transactionId: transaction.id,
-          accountId: equityAccount[0].id,
-          entryType: 'credit',
-          amount: amount,
-        });
-
-        // Update account balance
-        await db.update(accounts)
-          .set({ balance: String(parseFloat(account.balance) + parseFloat(amount)) })
-          .where(eq(accounts.id, account.id));
-
-      } else {
-        // For liability/income accounts, credit them
-        await db.insert(transactionEntries).values({
-          transactionId: transaction.id,
-          accountId: account.id,
-          entryType: 'credit',
-          amount: amount,
-        });
-
-        // Debit the equity account
-        await db.insert(transactionEntries).values({
-          transactionId: transaction.id,
-          accountId: equityAccount[0].id,
-          entryType: 'debit',
-          amount: amount,
-        });
-
-        // Update account balance (negative for liabilities)
-        await db.update(accounts)
-          .set({ balance: String(parseFloat(account.balance) - parseFloat(amount)) })
-          .where(eq(accounts.id, account.id));
-      }
+      // In the simplified model, opening balance is treated as income for assets
+      // and sets the initial balance for the account
+      const transaction = await storage.createSimpleTransaction(
+        req.userId,
+        {
+          accountId: data.accountId,
+          transactionType: 'income',
+          date: data.date,
+          description: `Opening Balance - ${account.name}`,
+          totalAmount: data.amount,
+          status: 'posted',
+          category: account.accountCategory || 'other_income',
+        }
+      );
 
       res.status(201).json(transaction);
     } catch (error: any) {
@@ -1177,38 +1072,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
-        // Find or create expense account for the budget category
-        let expenseAccount = await storage.getAccountsByUserId(req.userId).then(accounts =>
-          accounts.find(a => 
-            a.accountType === 'expense' && 
-            a.name.toLowerCase() === budget.category.toLowerCase()
-          )
-        );
-
-        if (!expenseAccount) {
-          expenseAccount = await storage.createAccount({
-            userId: req.userId,
-            name: budget.category,
-            accountType: 'expense',
-            accountCategory: 'other_expense',
-            balance: '0',
-            description: `Auto-created for budget category: ${budget.category}`,
-          });
-        }
-
-        // Create transaction for the purchase
-        await storage.createTransactionWithEntries(
+        // Create expense transaction for the purchase using simplified model
+        await storage.createSimpleTransaction(
           req.userId,
           {
+            accountId: validatedData.accountId,
+            transactionType: 'expense',
             date: purchaseDate.toISOString().split('T')[0],
             description: `${budget.category}: ${item.itemName}`,
             totalAmount: validatedData.actualPrice,
             notes: item.notes || undefined,
-          },
-          [
-            { accountId: expenseAccount.id, entryType: 'debit', amount: validatedData.actualPrice },
-            { accountId: validatedData.accountId, entryType: 'credit', amount: validatedData.actualPrice },
-          ]
+            category: budget.category,
+          }
         );
       }
 
@@ -2105,43 +1980,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
-        let debtAccount = await storage.getAccountsByUserId(req.userId).then(accounts =>
-          accounts.find(a => a.name === debt.name && a.accountType === 'liability')
-        );
-
-        // Create liability account if it doesn't exist
-        if (!debtAccount) {
-          debtAccount = await storage.createAccount({
-            userId: req.userId,
-            name: debt.name,
-            accountType: 'liability',
-            accountCategory: 'loan',
-            balance: `-${currentBalance.toFixed(2)}`,  // Set to current debt balance before payment
-            description: `Auto-created for debt: ${debt.name}`,
-          });
-        }
-
-        // Create transaction - this will update the account balance automatically
-        await storage.createTransactionWithEntries(
+        // Create debt payment transaction using simplified model
+        await storage.createSimpleTransaction(
           req.userId,
           {
+            accountId: accountId,
+            transactionType: 'expense',
             date: paymentDate,
             description: `Debt payment: ${debt.name}${isFullyPaid ? ' (FINAL)' : ''}`,
             totalAmount: amount,
             notes: notes || `Principal: $${principalPaid.toFixed(2)}, Interest: $${interestPaid.toFixed(2)}${isFullyPaid ? ' - DEBT PAID OFF!' : ''}`,
-          },
-          [
-            { accountId: debtAccount.id, entryType: 'debit', amount: amount },
-            { accountId: accountId, entryType: 'credit', amount: amount },
-          ]
+            category: 'debt_payment',
+          }
         );
-
-        // Archive the account if debt is fully paid
-        if (isFullyPaid) {
-          await storage.updateAccount(debtAccount.id, {
-            isActive: 0,
-          });
-        }
       }
 
       res.json({ ...payment, isFullyPaid });
@@ -3525,58 +3376,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'No active asset account found. Please create a checking account first.' });
       }
 
-      // Find or create expense account for this category
-      const accountCategory = budget.category as any;
-      let expenseAccount = userAccounts.find(
-        acc => acc.accountType === 'expense' && acc.accountCategory === accountCategory && acc.isActive === 1
-      );
-
-      if (!expenseAccount) {
-        // Create expense account for this category
-        const categoryNames: { [key: string]: string } = {
-          'food': 'Food & Dining',
-          'transportation': 'Transportation',
-          'housing': 'Housing',
-          'healthcare': 'Healthcare',
-          'utilities': 'Utilities',
-          'entertainment': 'Entertainment',
-          'personal_care': 'Personal Care',
-          'education': 'Education',
-          'other_expense': 'Other Expenses',
-        };
-
-        const accountName = categoryNames[budget.category] || budget.category;
-        const createdAccount = await storage.createAccount({
-          userId: req.userId,
-          name: accountName,
-          accountType: 'expense',
-          accountCategory: accountCategory,
-          balance: '0',
-          description: `Auto-created for ${budget.category} budget`,
-        });
-        expenseAccount = createdAccount;
-      }
-
       // Mark budget as completed
       await storage.updateBudget(req.params.id, {
         isActive: 0,
         completedAt: new Date()
       });
 
-      // Create transaction for the actual spending
+      // Create expense transaction for the actual spending using simplified model
       const now = new Date();
-      const transaction = await storage.createTransactionWithEntries(
+      const transaction = await storage.createSimpleTransaction(
         req.userId,
         {
+          accountId: checkingAccount.id,
+          transactionType: 'expense',
           date: now.toISOString().split('T')[0],
           description: `Budget Completed: ${budget.category}`,
           totalAmount: totalActual.toString(),
           notes: `Saved ${savings >= 0 ? '+' : ''}$${Math.abs(savings).toFixed(2)} vs budget`,
-        },
-        [
-          { accountId: expenseAccount.id, entryType: 'debit', amount: totalActual.toString() },
-          { accountId: checkingAccount.id, entryType: 'credit', amount: totalActual.toString() }
-        ]
+          category: budget.category,
+        }
       );
 
       res.json({ budget, transaction });

@@ -7,6 +7,7 @@ import { getCategoryById } from "@/lib/categories";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useLocation } from "wouter";
+import { TransactionDetailsDialog } from "./transaction-details-dialog";
 
 interface TransactionListItemProps {
   transaction: Transaction;
@@ -15,10 +16,11 @@ interface TransactionListItemProps {
 
 export function TransactionListItem({ transaction, onClick }: TransactionListItemProps) {
   const amount = parseFloat(transaction.totalAmount);
-  const isExpense = amount < 0;
+  const isExpense = transaction.transactionType === 'expense';
   const category = transaction.category ? getCategoryById(transaction.category) : null;
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   // Voice note playback state
   const [isPlaying, setIsPlaying] = useState(false);
@@ -123,40 +125,48 @@ export function TransactionListItem({ transaction, onClick }: TransactionListIte
   const categoryName = category?.name || 'Uncategorized';
 
   return (
-    <div
-      className="group relative font-sans text-xs py-1 px-3 hover:shadow-md transition-all duration-200 rounded-md"
-      data-testid={`transaction-${transaction.id}`}
-    >
-      <div className="flex items-center gap-3">
-        <span className="flex-1 truncate font-bold text-foreground text-[12px]">
-          {transaction.description}
-        </span>
-        
-        <span className={cn(
-          "shrink-0 font-bold tabular-nums text-[12px]",
-          isExpense ? "text-destructive" : "text-success"
-        )}>
-          {amountStr}
-        </span>
-        
-        <span className="shrink-0 font-bold text-muted-foreground/70 text-[12px] min-w-[90px]">
-          {dateStr}
-        </span>
+    <>
+      <div
+        className="group relative font-sans text-xs py-1 px-3 hover:shadow-md transition-all duration-200 rounded-md cursor-pointer"
+        data-testid={`transaction-${transaction.id}`}
+        onClick={() => {
+          if (onClick) {
+            onClick();
+          } else {
+            setDialogOpen(true);
+          }
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <span className="flex-1 truncate font-bold text-foreground text-[12px]">
+            {transaction.description}
+          </span>
+          
+          <span className={cn(
+            "shrink-0 font-bold tabular-nums text-[12px]",
+            isExpense ? "text-destructive" : "text-success"
+          )}>
+            {amountStr}
+          </span>
+          
+          <span className="shrink-0 font-bold text-muted-foreground/70 text-[12px] min-w-[90px]">
+            {dateStr}
+          </span>
 
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            if (onClick) {
-              onClick();
-            } else {
-              setLocation('/transactions');
-            }
-          }}
-          className="shrink-0 text-primary hover:text-primary/80 underline text-[12px] font-bold"
-        >
-          See more
-        </button>
+          <span
+            className="shrink-0 text-primary hover:text-primary/80 underline text-[12px] font-bold"
+            data-testid="button-see-more"
+          >
+            See more
+          </span>
+        </div>
       </div>
-    </div>
+
+      <TransactionDetailsDialog 
+        transaction={transaction}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      />
+    </>
   );
 }

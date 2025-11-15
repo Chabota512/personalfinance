@@ -1,7 +1,8 @@
 
 import { db } from "./db";
-import { accounts, transactions, transactionEntries, budgets, goals } from "@shared/schema";
+import { accounts, budgets, goals } from "@shared/schema";
 import { eq } from "drizzle-orm";
+import { createSimpleTransaction } from "./storage";
 
 export async function seedSampleData(userId: string, createdAccounts?: any[]) {
   // Check if user already has data (only if accounts not provided)
@@ -131,58 +132,45 @@ export async function seedSampleData(userId: string, createdAccounts?: any[]) {
   const threeDaysAgo = new Date();
   threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
-  // Salary deposit
-  const [salaryTx] = await db.insert(transactions).values({
-    userId,
+  // Salary deposit - income transaction
+  await createSimpleTransaction(userId, {
+    accountId: checkingAccount.id,
+    transactionType: 'income',
     date: thirtyDaysAgo.toISOString().split('T')[0],
     description: "Monthly Salary",
     totalAmount: "3000.00",
     notes: "Sample monthly income",
-  }).returning();
+  });
 
-  await db.insert(transactionEntries).values([
-    { transactionId: salaryTx.id, accountId: checkingAccount.id, entryType: "debit", amount: "3000.00" },
-    { transactionId: salaryTx.id, accountId: salaryIncome.id, entryType: "credit", amount: "3000.00" },
-  ]);
-
-  // Grocery purchase
-  const [groceryTx] = await db.insert(transactions).values({
-    userId,
+  // Grocery purchase - expense transaction
+  await createSimpleTransaction(userId, {
+    accountId: checkingAccount.id,
+    transactionType: 'expense',
     date: fifteenDaysAgo.toISOString().split('T')[0],
     description: "Weekly Groceries",
     totalAmount: "125.50",
-  }).returning();
+    category: "food",
+  });
 
-  await db.insert(transactionEntries).values([
-    { transactionId: groceryTx.id, accountId: groceriesExpense.id, entryType: "debit", amount: "125.50" },
-    { transactionId: groceryTx.id, accountId: checkingAccount.id, entryType: "credit", amount: "125.50" },
-  ]);
-
-  // Transportation
-  const [transportTx] = await db.insert(transactions).values({
-    userId,
+  // Transportation - expense transaction
+  await createSimpleTransaction(userId, {
+    accountId: creditCard.id,
+    transactionType: 'expense',
     date: sevenDaysAgo.toISOString().split('T')[0],
     description: "Gas Station",
     totalAmount: "45.00",
-  }).returning();
+    category: "transportation",
+  });
 
-  await db.insert(transactionEntries).values([
-    { transactionId: transportTx.id, accountId: transportExpense.id, entryType: "debit", amount: "45.00" },
-    { transactionId: transportTx.id, accountId: creditCard.id, entryType: "credit", amount: "45.00" },
-  ]);
-
-  // Entertainment
-  const [entertainmentTx] = await db.insert(transactions).values({
-    userId,
+  // Entertainment - expense transaction
+  await createSimpleTransaction(userId, {
+    accountId: checkingAccount.id,
+    transactionType: 'expense',
     date: threeDaysAgo.toISOString().split('T')[0],
     description: "Movie Tickets",
     totalAmount: "28.00",
-  }).returning();
-
-  await db.insert(transactionEntries).values([
-    { transactionId: entertainmentTx.id, accountId: entertainmentExpense.id, entryType: "debit", amount: "28.00" },
-    { transactionId: entertainmentTx.id, accountId: checkingAccount.id, entryType: "credit", amount: "28.00" },
-  ]);
+    category: "entertainment",
+  });
 
   // Create sample budgets
   const currentDate = new Date();
