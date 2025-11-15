@@ -124,11 +124,11 @@ export function TransactionListItem({ transaction, onClick }: TransactionListIte
 
   return (
     <div
-      className="group relative font-mono text-xs py-2 px-3 hover:bg-accent/50 transition-all duration-200 border-l-2 border-transparent hover:border-l-primary"
+      className="group relative font-sans text-xs py-2 px-3 hover:bg-accent/50 transition-all duration-200 border-l-2 border-transparent hover:border-l-primary"
       data-testid={`transaction-${transaction.id}`}
     >
       <div className="flex items-center gap-3">
-        <span className="flex-1 truncate font-medium text-foreground text-[12px]">
+        <span className="flex-1 truncate font-bold text-foreground text-[12px]">
           {transaction.description}
         </span>
         
@@ -139,7 +139,7 @@ export function TransactionListItem({ transaction, onClick }: TransactionListIte
           {amountStr}
         </span>
         
-        <span className="shrink-0 text-muted-foreground/70 text-[12px] min-w-[90px]">
+        <span className="shrink-0 font-bold text-muted-foreground/70 text-[12px] min-w-[90px]">
           {dateStr}
         </span>
 
@@ -152,7 +152,7 @@ export function TransactionListItem({ transaction, onClick }: TransactionListIte
               setLocation('/transactions');
             }
           }}
-          className="shrink-0 text-primary hover:text-primary/80 underline text-[12px] font-medium"
+          className="shrink-0 text-primary hover:text-primary/80 underline text-[12px] font-bold"
         >
           See more
         </button>
