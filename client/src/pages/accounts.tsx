@@ -259,7 +259,7 @@ export default function AccountsPage() {
                   <DialogTitle>Configure Quick Deal</DialogTitle>
                   <DialogDescription>
                     Select the default monthly account for quick deals.
-                  </DialogDemandation>
+                  </DialogDescription>
                 </DialogHeader>
                 <form className="space-y-4" onSubmit={handleQuickDealSubmit}>
                   <div className="space-y-2">
