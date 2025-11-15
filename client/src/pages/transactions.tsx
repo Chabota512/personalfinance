@@ -164,14 +164,16 @@ export default function TransactionsPage() {
               {filteredTransactions.map((transaction: any) => (
                 <div
                   key={transaction.id}
-                  onClick={() => {
-                    setViewTransaction(transaction);
-                    setDetailsDialogOpen(true);
-                  }}
-                  className="bg-card border border-border rounded-lg p-2 active:scale-[0.98] hover:shadow-md transition-all duration-200 cursor-pointer"
+                  className="bg-card border border-border rounded-lg p-2 hover:shadow-md transition-all duration-200"
                   data-testid={`card-transaction-${transaction.id}`}
                 >
-                  <TransactionListItem transaction={transaction} />
+                  <TransactionListItem 
+                    transaction={transaction}
+                    onClick={() => {
+                      setViewTransaction(transaction);
+                      setDetailsDialogOpen(true);
+                    }}
+                  />
                 </div>
               ))}
             </div>
@@ -316,14 +318,14 @@ export default function TransactionsPage() {
             filteredTransactions.map((transaction: any) => (
               <div
                 key={transaction.id}
-                onClick={() => {
-                  setViewTransaction(transaction);
-                  setDetailsDialogOpen(true);
-                }}
-                className="cursor-pointer hover:shadow-md rounded-md transition-all duration-200"
+                className="hover:shadow-md rounded-md transition-all duration-200"
               >
                 <TransactionListItem 
                   transaction={transaction}
+                  onClick={() => {
+                    setViewTransaction(transaction);
+                    setDetailsDialogOpen(true);
+                  }}
                 />
               </div>
             ))
