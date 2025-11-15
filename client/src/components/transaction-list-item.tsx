@@ -11,9 +11,10 @@ import { useLocation } from "wouter";
 interface TransactionListItemProps {
   transaction: Transaction;
   onClick?: () => void;
+  showSeeMore?: boolean;
 }
 
-export function TransactionListItem({ transaction, onClick }: TransactionListItemProps) {
+export function TransactionListItem({ transaction, onClick, showSeeMore = true }: TransactionListItemProps) {
   const amount = parseFloat(transaction.totalAmount);
   const isExpense = amount < 0;
   const category = transaction.category ? getCategoryById(transaction.category) : null;
@@ -143,19 +144,21 @@ export function TransactionListItem({ transaction, onClick }: TransactionListIte
           {dateStr}
         </span>
 
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            if (onClick) {
-              onClick();
-            } else {
-              setLocation('/transactions');
-            }
-          }}
-          className="shrink-0 text-primary hover:text-primary/80 underline text-[12px] font-bold"
-        >
-          See more
-        </button>
+        {showSeeMore && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onClick) {
+                onClick();
+              } else {
+                setLocation('/transactions');
+              }
+            }}
+            className="shrink-0 text-primary hover:text-primary/80 underline text-[12px] font-bold"
+          >
+            See more
+          </button>
+        )}
       </div>
     </div>
   );
