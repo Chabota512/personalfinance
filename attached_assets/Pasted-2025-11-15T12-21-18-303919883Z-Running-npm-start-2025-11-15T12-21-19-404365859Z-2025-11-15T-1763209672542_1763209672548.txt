@@ -1,0 +1,176 @@
+2025-11-15T12:21:18.303919883Z ==> Running 'npm start'
+2025-11-15T12:21:19.404365859Z 
+2025-11-15T12:21:19.40440754Z > rest-express@1.0.0 start
+2025-11-15T12:21:19.40441521Z > NODE_ENV=production tsx server/index.ts
+2025-11-15T12:21:19.40441815Z 
+2025-11-15T12:21:36.297937941Z Checking and seeding lessons...
+2025-11-15T12:21:36.298143237Z Starting lesson seed...
+2025-11-15T12:21:36.980947482Z Lesson already exists: Mastering Needs vs Wants
+2025-11-15T12:21:37.046425019Z   Quiz questions already exist for Mastering Needs vs Wants
+2025-11-15T12:21:37.116785246Z Lesson already exists: Building Your First Budget
+2025-11-15T12:21:37.184102152Z   Quiz questions already exist for Building Your First Budget
+2025-11-15T12:21:37.252879057Z Lesson already exists: Starting an Emergency Fund
+2025-11-15T12:21:37.320534222Z   Quiz questions already exist for Starting an Emergency Fund
+2025-11-15T12:21:37.388776653Z Lesson already exists: Understanding Credit
+2025-11-15T12:21:37.457360762Z   Quiz questions already exist for Understanding Credit
+2025-11-15T12:21:37.526351813Z Lesson already exists: Setting SMART Financial Goals
+2025-11-15T12:21:37.601318192Z   Quiz questions already exist for Setting SMART Financial Goals
+2025-11-15T12:21:37.66383389Z Lesson already exists: Tracking and Reviewing Progress
+2025-11-15T12:21:37.733347165Z   Quiz questions already exist for Tracking and Reviewing Progress
+2025-11-15T12:21:37.801595305Z Lesson already exists: Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-15T12:21:37.869444845Z   Quiz questions already exist for Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-15T12:21:37.869466546Z Lesson seed completed successfully!
+2025-11-15T12:21:38.303633795Z [SCHEDULER] Initializing scheduler...
+2025-11-15T12:21:38.303958514Z [SCHEDULER] Running daily checks at 2025-11-15T12:21:38.303Z
+2025-11-15T12:21:38.304100378Z [SCHEDULER] Checking goal contributions...
+2025-11-15T12:21:38.30418008Z [SCHEDULER] Scheduler initialized - running every hour
+2025-11-15T12:21:38.304345904Z [express] Production mode: serving from /opt/render/project/src/dist/public
+2025-11-15T12:21:38.304414066Z [express] Directory exists: true
+2025-11-15T12:21:38.408999011Z 12:21:38 PM [express] serving on port 10000
+2025-11-15T12:21:38.560416008Z [SCHEDULER] Sent 0 goal contribution reminders
+2025-11-15T12:21:38.560664905Z [SCHEDULER] Checking debt payments...
+2025-11-15T12:21:38.62910097Z [SCHEDULER] Sent 0 debt payment reminders
+2025-11-15T12:21:38.629121811Z [SCHEDULER] Daily checks completed
+2025-11-15T12:21:41.663336536Z ==> Your service is live 🎉
+2025-11-15T12:21:41.698532873Z ==> 
+2025-11-15T12:21:41.735012279Z ==> ///////////////////////////////////////////////////////////
+2025-11-15T12:21:41.769626596Z ==> 
+2025-11-15T12:21:41.804015352Z ==> Available at your primary URL https://personalfinance-pro-backend.onrender.com
+2025-11-15T12:21:41.838479569Z ==> 
+2025-11-15T12:21:41.872267975Z ==> ///////////////////////////////////////////////////////////
+2025-11-15T12:21:51.19900285Z 12:21:51 PM [express] GET /api/auth/me 304 in 342ms :: {"id":"6357ea97-0269-4c78-bd83-6820fea2e582","…
+2025-11-15T12:21:51.399134659Z 12:21:51 PM [express] POST /api/notifications/subscribe 200 in 136ms :: {"id":"7e3f3886-f33d-4c92-917…
+2025-11-15T12:21:52.30637295Z 12:21:52 PM [express] GET /api/notifications 304 in 205ms :: []
+2025-11-15T12:21:52.497991444Z 12:21:52 PM [express] GET /api/users/preferences 304 in 394ms :: {"userId":"6357ea97-0269-4c78-bd83-6…
+2025-11-15T12:21:53.509329337Z 12:21:53 PM [express] GET /api/api/quick-deals/needs-setup 200 in 70ms
+2025-11-15T12:21:53.512616804Z 12:21:53 PM [express] GET /api/api/analytics/health-score 200 in 73ms
+2025-11-15T12:21:53.513327792Z 12:21:53 PM [express] GET /api/api/recommendations 200 in 72ms
+2025-11-15T12:21:54.083136421Z 12:21:54 PM [express] GET /api/transactions/range 304 in 134ms :: []
+2025-11-15T12:21:54.10233272Z 12:21:54 PM [express] GET /api/api/analytics/spending-days-comparison 200 in 67ms
+2025-11-15T12:21:54.129301665Z 12:21:54 PM [express] GET /api/users/preferences 304 in 191ms :: {"userId":"6357ea97-0269-4c78-bd83-6…
+2025-11-15T12:22:18.510480321Z 12:22:18 PM [express] POST /api/api/accounts 200 in 70ms
+2025-11-15T12:23:11.241949661Z 12:23:11 PM [express] POST /api/auth/register 200 in 759ms :: {"id":"dce59123-b368-4904-9ee9-77850985…
+2025-11-15T12:23:12.003946209Z 12:23:12 PM [express] GET /api/auth/me 200 in 133ms :: {"id":"dce59123-b368-4904-9ee9-77850985afd4","…
+2025-11-15T12:23:12.941414522Z 12:23:12 PM [express] GET /api/users/preferences 200 in 198ms :: {"userId":"dce59123-b368-4904-9ee9-7…
+2025-11-15T12:23:13.355647213Z 12:23:13 PM [express] GET /api/notifications 304 in 199ms :: []
+2025-11-15T12:23:14.019227049Z 12:23:14 PM [express] GET /api/transactions/range 304 in 136ms :: []
+2025-11-15T12:23:14.22355188Z 12:23:14 PM [express] GET /api/recommendations 304 in 338ms :: []
+2025-11-15T12:23:14.500899939Z 12:23:14 PM [express] GET /api/users/preferences 304 in 196ms :: {"userId":"dce59123-b368-4904-9ee9-7…
+2025-11-15T12:23:14.589114859Z 12:23:14 PM [express] GET /api/quick-deals/needs-setup 200 in 69ms
+2025-11-15T12:23:14.624130478Z 12:23:14 PM [express] GET /api/analytics/health-score 304 in 338ms
+2025-11-15T12:23:14.654481834Z 12:23:14 PM [express] GET /api/analytics/spending-days-comparison 304 in 349ms :: {"hasEnoughData":fa…
+2025-11-15T12:24:04.544467782Z 12:24:04 PM [express] POST /api/accounts 201 in 343ms :: {"id":"277953a3-673c-468c-b691-4febda682501"…
+2025-11-15T12:24:05.722654023Z 12:24:05 PM [express] POST /api/transactions/opening-balance 201 in 558ms :: {"id":"b1d5bf74-2eec-4cd…
+2025-11-15T12:24:06.268929317Z /opt/render/project/src/server/routes.ts:235
+2025-11-15T12:24:06.268947647Z     if (!req.isAuthenticated()) {
+2025-11-15T12:24:06.268952268Z              ^
+2025-11-15T12:24:06.268956448Z 
+2025-11-15T12:24:06.268960238Z 
+2025-11-15T12:24:06.268964408Z TypeError: req.isAuthenticated is not a function
+2025-11-15T12:24:06.268969908Z     at <anonymous> (/opt/render/project/src/server/routes.ts:235:14)
+2025-11-15T12:24:06.268976138Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-11-15T12:24:06.268983968Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-11-15T12:24:06.268988108Z     at authenticate (/opt/render/project/src/server/routes.ts:64:5)
+2025-11-15T12:24:06.268992298Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-11-15T12:24:06.268996579Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-11-15T12:24:06.269000489Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-11-15T12:24:06.269004379Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-11-15T12:24:06.269008439Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-11-15T12:24:06.269012359Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-11-15T12:24:06.26905004Z 
+2025-11-15T12:24:06.26905625Z Node.js v22.16.0
+2025-11-15T12:24:20.756873109Z ==> Running 'npm start'
+2025-11-15T12:24:21.764187445Z 
+2025-11-15T12:24:21.764202346Z > rest-express@1.0.0 start
+2025-11-15T12:24:21.764207176Z > NODE_ENV=production tsx server/index.ts
+2025-11-15T12:24:21.764208826Z 
+2025-11-15T12:24:36.444938525Z Checking and seeding lessons...
+2025-11-15T12:24:36.445203062Z Starting lesson seed...
+2025-11-15T12:24:37.027039Z Lesson already exists: Mastering Needs vs Wants
+2025-11-15T12:24:37.096439171Z   Quiz questions already exist for Mastering Needs vs Wants
+2025-11-15T12:24:37.165577896Z Lesson already exists: Building Your First Budget
+2025-11-15T12:24:37.233348764Z   Quiz questions already exist for Building Your First Budget
+2025-11-15T12:24:37.299962121Z Lesson already exists: Starting an Emergency Fund
+2025-11-15T12:24:37.367874603Z   Quiz questions already exist for Starting an Emergency Fund
+2025-11-15T12:24:37.436183476Z Lesson already exists: Understanding Credit
+2025-11-15T12:24:37.504484008Z   Quiz questions already exist for Understanding Credit
+2025-11-15T12:24:37.572914873Z Lesson already exists: Setting SMART Financial Goals
+2025-11-15T12:24:37.640197209Z   Quiz questions already exist for Setting SMART Financial Goals
+2025-11-15T12:24:37.707923415Z Lesson already exists: Tracking and Reviewing Progress
+2025-11-15T12:24:37.776513875Z   Quiz questions already exist for Tracking and Reviewing Progress
+2025-11-15T12:24:37.844598322Z Lesson already exists: Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-15T12:24:37.914667731Z   Quiz questions already exist for Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-15T12:24:37.914777064Z Lesson seed completed successfully!
+2025-11-15T12:24:38.254059856Z [SCHEDULER] Initializing scheduler...
+2025-11-15T12:24:38.254421426Z [SCHEDULER] Running daily checks at 2025-11-15T12:24:38.253Z
+2025-11-15T12:24:38.254537879Z [SCHEDULER] Checking goal contributions...
+2025-11-15T12:24:38.254634881Z [SCHEDULER] Scheduler initialized - running every hour
+2025-11-15T12:24:38.254802246Z [express] Production mode: serving from /opt/render/project/src/dist/public
+2025-11-15T12:24:38.254867507Z [express] Directory exists: true
+2025-11-15T12:24:38.357802989Z 12:24:38 PM [express] serving on port 10000
+2025-11-15T12:24:38.445996249Z [SCHEDULER] Sent 0 goal contribution reminders
+2025-11-15T12:24:38.45020856Z [SCHEDULER] Checking debt payments...
+2025-11-15T12:24:38.644256469Z [SCHEDULER] Sent 0 debt payment reminders
+2025-11-15T12:24:38.644273459Z [SCHEDULER] Daily checks completed
+2025-11-15T12:24:41.425911854Z 12:24:41 PM [express] GET /api/users/preferences 200 in 205ms :: {"userId":"dce59123-b368-4904-9ee9-7…
+2025-11-15T12:24:42.05818623Z 12:24:42 PM [express] GET /api/quick-deals/needs-setup 200 in 71ms
+2025-11-15T12:24:42.602815181Z 12:24:42 PM [express] GET /api/users/preferences 304 in 204ms :: {"userId":"dce59123-b368-4904-9ee9-7…
+2025-11-15T12:25:13.559634183Z 12:25:13 PM [express] GET /api/users/preferences 304 in 414ms :: {"userId":"dce59123-b368-4904-9ee9-7…
+2025-11-15T12:25:25.327492739Z 12:25:25 PM [express] POST /api/accounts 201 in 348ms :: {"id":"bc82d0bd-9ad6-4c12-bc6a-ea39668b87ff"…
+2025-11-15T12:25:26.998079015Z 12:25:26 PM [express] POST /api/transactions/opening-balance 201 in 485ms :: {"id":"7997ffb4-8683-4c8…
+2025-11-15T12:25:27.573695278Z /opt/render/project/src/server/routes.ts:235
+2025-11-15T12:25:27.573719759Z     if (!req.isAuthenticated()) {
+2025-11-15T12:25:27.573724579Z              ^
+2025-11-15T12:25:27.573728659Z 
+2025-11-15T12:25:27.573732439Z 
+2025-11-15T12:25:27.573736789Z TypeError: req.isAuthenticated is not a function
+2025-11-15T12:25:27.573756Z     at <anonymous> (/opt/render/project/src/server/routes.ts:235:14)
+2025-11-15T12:25:27.57375926Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-11-15T12:25:27.5737639Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-11-15T12:25:27.5737664Z     at authenticate (/opt/render/project/src/server/routes.ts:64:5)
+2025-11-15T12:25:27.57376874Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-11-15T12:25:27.57377108Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-11-15T12:25:27.57377367Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-11-15T12:25:27.57377608Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-11-15T12:25:27.57377873Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-11-15T12:25:27.57378153Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-11-15T12:25:27.57378383Z 
+2025-11-15T12:25:27.5737867Z Node.js v22.16.0
+2025-11-15T12:25:46.529475204Z ==> Running 'npm start'
+2025-11-15T12:25:47.520974301Z 
+2025-11-15T12:25:47.520995172Z > rest-express@1.0.0 start
+2025-11-15T12:25:47.521000482Z > NODE_ENV=production tsx server/index.ts
+2025-11-15T12:25:47.521002662Z 
+2025-11-15T12:26:02.356888696Z Checking and seeding lessons...
+2025-11-15T12:26:02.357163753Z Starting lesson seed...
+2025-11-15T12:26:02.900542501Z Lesson already exists: Mastering Needs vs Wants
+2025-11-15T12:26:02.968685239Z   Quiz questions already exist for Mastering Needs vs Wants
+2025-11-15T12:26:03.035911233Z Lesson already exists: Building Your First Budget
+2025-11-15T12:26:03.103695641Z   Quiz questions already exist for Building Your First Budget
+2025-11-15T12:26:03.17752264Z Lesson already exists: Starting an Emergency Fund
+2025-11-15T12:26:03.243811799Z   Quiz questions already exist for Starting an Emergency Fund
+2025-11-15T12:26:03.311200977Z Lesson already exists: Understanding Credit
+2025-11-15T12:26:03.378758559Z   Quiz questions already exist for Understanding Credit
+2025-11-15T12:26:03.446518027Z Lesson already exists: Setting SMART Financial Goals
+2025-11-15T12:26:03.512710844Z   Quiz questions already exist for Setting SMART Financial Goals
+2025-11-15T12:26:03.579943977Z Lesson already exists: Tracking and Reviewing Progress
+2025-11-15T12:26:03.651898077Z   Quiz questions already exist for Tracking and Reviewing Progress
+2025-11-15T12:26:03.715109684Z Lesson already exists: Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-15T12:26:03.783451507Z   Quiz questions already exist for Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-15T12:26:03.783472688Z Lesson seed completed successfully!
+2025-11-15T12:26:04.29725291Z [SCHEDULER] Initializing scheduler...
+2025-11-15T12:26:04.298465152Z [SCHEDULER] Running daily checks at 2025-11-15T12:26:04.297Z
+2025-11-15T12:26:04.298706408Z [SCHEDULER] Checking goal contributions...
+2025-11-15T12:26:04.299660744Z [SCHEDULER] Scheduler initialized - running every hour
+2025-11-15T12:26:04.299922881Z [express] Production mode: serving from /opt/render/project/src/dist/public
+2025-11-15T12:26:04.300136806Z [express] Directory exists: true
+2025-11-15T12:26:04.420195422Z 12:26:04 PM [express] serving on port 10000
+2025-11-15T12:26:04.485747271Z [SCHEDULER] Sent 0 goal contribution reminders
+2025-11-15T12:26:04.485987228Z [SCHEDULER] Checking debt payments...
+2025-11-15T12:26:04.553393136Z [SCHEDULER] Sent 0 debt payment reminders
+2025-11-15T12:26:04.553410567Z [SCHEDULER] Daily checks completed
+2025-11-15T12:26:12.215793155Z 12:26:12 PM [express] GET /api/users/preferences 200 in 205ms :: {"userId":"dce59123-b368-4904-9ee9-7…
+2025-11-15T12:26:12.980712371Z 12:26:12 PM [express] GET /api/users/preferences 304 in 202ms :: {"userId":"dce59123-b368-4904-9ee9-7…
+2025-11-15T12:26:13.52906917Z 12:26:13 PM [express] GET /api/quick-deals/needs-setup 200 in 75ms
+2025-11-15T12:26:45.207194854Z ==> Detected service running on port 10000
+2025-11-15T12:26:45.365696702Z ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
