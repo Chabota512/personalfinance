@@ -1,0 +1,42 @@
+12:04:34 PM [express] GET /api/auth/me 401 in 1ms :: {"error":"Unauthorized - Please log in"}
+12:04:40 PM [express] POST /api/notifications/subscribe 401 in 1ms :: {"error":"Unauthorized - Please…
+12:05:09 PM [express] GET /api/auth/me 401 in 43ms :: {"error":"Unauthorized - Please log in"}
+12:05:09 PM [express] POST /api/auth/register 200 in 1190ms :: {"id":"8c66c152-7067-4cde-b932-697075f…
+12:05:10 PM [express] GET /api/auth/me 200 in 136ms :: {"id":"8c66c152-7067-4cde-b932-697075f1f88b","…
+12:05:11 PM [express] GET /api/users/preferences 200 in 128ms :: {"userId":"8c66c152-7067-4cde-b932-6…
+12:05:11 PM [express] GET /api/notifications 200 in 201ms :: []
+12:05:13 PM [express] GET /api/quick-deals/needs-setup 200 in 117ms
+12:05:14 PM [express] GET /api/analytics/health-score 200 in 437ms
+12:05:14 PM [express] GET /api/recommendations 200 in 427ms :: []
+12:05:14 PM [express] GET /api/transactions/range 200 in 467ms :: []
+12:05:14 PM [express] GET /api/analytics/spending-days-comparison 200 in 434ms :: {"hasEnoughData":fa…
+12:05:14 PM [express] GET /api/users/preferences 304 in 134ms :: {"userId":"8c66c152-7067-4cde-b932-6…
+12:05:31 PM [express] POST /api/accounts 201 in 383ms :: {"id":"bd603413-ca3c-4028-b765-50d7263e4193"…
+12:05:32 PM [express] POST /api/transactions/opening-balance 201 in 564ms :: {"id":"7286a1f2-1a3f-4cc…
+Error updating user preferences: error: syntax error at or near "where"
+    at file:///opt/render/project/src/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async NeonPreparedQuery.execute (/opt/render/project/src/node_modules/src/neon-serverless/session.ts:102:18)
+    at async <anonymous> (/opt/render/project/src/server/routes.ts:232:29) {
+  length: 94,
+  severity: 'ERROR',
+  code: '42601',
+  detail: undefined,
+  hint: undefined,
+  position: '21',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'scan.l',
+  line: '1244',
+  routine: 'scanner_yyerror'
+}
+12:05:33 PM [express] PUT /api/users/preferences 500 in 152ms :: {"error":"syntax error at or near \"…
+12:05:34 PM [express] GET /api/users/preferences 304 in 337ms :: {"userId":"8c66c152-7067-4cde-b932-6…
+12:05:35 PM [express] GET /api/quick-deals/needs-setup 304 in 65ms
+12:05:35 PM [express] GET /api/users/preferences 304 in 130ms :: {"userId":"8c66c152-7067-4cde-b932-6
