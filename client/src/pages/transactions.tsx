@@ -168,7 +168,7 @@ export default function TransactionsPage() {
                     setViewTransaction(transaction);
                     setDetailsDialogOpen(true);
                   }}
-                  className="bg-card border border-border rounded-lg p-2 active:scale-[0.98] transition-transform cursor-pointer"
+                  className="bg-card border border-border rounded-lg p-2 active:scale-[0.98] hover:shadow-md transition-all duration-200 cursor-pointer"
                   data-testid={`card-transaction-${transaction.id}`}
                 >
                   <TransactionListItem transaction={transaction} />
@@ -320,7 +320,7 @@ export default function TransactionsPage() {
                   setViewTransaction(transaction);
                   setDetailsDialogOpen(true);
                 }}
-                className="cursor-pointer hover:bg-accent/30 rounded-md transition-colors"
+                className="cursor-pointer hover:shadow-md rounded-md transition-all duration-200"
               >
                 <TransactionListItem 
                   transaction={transaction}
