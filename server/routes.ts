@@ -231,11 +231,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/users/preferences', authenticate, async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ error: "Unauthorized - Please log in" });
-    }
-
+  app.put('/api/users/preferences', authenticate, async (req: any, res) => {
     try {
       const { hasCompletedOnboarding, preferredCurrency, weekStartDay, skipSampleData } = req.body;
       const userId = req.userId;
