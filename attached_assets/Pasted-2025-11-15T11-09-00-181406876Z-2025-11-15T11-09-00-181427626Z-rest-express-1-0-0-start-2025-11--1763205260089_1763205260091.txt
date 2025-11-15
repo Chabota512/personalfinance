@@ -1,0 +1,50 @@
+2025-11-15T11:09:00.181406876Z 
+2025-11-15T11:09:00.181427626Z > rest-express@1.0.0 start
+2025-11-15T11:09:00.181432576Z > NODE_ENV=production tsx server/index.ts
+2025-11-15T11:09:00.181434747Z 
+2025-11-15T11:09:17.677428977Z Checking and seeding lessons...
+2025-11-15T11:09:17.677655051Z Starting lesson seed...
+2025-11-15T11:09:18.259943912Z Lesson already exists: Mastering Needs vs Wants
+2025-11-15T11:09:18.327344141Z   Quiz questions already exist for Mastering Needs vs Wants
+2025-11-15T11:09:18.395092828Z Lesson already exists: Building Your First Budget
+2025-11-15T11:09:18.461790234Z   Quiz questions already exist for Building Your First Budget
+2025-11-15T11:09:18.529371557Z Lesson already exists: Starting an Emergency Fund
+2025-11-15T11:09:18.596288157Z   Quiz questions already exist for Starting an Emergency Fund
+2025-11-15T11:09:18.663762368Z Lesson already exists: Understanding Credit
+2025-11-15T11:09:18.731015045Z   Quiz questions already exist for Understanding Credit
+2025-11-15T11:09:18.797922075Z Lesson already exists: Setting SMART Financial Goals
+2025-11-15T11:09:18.865524139Z   Quiz questions already exist for Setting SMART Financial Goals
+2025-11-15T11:09:18.93404426Z Lesson already exists: Tracking and Reviewing Progress
+2025-11-15T11:09:19.001845828Z   Quiz questions already exist for Tracking and Reviewing Progress
+2025-11-15T11:09:19.068016813Z Lesson already exists: Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-15T11:09:19.136044305Z   Quiz questions already exist for Understanding Double-Entry Bookkeeping: The Foundation of Personal Finance Pro
+2025-11-15T11:09:19.136070786Z Lesson seed completed successfully!
+2025-11-15T11:09:19.579687781Z [SCHEDULER] Initializing scheduler...
+2025-11-15T11:09:19.580028688Z [SCHEDULER] Running daily checks at 2025-11-15T11:09:19.579Z
+2025-11-15T11:09:19.5801485Z [SCHEDULER] Checking goal contributions...
+2025-11-15T11:09:19.580249152Z [SCHEDULER] Scheduler initialized - running every hour
+2025-11-15T11:09:19.580407306Z [express] Production mode: serving from /opt/render/project/src/dist/public
+2025-11-15T11:09:19.580503997Z [express] Directory exists: true
+2025-11-15T11:09:19.68228113Z 11:09:19 AM [express] serving on port 10000
+2025-11-15T11:09:19.747934246Z [SCHEDULER] Sent 0 goal contribution reminders
+2025-11-15T11:09:19.748207721Z [SCHEDULER] Checking debt payments...
+2025-11-15T11:09:19.81559289Z [SCHEDULER] Sent 0 debt payment reminders
+2025-11-15T11:09:19.815613051Z [SCHEDULER] Daily checks completed
+2025-11-15T11:09:23.860470712Z ==> Your service is live 🎉
+2025-11-15T11:09:23.899756638Z ==> 
+2025-11-15T11:09:23.932754865Z ==> ///////////////////////////////////////////////////////////
+2025-11-15T11:09:23.971103881Z ==> 
+2025-11-15T11:09:24.010335827Z ==> Available at your primary URL https://personalfinance-pro-backend.onrender.com
+2025-11-15T11:09:24.044027293Z ==> 
+2025-11-15T11:09:24.07843576Z ==> ///////////////////////////////////////////////////////////
+2025-11-15T11:09:30.206557827Z 11:09:30 AM [express] GET /api/auth/me 200 in 346ms :: {"id":"ae467810-b59a-46a4-a76d-0334c0b3ede7","…
+2025-11-15T11:09:30.420446535Z 11:09:30 AM [express] POST /api/notifications/subscribe 200 in 148ms :: {"id":"78b7c29e-6959-48f4-986…
+2025-11-15T11:09:30.933048251Z 11:09:30 AM [express] GET /api/users/preferences 304 in 136ms :: {"userId":"ae467810-b59a-46a4-a76d-0…
+2025-11-15T11:09:31.215011051Z 11:09:31 AM [express] GET /api/notifications 304 in 414ms :: []
+2025-11-15T11:09:33.857627571Z 11:09:33 AM [express] GET /api/api/analytics/spending-days-comparison 200 in 71ms
+2025-11-15T11:09:33.858302205Z 11:09:33 AM [express] GET /api/api/quick-deals/needs-setup 200 in 69ms
+2025-11-15T11:09:33.864972325Z 11:09:33 AM [express] GET /api/api/recommendations 200 in 70ms
+2025-11-15T11:09:34.260138482Z 11:09:34 AM [express] GET /api/api/analytics/health-score 200 in 66ms
+2025-11-15T11:09:34.351166004Z 11:09:34 AM [express] GET /api/transactions/range 304 in 140ms :: []
+2025-11-15T11:09:34.422228846Z 11:09:34 AM [express] GET /api/users/preferences 304 in 133ms :: {"userId":"ae467810-b59a-46a4-a76d-0…
+2025-11-15T11:09:48.905694628Z 11:09:48 AM [express] POST /api/api/accounts 200 in 69ms
