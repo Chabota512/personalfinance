@@ -453,6 +453,9 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
     return true; // All checks passed
   };
 
+    return true; // All checks passed
+  };
+
   const handleSubmit = async (e: React.FormEvent, skipChecks = false) => {
     e.preventDefault();
 
