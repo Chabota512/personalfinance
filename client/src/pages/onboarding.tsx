@@ -128,12 +128,13 @@ export default function Onboarding() {
 
   const addCustomAccount = () => {
     const newId = `custom-${Date.now()}`;
-    setCustomAccounts([...customAccounts, {
+    const newAccount = {
       id: newId,
       name: '',
-      type: 'asset',
+      type: 'asset' as 'asset' | 'liability',
       category: 'checking'
-    }]);
+    };
+    setCustomAccounts([...customAccounts, newAccount]);
   };
 
   const updateCustomAccount = (id: string, field: keyof CustomAccount, value: any) => {
@@ -397,7 +398,7 @@ export default function Onboarding() {
                             <select
                               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                               value={custom.type}
-                              onChange={(e) => updateCustomAccount(custom.id, 'type', e.target.value)}
+                              onChange={(e) => updateCustomAccount(custom.id, 'type', e.target.value as 'asset' | 'liability')}
                               data-testid={`select-custom-type-${custom.id}`}
                             >
                               <option value="asset">Asset</option>
@@ -405,39 +406,16 @@ export default function Onboarding() {
                             </select>
                           </div>
                         </div>
-                        <div className="flex flex-col gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            onClick={() => {
-                              if (custom.name.trim()) {
-                                toast({
-                                  title: "Saved",
-                                  description: `${custom.name} has been saved.`,
-                                });
-                              } else {
-                                toast({
-                                  title: "Error",
-                                  description: "Please enter an account name.",
-                                  variant: "destructive"
-                                });
-                              }
-                            }}
-                            data-testid={`button-save-custom-${custom.id}`}
-                          >
-                            <CheckCircle2 className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => removeCustomAccount(custom.id)}
-                            data-testid={`button-remove-custom-${custom.id}`}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeCustomAccount(custom.id)}
+                          data-testid={`button-remove-custom-${custom.id}`}
+                          className="self-start"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
