@@ -171,7 +171,7 @@ export default function TransactionsPage() {
                   className="bg-card border border-border rounded-lg p-2 active:scale-[0.98] hover:shadow-md transition-all duration-200 cursor-pointer"
                   data-testid={`card-transaction-${transaction.id}`}
                 >
-                  <TransactionListItem transaction={transaction} showSeeMore={false} />
+                  <TransactionListItem transaction={transaction} />
                 </div>
               ))}
             </div>
@@ -324,7 +324,6 @@ export default function TransactionsPage() {
               >
                 <TransactionListItem 
                   transaction={transaction}
-                  showSeeMore={false}
                 />
               </div>
             ))
