@@ -124,7 +124,7 @@ export function TransactionListItem({ transaction, onClick }: TransactionListIte
 
   return (
     <div
-      className="group relative font-sans text-xs py-2 px-3 hover:bg-accent/50 transition-all duration-200 border-l-2 border-transparent hover:border-l-primary"
+      className="group relative font-sans text-xs py-1 px-3 hover:bg-accent/50 transition-all duration-200 border-l-2 border-transparent hover:border-l-primary"
       data-testid={`transaction-${transaction.id}`}
     >
       <div className="flex items-center gap-3">

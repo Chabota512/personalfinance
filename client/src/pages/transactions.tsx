@@ -5,7 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TransactionListItem } from "@/components/transaction-list-item";
 import { TimePeriodFilter, getDateRangeFromPeriod, type TimePeriod } from "@/components/time-period-filter";
 import { TransactionDialog } from "@/components/transaction-dialog";
-import { Plus, Receipt } from "lucide-react";
+import { Plus, Receipt, Calendar, DollarSign, FileText, Tag } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
 import {
   Select,
   SelectContent,
@@ -46,6 +55,8 @@ export default function TransactionsPage() {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const [viewTransaction, setViewTransaction] = useState<any>(null);
   const [timePeriod, setTimePeriod] = useState<TimePeriod>("month");
 
   // State for multi-filter
@@ -149,15 +160,15 @@ export default function TransactionsPage() {
         <PullToRefresh onRefresh={handleRefresh}>
           <div className="px-3 py-2">
           {filteredTransactions && filteredTransactions.length > 0 ? (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
               {filteredTransactions.map((transaction: any) => (
                 <div
                   key={transaction.id}
                   onClick={() => {
-                    setSelectedTransaction(transaction);
-                    setOpen(true);
+                    setViewTransaction(transaction);
+                    setDetailsDialogOpen(true);
                   }}
-                  className="bg-card border border-border rounded-lg p-2 active:scale-[0.98] transition-transform"
+                  className="bg-card border border-border rounded-lg p-2 active:scale-[0.98] transition-transform cursor-pointer"
                   data-testid={`card-transaction-${transaction.id}`}
                 >
                   <TransactionListItem transaction={transaction} />
@@ -300,17 +311,21 @@ export default function TransactionsPage() {
             All Transactions
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
+        <CardContent className="space-y-1">
           {filteredTransactions && filteredTransactions.length > 0 ? (
             filteredTransactions.map((transaction: any) => (
-              <TransactionListItem 
-                key={transaction.id} 
-                transaction={transaction}
+              <div
+                key={transaction.id}
                 onClick={() => {
-                  setSelectedTransaction(transaction);
-                  setOpen(true);
+                  setViewTransaction(transaction);
+                  setDetailsDialogOpen(true);
                 }}
-              />
+                className="cursor-pointer hover:bg-accent/30 rounded-md transition-colors"
+              >
+                <TransactionListItem 
+                  transaction={transaction}
+                />
+              </div>
             ))
           ) : (
             <div className="text-center py-8 text-muted-foreground">
@@ -326,6 +341,97 @@ export default function TransactionsPage() {
           onOpenChange={setOpen}
           transaction={selectedTransaction}
         />
+
+        {/* Transaction Details Dialog */}
+        <Dialog open={detailsDialogOpen} onOpenChange={setDetailsDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Transaction Details</DialogTitle>
+              <DialogDescription>
+                Complete information about this transaction
+              </DialogDescription>
+            </DialogHeader>
+            {viewTransaction && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <DollarSign className="h-4 w-4 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">Amount</p>
+                      </div>
+                      <p className={`text-2xl font-bold ${parseFloat(viewTransaction.totalAmount) >= 0 ? 'text-success' : 'text-destructive'}`}>
+                        {parseFloat(viewTransaction.totalAmount) >= 0 ? '+' : '-'}
+                        {formatCurrency(Math.abs(parseFloat(viewTransaction.totalAmount)))}
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">Date</p>
+                      </div>
+                      <p className="text-2xl font-bold">
+                        {format(new Date(viewTransaction.date), 'MMM dd, yyyy')}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card>
+                  <CardContent className="pt-6 space-y-3">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                        <p className="text-sm font-semibold text-muted-foreground">Description</p>
+                      </div>
+                      <p className="text-base">{viewTransaction.description}</p>
+                    </div>
+
+                    {viewTransaction.category && (
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <Tag className="h-4 w-4 text-muted-foreground" />
+                          <p className="text-sm font-semibold text-muted-foreground">Category</p>
+                        </div>
+                        <Badge variant="outline" className="capitalize">
+                          {viewTransaction.category.replace(/_/g, ' ')}
+                        </Badge>
+                      </div>
+                    )}
+
+                    {viewTransaction.notes && (
+                      <div>
+                        <p className="text-sm font-semibold text-muted-foreground mb-1">Notes</p>
+                        <p className="text-sm text-muted-foreground">{viewTransaction.notes}</p>
+                      </div>
+                    )}
+
+                    {viewTransaction.entries && viewTransaction.entries.length > 0 && (
+                      <div>
+                        <p className="text-sm font-semibold text-muted-foreground mb-2">Journal Entries</p>
+                        <div className="space-y-2">
+                          {viewTransaction.entries.map((entry: any, index: number) => (
+                            <div key={index} className="flex items-center justify-between p-2 bg-muted rounded-md">
+                              <div>
+                                <p className="font-medium text-sm">{entry.accountName || `Account ${entry.accountId}`}</p>
+                                <Badge variant={entry.entryType === 'debit' ? 'default' : 'secondary'} className="text-xs mt-1">
+                                  {entry.entryType}
+                                </Badge>
+                              </div>
+                              <p className="font-semibold">{formatCurrency(parseFloat(entry.amount))}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
