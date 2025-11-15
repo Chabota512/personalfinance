@@ -252,7 +252,7 @@ export default function HomePage() {
                 ) : weekTransactions && weekTransactions.length > 0 ? (
                   <>
                     <div className="space-y-1">
-                      {weekTransactions.slice(0, 2).map((transaction: any) => (
+                      {[...weekTransactions].reverse().slice(0, 2).map((transaction: any) => (
                         <TransactionListItem
                           key={transaction.id}
                           transaction={transaction}

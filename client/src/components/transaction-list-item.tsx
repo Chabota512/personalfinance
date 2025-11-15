@@ -122,66 +122,82 @@ export function TransactionListItem({ transaction, onClick }: TransactionListIte
 
   return (
     <div
-      className="font-mono text-sm py-1 px-2 hover:bg-muted/50 cursor-pointer transition-colors"
+      className="group relative font-mono text-xs py-2 px-3 hover:bg-accent/50 cursor-pointer transition-all duration-200 border-l-2 border-transparent hover:border-l-primary"
       onClick={onClick}
       data-testid={`transaction-${transaction.id}`}
     >
-      <div className="flex items-start gap-2">
-        <span className="text-muted-foreground shrink-0">[{dateStr}]</span>
-        <span className={cn("shrink-0 font-semibold", isExpense ? "text-destructive" : "text-success")}>
-          {amountStr.padEnd(12)}
+      <div className="flex items-center gap-3">
+        <span className={cn(
+          "shrink-0 font-bold min-w-[100px] text-right tabular-nums",
+          isExpense ? "text-destructive" : "text-success"
+        )}>
+          {amountStr}
         </span>
-        <span className="flex-1 truncate">{transaction.description}</span>
-        {transaction.voiceNoteUrl && (
-          <button
-            onClick={handleVoiceNoteClick}
-            className={cn(
-              "shrink-0 p-0.5 rounded hover:bg-muted",
-              isPlaying && "bg-primary/10"
-            )}
-            title={isPlaying ? "Playing..." : "Play voice note"}
-          >
-            <Volume2 className={cn("h-3 w-3", isPlaying ? "text-primary" : "text-muted-foreground")} />
-          </button>
-        )}
-      </div>
-      <div className="flex items-start gap-2 pl-2 text-xs text-muted-foreground">
-        <span className="shrink-0">└─</span>
-        <span className="shrink-0">{categoryName}</span>
-        {transaction.locationName && (
-          <>
-            <span>|</span>
-            <span className="truncate" data-testid={`location-${transaction.id}`}>📍 {transaction.locationName}</span>
-          </>
-        )}
-        {transaction.contentmentLevel !== null && transaction.contentmentLevel !== undefined && (
-          <>
-            <span>|</span>
-            <span title={`Contentment: ${transaction.contentmentLevel}/5`}>
+        
+        <span className="shrink-0 text-muted-foreground/70 text-[10px] min-w-[80px]">
+          {dateStr}
+        </span>
+        
+        <span className="flex-1 truncate font-medium text-foreground">
+          {transaction.description}
+        </span>
+
+        <div className="flex items-center gap-1.5 shrink-0">
+          <span className="text-muted-foreground/60 text-[10px] px-2 py-0.5 bg-muted/30 rounded">
+            {categoryName}
+          </span>
+          
+          {transaction.contentmentLevel !== null && transaction.contentmentLevel !== undefined && (
+            <span className="text-sm" title={`Contentment: ${transaction.contentmentLevel}/5`}>
               {transaction.contentmentLevel === 5 && '😄'}
               {transaction.contentmentLevel === 4 && '🙂'}
               {transaction.contentmentLevel === 3 && '😐'}
               {transaction.contentmentLevel === 2 && '😕'}
               {transaction.contentmentLevel === 1 && '😞'}
             </span>
-          </>
-        )}
-      </div>
-      {transaction.reason && (
-        <div className="flex items-start gap-2 pl-2 text-xs text-muted-foreground italic">
-          <span className="shrink-0">└─</span>
-          <span className="truncate">"{transaction.reason}"</span>
-          {transaction.reasonAudioUrl && (
+          )}
+          
+          {transaction.voiceNoteUrl && (
             <button
-              onClick={handleReasonAudioClick}
+              onClick={handleVoiceNoteClick}
               className={cn(
-                "shrink-0 p-0.5 rounded hover:bg-muted",
-                isPlayingReason && "bg-primary/10"
+                "p-1 rounded-md hover:bg-muted transition-colors",
+                isPlaying && "bg-primary/10 text-primary"
               )}
-              title={isPlayingReason ? "Playing..." : "Hear why you did this"}
+              title={isPlaying ? "Playing..." : "Play voice note"}
             >
-              <Volume2 className={cn("h-3 w-3", isPlayingReason ? "text-primary" : "text-muted-foreground")} />
+              <Volume2 className={cn("h-3 w-3", isPlaying ? "text-primary" : "text-muted-foreground")} />
             </button>
+          )}
+        </div>
+      </div>
+
+      {(transaction.locationName || transaction.reason) && (
+        <div className="flex items-center gap-3 mt-1.5 ml-[100px] pl-3 text-[10px] text-muted-foreground/60">
+          {transaction.locationName && (
+            <span className="flex items-center gap-1" data-testid={`location-${transaction.id}`}>
+              <span className="text-[9px]">📍</span>
+              {transaction.locationName}
+            </span>
+          )}
+          
+          {transaction.reason && (
+            <span className="flex items-center gap-1 italic">
+              <span>•</span>
+              {transaction.reason}
+              {transaction.reasonAudioUrl && (
+                <button
+                  onClick={handleReasonAudioClick}
+                  className={cn(
+                    "ml-1 p-0.5 rounded hover:bg-muted transition-colors",
+                    isPlayingReason && "bg-primary/10 text-primary"
+                  )}
+                  title={isPlayingReason ? "Playing..." : "Hear why you did this"}
+                >
+                  <Volume2 className={cn("h-2.5 w-2.5", isPlayingReason ? "text-primary" : "text-muted-foreground")} />
+                </button>
+              )}
+            </span>
           )}
         </div>
       )}

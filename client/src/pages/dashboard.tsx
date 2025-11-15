@@ -282,7 +282,7 @@ export default function Dashboard() {
                 </div>
               ) : transactions && transactions.length > 0 ? (
                 <div className="divide-y divide-border">
-                  {transactions.slice(0, 4).map((transaction: any) => (
+                  {[...transactions].reverse().slice(0, 4).map((transaction: any) => (
                     <div key={transaction.id} className="p-3">
                       <TransactionListItem transaction={transaction} />
                     </div>
@@ -837,7 +837,7 @@ export default function Dashboard() {
                   </div>
                 ) : transactions && transactions.length > 0 ? (
                   <div className="space-y-1 max-h-[400px] overflow-y-auto">
-                    {transactions.slice(0, 8).map((transaction: any) => (
+                    {[...transactions].reverse().slice(0, 8).map((transaction: any) => (
                       <TransactionListItem key={transaction.id} transaction={transaction} />
                     ))}
                   </div>

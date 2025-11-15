@@ -73,15 +73,14 @@ export default function TransactionsPage() {
 
 
   const filteredTransactions = useMemo(() => {
-    console.log('Raw transactions:', transactions);
-    console.log('Filter states:', { searchTerm, selectedCategory, minAmount, maxAmount, dateFrom, dateTo });
+    if (!transactions) return [];
 
-    if (!transactions) {
-      console.log('No transactions returned from API');
-      return [];
-    }
+    console.log('Starting filter with', transactions.length, 'transactions');
+    console.log('Filter criteria:', {
+      searchTerm, selectedCategory, minAmount, maxAmount, dateFrom, dateTo
+    });
 
-    const filtered = transactions.filter((t: any) => {
+    const filtered = [...transactions].reverse().filter((t: Transaction) => {
       // Search filter
       const matchesSearch = !searchTerm || 
                            t.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
