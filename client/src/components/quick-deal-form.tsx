@@ -158,10 +158,17 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
   // Mutation for creating a quick deal
   const createQuickDeal = useMutation({
     mutationFn: async (data: any) => {
-      return await apiRequest<TransactionResponse>('/api/quick-deals', {
+      const res = await fetchApi('/api/quick-deals', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
+        credentials: 'include',
       });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || 'Failed to create quick deal');
+      }
+      return await res.json();
     },
   });
 
