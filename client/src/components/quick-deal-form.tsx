@@ -158,17 +158,20 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
   // Mutation for creating a quick deal
   const createQuickDeal = useMutation({
     mutationFn: async (data: any) => {
-      const res = await fetchApi('/api/quick-deals', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        credentials: 'include',
-      });
+      const res = await apiRequest('POST', '/api/quick-deals', data);
       if (!res.ok) {
         const error = await res.json();
         throw new Error(error.error || 'Failed to create quick deal');
       }
       return await res.json();
+    },
+    onSuccess: () => {
+      // Invalidate all related queries immediately
+      queryClient.invalidateQueries({ queryKey: ['/api/transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/accounts'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/analytics'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/cash-flow'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/financial-health'] });
     },
   });
 
@@ -561,10 +564,6 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
       toast({
         title: transactionType === 'income' ? "✅ Income logged" : "✅ Expense logged",
       });
-
-      queryClient.invalidateQueries({ queryKey: ['/api/transactions'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/accounts'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/cash-flow'] });
 
       setDescription("");
       setAmount("");
