@@ -159,12 +159,12 @@ export function QuickDealForm({ onSuccess, trigger, open: controlledOpen, onOpen
   const createQuickDeal = useMutation({
     mutationFn: async (data: any) => {
       const response = await apiRequest('POST', '/api/quick-deals', data);
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || 'Failed to create quick deal');
       }
-      
+
       return await response.json();
     },
     onSuccess: () => {
